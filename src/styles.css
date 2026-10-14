@@ -309,3 +309,64 @@ button.bg-primary:focus-visible, a.bg-primary:focus-visible {color:#FFFFFF!impor
 @media(max-width:850px) {.wordmark {width:101px;height:67px;}.suda-footer-utility {justify-content:center;text-align:center;}.suda-footer-utilities {justify-content:center;}}
 @media(max-width:760px) {.hero-brand-art {width:225px;height:145px;margin:0 0 -7px;}.thread-interlude {height:80px;padding:0 4%;}.suda-footer-main {min-height:240px;padding:35px 0 22px;}.suda-footer-logo .wordmark {width:168px;height:112px;}.suda-footer-motto {font-size:16px;}.suda-footer-rule {margin-top:19px;}.suda-footer-utility {flex-direction:column;gap:10px;padding:22px 0 28px;}.suda-footer-project {max-width:340px;line-height:1.8;}}
 @media(prefers-reduced-motion:reduce) {.thread-interlude-ink {transition:none!important;}}
+
+/* Long continuous atelier thread: thin, elegant, and intentionally visible.
+   Its long journey follows the scroll rather than appearing as a short separator. */
+.home-thread-story {position:relative;isolation:isolate;overflow:hidden;}
+.home-thread-story > .editorial-band,
+.home-thread-story > .inspiration-teaser {position:relative;z-index:1;}
+.home-thread-journey {
+  position:absolute;inset:0;width:100%;height:100%;
+  z-index:2;pointer-events:none;overflow:visible;
+}
+.home-thread-journey path {fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.home-thread-shadow {stroke:#C5B1BC;stroke-width:5;opacity:.18;}
+.home-thread-line {stroke:#564E58;stroke-width:2;opacity:.84;}
+.thread-journey-breath {height:300px;position:relative;z-index:0;}
+/* Old short separator is superseded by the single long path. */
+.thread-interlude {display:none!important;}
+@media(max-width:760px) {
+  .thread-journey-breath {height:220px;}
+  .home-thread-line {stroke-width:1.8;}
+  .home-thread-shadow {stroke-width:4;opacity:.13;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .home-thread-journey path {transition:none!important;}
+}
+
+/* SUDA — unified softly rounded UI throughout all pages.
+   Keep circular icons/avatars circular and decorative paths untouched. */
+:root { --radius: 14px; --suda-card-radius: 18px; --suda-control-radius: 12px; }
+
+.opportunity-card, .work-card, .inspiration-teaser-art, .editorial-band,
+.detail-visual, .auth-visual, .auth-form-wrap, .admin-banner,
+.admin-table-wrap, .filter-bar, .empty-state, .profile-person,
+.profile-section, .learning-row, .category-ribbon,
+.suda-modal, [role="dialog"], [role="alertdialog"] {
+  border-radius: var(--suda-card-radius);
+}
+.opportunity-card, .editorial-band, .inspiration-teaser-art,
+.detail-visual, .auth-visual, .admin-table-wrap, .suda-modal {
+  overflow: hidden;
+}
+.card-image, .editorial-photo, .editorial-photo img,
+.work-image, .work-image img, .preview-image, .preview-choices img,
+.learning-row > img, .detail-visual img, .hero-image {
+  border-radius: var(--suda-control-radius);
+}
+.category-ribbon a, .work-image:after, .category-tag,
+.admin-table .type-label, .teaser-label, .admin-actions button,
+button:not(.image-arrow), a[role="button"],
+input:not([type="range"]):not([type="file"]):not([type="checkbox"]),
+select, textarea, .login-button, .mobile-menu,
+.hero-actions > a, .editorial-actions a, .preview-choices button {
+  border-radius: var(--suda-control-radius);
+}
+.category-tabs button, .chip, .image-arrow, .profile-avatar {
+  border-radius: 999px;
+}
+@media(max-width:760px) {
+  .opportunity-card, .work-card, .editorial-band, .inspiration-teaser-art,
+  .suda-modal, [role="dialog"] {border-radius: 14px;}
+  .category-ribbon {border-radius: 14px;overflow:hidden;}
+}
