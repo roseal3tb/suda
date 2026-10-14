@@ -5,7 +5,7 @@
 @theme inline {
  --font-sans: 'IBM Plex Sans Arabic', sans-serif;
  --font-display: 'Noto Naskh Arabic', serif;
- --radius-sm: 2px; --radius-md: 4px; --radius-lg: 8px; --radius-xl: 8px;
+ --radius-sm: 12px; --radius-md: 16px; --radius-lg: 20px; --radius-xl: 24px;
  --color-background: var(--background); --color-foreground: var(--foreground);
  --color-card: var(--card); --color-card-foreground: var(--foreground);
  --color-primary: var(--primary); --color-primary-foreground: var(--primary-foreground);
@@ -458,9 +458,6 @@ body { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
 .suda-opportunity-reveal > .opportunity-card { display: block; height: 100%; }
 .suda-word-mask { display: inline-block; overflow: hidden; padding-bottom: .18em; margin-bottom: -.18em; vertical-align: bottom; }
 .suda-word-inner { display: inline-block; }
-@media (prefers-reduced-motion: reduce) {
-  .suda-word-inner, [data-suda-motion] { animation: none !important; }
-}
 
 /* FINAL — highly visible rounded photography and scroll-linked card reveal.
    Explicit selectors win over the original 2px/3px card styles. */
@@ -512,8 +509,52 @@ body { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
 @media (max-width: 760px) {
   :root { --suda-card-radius: 24px; --suda-photo-radius: 22px; }
 }
-/* The reveal is driven by the scroll position, not an entrance timer.
-   Do not override inline MotionValues with legacy CSS opacity rules. */
-[data-suda-motion="scroll-linked"] {
-  will-change: opacity, transform;
+
+
+
+/* ===================================================================
+   SUDA FINAL — one rounded system, one motion system (Framer Motion).
+   Cards/large photos: 30px (24px mobile). Controls and small items: 16–20px.
+   Reveal animation is handled only by <Reveal> in components/suda/reveal.tsx;
+   no CSS here may set opacity/transform/animation on revealed elements.
+   =================================================================== */
+:root {
+  --suda-card-radius: 30px;
+  --suda-photo-radius: 30px;
+  --suda-control-radius: 18px;
+  --suda-small-radius: 16px;
+  --radius: 18px;
 }
+@media (max-width: 760px) {
+  :root { --suda-card-radius: 24px; --suda-photo-radius: 24px; --suda-control-radius: 16px; --suda-small-radius: 14px; }
+}
+.opportunity-card, .work-card, .designer-tile, .designer-expanded, .suda-journey-step,
+.editorial-band, .inspiration-teaser-art, .detail-visual, .auth-visual, .auth-form-wrap,
+.admin-banner, .admin-table-wrap, .admin-mobile-card, .filter-bar, .empty-state,
+.profile-person, .category-ribbon, .suda-modal, [role="dialog"], .global-alert {
+  border-radius: var(--suda-card-radius) !important;
+  overflow: hidden;
+  background-clip: padding-box;
+}
+.editorial-photo, .editorial-photo img, .work-image, .work-image img, .learning-row > img,
+.detail-visual img, .auth-visual img, .preview-image, .designer-expanded-media,
+.designer-expanded-media img, .card-image, .card-image img, .work-view-image {
+  border-radius: var(--suda-photo-radius) !important;
+  overflow: hidden;
+}
+/* Card-top images share the card's exact outer radius. */
+.opportunity-card .card-image,
+.opportunity-card .card-image img {
+  border-radius: var(--suda-card-radius) var(--suda-card-radius) 0 0 !important;
+}
+.hero { border-radius: 0 0 var(--suda-card-radius) var(--suda-card-radius); overflow: hidden; }
+.preview-choices img, .demo-note, .category-ribbon a, .category-tag, .teaser-label,
+.admin-table .type-label, .designer-expanded-media button, .work-image:after {
+  border-radius: var(--suda-small-radius);
+}
+input:not([type=range]):not([type=file]):not([type=checkbox]):not([type=radio]), select, textarea,
+[data-slot="button"], button.bg-primary, a.bg-primary, .login-button, .skip-link,
+.admin-actions button, .search-input, .form-field input, .form-field select, .form-field textarea {
+  border-radius: var(--suda-control-radius) !important;
+}
+.category-tabs button, .chip, .image-arrow, .profile-avatar, .hero-scroll-cue { border-radius: 999px !important; }

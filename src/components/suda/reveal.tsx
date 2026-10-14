@@ -1,64 +1,75 @@
-import { useRef } from 'react';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
+import type { HTMLMotionProps } from 'framer-motion';
 import type { ReactNode } from 'react';
 
 /**
- * SUDA scroll-linked reveal:
- * The element stays invisible until its top reaches 92% of the viewport.
- * It gradually becomes fully visible when its top reaches 54%.
- * Unlike whileInView, this animation follows scrolling in real time.
- * Scrolling back up reverses it, so the effect is easy to verify.
+ * SUDA — the single scroll-reveal system for the whole site (Framer Motion).
+ *
+ * - Starts at opacity 0 and 40px below its final position.
+ * - Fades/rises into place once, when it enters the viewport (80px inside the
+ *   bottom edge), then stays visible.
+ * - `delay` is in SECONDS; use STAGGER * index for neighbouring cards.
+ * - With the OS "reduce motion" setting on, the vertical movement is dropped
+ *   but the soft fade is kept so the reveal stays visible and accessible.
  */
-export function Reveal({
-  children, delay = 0, y = 54, className = '', as = 'div', id,
-  'aria-label': ariaLabel,
-}: {
-  children: ReactNode;
+export const REVEAL_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+export const STAGGER = 0.15;
+
+const tags = {
+  div: motion.div, article: motion.article, header: motion.header,
+  section: motion.section, p: motion.p, aside: motion.aside,
+  button: motion.button, li: motion.li, span: motion.span,
+} as const;
+
+type Tag = keyof typeof tags;
+
+type RevealProps = Omit<HTMLMotionProps<'div'>, 'children' | 'ref'> & {
+  children?: ReactNode;
   delay?: number;
   y?: number;
-  className?: string;
-  as?: 'div' | 'article' | 'header' | 'section' | 'p';
-  id?: string;
-  'aria-label'?: string;
-}) {
-  const ref = useRef<HTMLElement>(null);
+  duration?: number;
+  as?: Tag;
+  type?: 'button';
+};
+
+export function Reveal({
+  children, delay = 0, y = 40, duration = 0.95, as = 'div', ...rest
+}: RevealProps) {
   const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start 92%', 'start 54%'],
-  });
-  // Stagger by moving the beginning of the progress window.
-  const stagger = Math.min(Math.max(delay, 0) * 0.12, 0.13);
-  const opacity = useTransform(scrollYProgress, [stagger, 1], [0, 1], { clamp: true });
-  const translateY = useTransform(scrollYProgress, [stagger, 1], [y, 0], { clamp: true });
-  const style = reduce ? undefined : { opacity, y: translateY };
-  const props = {
-    ref: ref as React.Ref<any>, className, id, 'aria-label': ariaLabel,
-    'data-suda-motion': 'scroll-linked',
-    style,
-  };
-  switch (as) {
-    case 'article': return <motion.article {...props}>{children}</motion.article>;
-    case 'header': return <motion.header {...props}>{children}</motion.header>;
-    case 'section': return <motion.section {...props}>{children}</motion.section>;
-    case 'p': return <motion.p {...props}>{children}</motion.p>;
-    default: return <motion.div {...props}>{children}</motion.div>;
-  }
+  const Component = tags[as] as typeof motion.div;
+  return (
+    <Component
+      {...rest}
+      initial={{ opacity: 0, y: reduce ? 0 : y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '0px 0px -80px 0px' }}
+      transition={{ duration: reduce ? 0.6 : duration, delay, ease: REVEAL_EASE }}
+    >
+      {children}
+    </Component>
+  );
 }
 
-/** Reveal the headline words separately with Framer Motion. */
+/** Reveals headline words one after another with the same easing. */
 export function WordsReveal({ text, className = '', delay = 0 }: {
   text: string; className?: string; delay?: number;
 }) {
   const reduce = useReducedMotion();
-  return <span className={className}>{text.split(' ').map((word, i) =>
-    <span key={i} className="suda-word-mask">
-      <motion.span className="suda-word-inner"
-        initial={reduce ? false : { opacity: 0, y: '0.9em' }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-80px' }}
-        transition={{ duration: 0.7, delay: delay + i * 0.045, ease: [0.22, 1, 0.36, 1] }}
-      >{word}{'\u00a0'}</motion.span>
+  return (
+    <span className={className}>
+      {text.split(' ').map((word, i) => (
+        <span key={i} className="suda-word-mask">
+          <motion.span
+            className="suda-word-inner"
+            initial={{ opacity: 0, y: reduce ? 0 : '0.9em' }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '0px 0px -80px 0px' }}
+            transition={{ duration: 0.8, delay: delay + i * 0.08, ease: REVEAL_EASE }}
+          >
+            {word}{'\u00a0'}
+          </motion.span>
+        </span>
+      ))}
     </span>
-  )}</span>;
+  );
 }
