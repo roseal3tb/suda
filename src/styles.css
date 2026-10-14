@@ -372,8 +372,8 @@ select, textarea, .login-button, .mobile-menu,
 }
 
 
-/* Long needle-and-thread motif on every interior page (the home page has its
-   own continuous thread). It sits behind content and never blocks clicks. */
+/* The decorative thread belongs only to opportunities pages; the homepage
+   uses its own editorial thread. Profile, portfolio and forms remain clean. */
 #main-content.suda-threaded-page { position:relative; isolation:isolate; overflow:hidden; }
 .suda-threaded-page > :not(.suda-page-thread) { position:relative; z-index:1; }
 .suda-page-thread { position:absolute; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; overflow:visible; }
@@ -558,3 +558,237 @@ input:not([type=range]):not([type=file]):not([type=checkbox]):not([type=radio]),
   border-radius: var(--suda-control-radius) !important;
 }
 .category-tabs button, .chip, .image-arrow, .profile-avatar, .hero-scroll-cue { border-radius: 999px !important; }
+
+/* ================================================================
+   SUDA — responsive QA pass (Oct 2026)
+   Mobile gets a true one-column editorial hero, not the 50%-width
+   desktop copy sitting over the photo. Desktop remains two-column.
+   ================================================================ */
+html, body { max-width: 100%; }
+body { overflow-x: clip; }
+#main-content, .content-wrap, .section-wrap { min-width: 0; }
+img, svg { max-width: 100%; }
+.site-header { position: sticky; top: 0; z-index: 80; }
+.nav-wrap { min-width: 0; }
+.brand-link { display: inline-flex; align-items: center; flex-shrink: 0; }
+.mobile-nav-account { display: none; }
+/* The decorative thread must never become a foreground border over titles or photos. */
+.home-thread-journey { z-index: 0; opacity: .20; }
+.home-thread-story > .editorial-band,
+.home-thread-story > .inspiration-teaser,
+.home-thread-story > .thread-journey-breath { position: relative; z-index: 1; }
+.suda-page-thread { opacity: .18; }
+.hero-content { min-width: 0; }
+.hero-description { overflow-wrap: anywhere; }
+.hero-actions > a { max-width: 100%; }
+.page-intro > div { min-width: 0; }
+.page-intro h1, .section-heading h2, .suda-journey-intro h2 { overflow-wrap: break-word; }
+/* Consistent clearly-visible action focus, without changing the brand palette. */
+.main-nav a:focus-visible, .mobile-logout:focus-visible,
+.hero-actions a:focus-visible, .hero-scroll-cue:focus-visible,
+.suda-journey-link:focus-visible { outline: 3px solid #A195A2; outline-offset: 3px; }
+
+@media (max-width: 980px) {
+  .site-header { height: 76px; }
+  .nav-wrap { max-width: 100%; padding-inline: clamp(16px, 5vw, 32px); gap: 12px; }
+  .brand-link .wordmark { display: block; width: 100px; height: 65px; }
+  .main-nav { display: none; position: absolute; inset-inline: 0; top: 100%;
+    background: #FAF6F1; border-bottom: 1px solid #D8C9D1;
+    box-shadow: 0 18px 32px rgb(86 78 88 / .12);
+    padding: 14px clamp(18px, 6vw, 42px) 22px;
+    max-height: calc(100dvh - 76px); overflow-y: auto;
+  }
+  .main-nav.is-open { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
+  .main-nav > a { display: flex; align-items: center; min-height: 45px;
+    width: 100%; padding: 10px 6px; font-size: 14px; white-space: normal;
+    border-bottom: 1px solid rgb(216 201 209 / .55); }
+  .main-nav > a[data-status=active] { color: #564E58; font-weight: 700; }
+  .main-nav > a:after { display: none; }
+  .mobile-nav-account { display: flex; flex-direction: column; gap: 0;
+    padding-top: 12px; margin-top: 8px; border-top: 1px solid #C5B1BC; }
+  .mobile-nav-account a, .mobile-nav-account button { display: flex; align-items: center;
+    gap: 12px; width: 100%; min-height: 48px; padding: 10px 6px;
+    color: #564E58; text-align: right; background: transparent; border: 0;
+    font-size: 14px; font-weight: 600; }
+  .mobile-account-name { display: flex; align-items: center; gap: 10px;
+    padding: 8px 6px 10px; font-size: 13px; color: #665D67; }
+  .nav-account { gap: 0; margin-inline-start: auto; }
+  .nav-account .login-button, .nav-account .session-name,
+  .nav-account .desktop-account-button { display: none !important; }
+  .mobile-menu { display: inline-flex !important; align-items: center; justify-content: center;
+    min-width: 46px; min-height: 46px; color: #564E58; }
+}
+
+@media (max-width: 760px) {
+  .site-header, .site-header.is-scrolled { height: 72px; }
+  .nav-wrap { height: 72px; }
+  .brand-link .wordmark { width: 91px; height: 60px; }
+  .main-nav { max-height: calc(100dvh - 72px); }
+  /* A stacked hero with independently sized content and photograph. */
+  .hero { display: grid !important; grid-template-columns: minmax(0,1fr);
+    grid-template-rows: auto auto; width: 100%; height: auto !important;
+    max-height: none !important; min-height: 0 !important;
+    background: #FAF6F1; border-radius: 0 0 22px 22px !important;
+    isolation: isolate; overflow: hidden; }
+  .hero::before, .hero::after { display: none !important; }
+  .hero-content { grid-row: 1; grid-column: 1; width: 100% !important;
+    max-width: none !important; min-width: 0; height: auto !important;
+    padding: 30px clamp(22px,6vw,38px) 34px !important;
+    display: flex; flex-direction: column; align-items: flex-start;
+    justify-content: flex-start; position: relative; z-index: 1; }
+  .hero-content .eyebrow { font-size: 12px; line-height: 1.6; }
+  .hero-brand-art { display: block; margin: 6px 0 -4px !important;
+    height: auto !important; max-height: 140px; width: clamp(165px,50vw,235px) !important;
+    max-width: 75%; object-fit: contain; object-position: right center;
+    flex-shrink: 0; }
+  .hero h2 { width: 100%; font-size: clamp(32px,8.6vw,43px) !important;
+    line-height: 1.36 !important; margin: 2px 0 14px !important; }
+  .hero-description { width: 100%; max-width: 570px !important;
+    font-size: clamp(14px,3.8vw,16px) !important; line-height: 1.95 !important;
+    color: #615863; text-align: right; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px 18px;
+    align-items: center; justify-content: flex-start; width: 100%;
+    margin-top: 24px !important; }
+  .hero-actions > a { min-height: 46px; height: auto !important;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 9px 17px; font-size: 13px; white-space: normal; }
+  .hero-actions > .text-link { padding-inline: 2px; }
+  .hero-note { margin-top: 23px !important; font-size: 11px; }
+  .hero-image { position: relative !important; inset: auto !important;
+    grid-row: 2; grid-column: 1; width: 100%;
+    height: clamp(230px,66vw,370px) !important;
+    max-height: none !important; object-fit: cover; object-position: center 48%;
+    display: block; z-index: 0; filter: none; border-radius: 0 !important; }
+  .hero-scroll-cue { bottom: 16px; left: 16px; z-index: 2;
+    padding: 9px 14px; min-height: 42px; }
+  /* Do not paint long thread illustrations over content on narrow screens. */
+  .home-thread-journey, .suda-page-thread { display: none !important; }
+  .thread-journey-breath { height: 40px !important; }
+  .section-wrap, .content-wrap { padding-inline: clamp(18px,5vw,30px); }
+  .suda-journey { padding-top: 58px !important; padding-bottom: 56px !important; }
+  .suda-journey-intro { gap: 10px; }
+  .suda-journey-intro h2 { font-size: clamp(28px,7vw,36px); line-height: 1.5; }
+  .suda-journey-intro > p { font-size: 14px; line-height: 1.9; }
+  .suda-journey-step { padding: 23px; }
+  .suda-journey-step p { font-size: 13px; line-height: 1.85; }
+  .suda-journey-link { min-height: 44px; align-items: center; }
+  .section-heading { display: flex; flex-direction: column; align-items: flex-start;
+    gap: 13px; margin-bottom: 24px; }
+  .section-heading .text-link { margin-top: 0 !important;
+    font-size: 13px; min-height: 40px; align-items: center; }
+  .section-heading p, .page-intro p { font-size: 13px; line-height: 1.85; }
+  .page-intro { align-items: flex-start; flex-direction: column; }
+  .page-intro h1 { font-size: clamp(30px,8vw,42px); }
+  .page-intro > button, .page-intro > a { max-width: 100%; }
+  .empty-state { padding: 44px 20px !important; }
+  .editorial-copy { padding: 36px clamp(22px,6vw,42px) 32px !important; }
+  .editorial-copy h2 { font-size: clamp(28px,7.5vw,37px); }
+  .editorial-copy p { max-width: 100%; font-size: 14px; }
+  .editorial-actions { width: 100%; gap: 10px; }
+  .editorial-actions a { min-height: 44px; }
+  .editorial-photo { height: 300px !important; }
+  .editorial-photo img { display: block; width: 100%; height: 100%;
+    object-fit: cover; object-position: center 43%; }
+  .opportunity-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .filter-bar { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .filter-bar input, .filter-bar select { width: 100%; max-width: 100%; }
+  .work-title-row { min-width: 0; }
+  .work-card h2, .work-card p { overflow-wrap: anywhere; }
+  .site-footer.suda-footer { padding-inline: 5%; }
+}
+
+@media (max-width: 600px) {
+  .opportunity-grid, .work-grid, .designer-gallery { grid-template-columns: minmax(0,1fr) !important; }
+  .opportunity-card, .suda-opportunity-reveal { width: 100%; min-width: 0; }
+  .card-image { aspect-ratio: 1.55; }
+  .category-ribbon { grid-template-columns: repeat(2,minmax(0,1fr));
+    margin-inline: clamp(12px,4vw,24px); }
+  .category-ribbon a { min-width: 0; gap: 9px; padding: 16px 10px; }
+  .category-ribbon h3 { font-size: 13px; }
+  .category-ribbon small { font-size: 10px; }
+  .category-ribbon .ribbon-arrow { flex-shrink: 0; }
+  .work-grid { gap: 23px; }
+  .filter-bar { grid-template-columns: 1fr !important; }
+  .filter-bar .query-filter, .filter-bar label { grid-column: auto !important; }
+  .auth-form-wrap { padding-inline: 6%; }
+  .inspiration-hero h1 { font-size: clamp(39px,11vw,57px) !important; }
+  .suda-footer-utility p { white-space: normal; }
+}
+
+@media (max-width: 370px) {
+  .hero-content { padding-inline: 20px !important; }
+  .hero-actions { gap: 8px 16px; }
+  .hero-actions > a { min-height: 44px; }
+  .hero h2 { font-size: 31px !important; }
+  .category-ribbon a { padding: 14px 7px; }
+  .category-ribbon .ribbon-icon { width: 18px; flex-shrink: 0; }
+  .suda-journey-step { padding: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .suda-journey-step, .hero-scroll-cue { transition: none !important; }
+}
+
+/* The account name/icon is an actual navigable control, not decorative text. */
+.account-profile-link { min-height: 44px; padding-inline: 10px; border-radius: 12px;
+  white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+.account-profile-link:hover { background: #E8D7E1; }
+.account-profile-link:focus-visible { outline: 3px solid #A195A2; }
+/* Avoid the entrance transform moving the photo up into the copy on phones. */
+@media (max-width: 760px) {
+  .hero-content, .hero-image { animation: none !important; transform: none !important; }
+}
+/* Tablet bridge: do not leave a half-width hero between phone and laptop. */
+@media (min-width: 761px) and (max-width: 980px) {
+  .hero { display: grid; grid-template-columns: minmax(0,1fr); grid-template-rows: auto auto;
+    height: auto !important; min-height: 0 !important; max-height: none !important;
+    background: #FAF6F1; }
+  .hero::before, .hero::after { display: none !important; }
+  .hero-content { grid-area: 1 / 1; width: 100% !important; height: auto !important;
+    max-width: 100%; padding: 40px 7% !important; align-items: flex-start;
+    justify-content: flex-start; animation: none !important; }
+  .hero-brand-art { width: 240px !important; height: 150px !important;
+    max-width: 70%; margin: 0 !important; }
+  .hero h2 { font-size: 44px !important; margin: 0 0 10px !important; }
+  .hero-description { width: 100%; max-width: 650px; font-size: 16px;
+    line-height: 1.9; }
+  .hero-image { position: relative !important; grid-area: 2 / 1;
+    inset: auto !important; width: 100%; height: 360px !important;
+    object-fit: cover; object-position: center 45%; z-index: 0;
+    border-radius: 0 !important; animation: none !important; }
+  .hero-scroll-cue { bottom: 20px; left: 24px; }
+  .home-thread-journey, .suda-page-thread { display: none !important; }
+  .suda-journey-intro { gap: 20px; }
+  .suda-journey-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+/* Long add/edit forms must scroll on phones instead of losing the Save action. */
+.suda-modal { max-height: min(90dvh, 900px); overflow-y: auto !important; overflow-x: hidden; }
+@media (max-width: 600px) {
+  .suda-modal { width: calc(100vw - 24px) !important; max-height: 88dvh;
+    padding: 26px 18px 20px !important; }
+  .suda-modal .form-actions { gap: 9px; }
+  .suda-modal .form-actions button { min-height: 44px; }
+  .achievement-form input { flex: 1 1 100%; min-width: 0; }
+  .learning-row .progress-controls input[type="range"] { min-width: 140px; }
+  .work-title-row button { min-width: 44px; min-height: 44px; }
+}
+
+/* Editorial thread placement: rich discovery pages only.
+   Never show these long illustrations on personal/profile/admin/auth pages.
+   On compact screens they stay as a very faint background detail behind content. */
+@media (max-width: 980px) {
+  #main-content.suda-threaded-page > .suda-page-thread {
+    display: block !important;
+    opacity: .09 !important;
+    pointer-events: none;
+  }
+  .home-thread-story > .home-thread-journey {
+    display: block !important;
+    opacity: .10 !important;
+    pointer-events: none;
+  }
+  .suda-page-thread-ink, .home-thread-line {stroke-width: 1.2;}
+}
+@media (prefers-reduced-motion: reduce) {
+  .suda-page-thread, .home-thread-journey {transition: none !important;}
+}

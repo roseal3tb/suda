@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 
-/** A quiet, continuous thread in the margins of every page except the home page,
- * which already has its own editorial thread journey. */
+/** Quiet, non-interactive thread for the opportunities pages only.
+ * The home page has its own editorial thread journey; profile and portfolio
+ * pages intentionally remain clear of these large decorative paths. */
 export function PageThread({ pathname }: { pathname: string }) {
   const [progress, setProgress] = useState(0);
   useEffect(() => {
