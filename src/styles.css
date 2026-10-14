@@ -500,24 +500,13 @@ body { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
   .suda-reveal-pending { opacity:1!important;translate:none!important;filter:none!important; }
 }
 
-/* Qamat-inspired, per-element viewport reveal. Applied on first React render,
-   not retroactively via a DOM scan. Separate translate from card hover transforms. */
-@media (prefers-reduced-motion: no-preference) {
-  .suda-enter {
-    opacity: 0;
-    translate: 0 32px;
-    filter: blur(3px);
-    transition: opacity 850ms cubic-bezier(.22,1,.36,1),
-                translate 850ms cubic-bezier(.22,1,.36,1),
-                filter 850ms cubic-bezier(.22,1,.36,1);
-    transition-delay: var(--suda-enter-delay, 0ms);
-  }
-  .suda-enter.suda-enter-visible {
-    opacity: 1;
-    translate: 0 0;
-    filter: blur(0);
-  }
-}
+
+/* Qamat-style Framer Motion reveal: keep card hover transform on its child,
+   while the motion wrapper controls opacity/translation independently. */
+.suda-opportunity-reveal { min-width: 0; height: 100%; }
+.suda-opportunity-reveal > .opportunity-card { display: block; height: 100%; }
+.suda-word-mask { display: inline-block; overflow: hidden; padding-bottom: .18em; margin-bottom: -.18em; vertical-align: bottom; }
+.suda-word-inner { display: inline-block; }
 @media (prefers-reduced-motion: reduce) {
-  .suda-enter {opacity:1!important;translate:none!important;filter:none!important;}
+  .suda-word-inner, [data-suda-motion] { animation: none !important; }
 }

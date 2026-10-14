@@ -69,7 +69,7 @@ export function ScrollReveal({ pathname }: { pathname: string }) {
     }, { threshold: 0.08, rootMargin: '0px 0px -80px 0px' });
     const register = () => {
       main.querySelectorAll<HTMLElement>(targets).forEach(element => {
-        if (element.dataset.sudaReveal || element.closest('.suda-enter')) return;
+        if (element.dataset.sudaReveal || element.closest('[data-suda-motion]')) return;
         element.dataset.sudaReveal = 'true';
         element.style.setProperty('--suda-reveal-delay', `${(count++ % 3) * 90}ms`);
         element.classList.add('suda-reveal-pending');
