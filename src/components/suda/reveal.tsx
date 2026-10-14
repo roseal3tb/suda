@@ -8,7 +8,7 @@ import type { ReactNode } from 'react';
 export function Reveal({
   children,
   delay = 0,
-  y = 24,
+  y = 48,
   className = '',
   as = 'div',
   id,
@@ -30,8 +30,8 @@ export function Reveal({
     'data-suda-motion': 'true',
     initial: reduce ? false as const : { opacity: 0, y },
     whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, margin: '-80px' },
-    transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+    viewport: { once: true, amount: 0.35, margin: '0px 0px -15% 0px' },
+    transition: { duration: 1.15, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
   };
   switch (as) {
     case 'article': return <motion.article {...props}>{children}</motion.article>;
@@ -54,7 +54,7 @@ export function WordsReveal({text, className = '', delay = 0}: {
       className="suda-word-inner"
       initial={reduce ? false : {opacity: 0, y: '0.9em'}}
       whileInView={{opacity: 1, y: 0}}
-      viewport={{once: true, margin: '-60px'}}
+      viewport={{once: true, amount: 0.5, margin: '0px 0px -15% 0px'}}
       transition={{duration: 0.7, delay: delay + i * 0.045, ease: [0.22, 1, 0.36, 1]}}
     >{word}{'\u00a0'}</motion.span></span>
   )}</span>;

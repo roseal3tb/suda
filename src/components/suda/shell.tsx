@@ -4,7 +4,7 @@ import { ArrowLeft, Menu, X, LogOut, UserRound, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Wordmark, Modal } from './shared';
 import { Intro } from './intro';
-import { PageThread, ScrollReveal } from './page-motion';
+import { PageThread } from './page-motion';
 import { ScrollProgress } from './scroll-progress';
 import { useDemo } from '@/features/suda/demo-context';
 import { imageCredits } from '@/features/suda/mock-data';
@@ -18,7 +18,6 @@ export function Shell({children}:{children:React.ReactNode}) {
  {storageError&&<div role="alert" className="global-alert"><span>{storageError}</span><button onClick={clearStorageError} aria-label="إغلاق التنبيه"><X size={15}/></button></div>}
  {resetDone&&<div role="status" className="global-alert is-success"><span>أُعيدت البيانات التجريبية إلى حالتها الأصلية.</span></div>}
  <main id="main-content" className={pathname === "/" ? undefined : "suda-threaded-page"}>{pathname !== "/" && <PageThread pathname={pathname}/>} {children}</main>
- <ScrollReveal pathname={pathname}/>
  <footer className="site-footer suda-footer" aria-label="تذييل سُدى">
    <div className="suda-footer-main">
      <Link to="/" className="suda-footer-logo" aria-label="سُدى — العودة للرئيسية"><Wordmark/></Link>
