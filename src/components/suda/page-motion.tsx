@@ -43,57 +43,71 @@ export function PageThread({ pathname }: { pathname: string }) {
   </svg>;
 }
 
-/** Reveal real content as it enters the viewport. No hidden content without JS,
- * no animation for reduced-motion users, and newly rendered cards are supported. */
+/** Reveal elements only when they enter the viewport. A short stagger makes
+ * the motion noticeable while keeping the page readable and accessible. */
 export function ScrollReveal({ pathname }: { pathname: string }) {
   useEffect(() => {
     const main = document.getElementById('main-content');
-    if (!main || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+    if (!main || window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+        !('IntersectionObserver' in window)) return;
 
     const targets = [
-      '.section-heading', '.opportunity-card', '.editorial-copy', '.editorial-photo',
-      '.suda-journey-intro', '.suda-journey-step',
-      '.inspiration-teaser-copy', '.inspiration-teaser-art', '.category-ribbon > a',
-      '.page-intro', '.filter-bar', '.category-tabs', '.work-card',
+      '.section-heading > *', '.opportunity-card', '.editorial-copy > *', '.editorial-photo',
+      '.suda-journey-intro > *', '.suda-journey-step',
+      '.inspiration-teaser-copy > *', '.inspiration-teaser-art', '.category-ribbon > a',
+      '.page-intro > *', '.filter-bar', '.category-tabs', '.work-card',
       '.designer-tile', '.designer-expanded', '.profile-section', '.profile-person',
       '.learning-row', '.admin-banner', '.admin-mobile-cards > *',
       '.detail-visual', '.auth-form-wrap', '.auth-visual', '.empty-state',
-      '.inspiration-hero .content-wrap', '.result-line', '.demo-note',
+      '.inspiration-hero .content-wrap > *', '.result-line', '.demo-note',
       '.section-wrap > h2', '.content-wrap > h2'
     ].join(',');
+
+    let index = 0;
     const observer = new IntersectionObserver(entries => {
       for (const entry of entries) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('suda-reveal-visible');
-          observer.unobserve(entry.target);
-        }
+        if (!entry.isIntersecting) continue;
+        const element = entry.target as HTMLElement;
+        element.classList.add('suda-reveal-visible');
+        observer.unobserve(element);
       }
-    }, { threshold: 0.06, rootMargin: '0px 0px -5% 0px' });
+    }, {
+      threshold: 0.12,
+      rootMargin: '0px 0px -12% 0px'
+    });
 
     const register = () => {
-      const elements = main.querySelectorAll<HTMLElement>(targets);
-      elements.forEach((element, index) => {
+      main.querySelectorAll<HTMLElement>(targets).forEach(element => {
         if (element.dataset.sudaReveal) return;
         element.dataset.sudaReveal = 'true';
+        // Elements visible on initial load must remain accessible immediately;
+        // all elements further down begin faded and reveal on scroll.
         const rect = element.getBoundingClientRect();
-        // Immediately show content in the first viewport and any elements
-        // already passed, preventing invisible content on route navigation.
-        if (rect.top < window.innerHeight * .87) return;
+        if (rect.top < window.innerHeight * .78 && rect.bottom > 0) {
+          element.classList.add('suda-reveal-visible');
+          return;
+        }
+        if (rect.bottom <= 0) {
+          element.classList.add('suda-reveal-visible');
+          return;
+        }
+        element.style.setProperty('--suda-reveal-delay', `${(index++ % 3) * 130}ms`);
         element.classList.add('suda-reveal-pending');
-        element.style.setProperty('--suda-reveal-delay', `${Math.min(index % 3, 2) * 95}ms`);
         observer.observe(element);
       });
     };
+
     register();
     const changes = new MutationObserver(register);
     changes.observe(main, { childList: true, subtree: true });
+
     return () => {
       changes.disconnect();
       observer.disconnect();
-      main.querySelectorAll<HTMLElement>('[data-suda-reveal]').forEach(el => {
-        el.classList.remove('suda-reveal-pending', 'suda-reveal-visible');
-        el.style.removeProperty('--suda-reveal-delay');
-        delete el.dataset.sudaReveal;
+      main.querySelectorAll<HTMLElement>('[data-suda-reveal]').forEach(element => {
+        element.classList.remove('suda-reveal-pending', 'suda-reveal-visible');
+        element.style.removeProperty('--suda-reveal-delay');
+        delete element.dataset.sudaReveal;
       });
     };
   }, [pathname]);

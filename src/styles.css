@@ -473,3 +473,29 @@ body { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
  .hero-scroll-cue svg { animation:none!important; }
  .suda-journey-step:hover { transform:none; }
 }
+
+/* More visible scroll reveal: 1.1s soft fade + lift + subtle blur.
+   Elements below the fold start hidden; on entering, each is revealed once. */
+@media (prefers-reduced-motion: no-preference) {
+  .suda-reveal-pending {
+    opacity: 0 !important;
+    translate: 0 44px;
+    filter: blur(5px);
+    transition:
+      opacity 1100ms cubic-bezier(.16,1,.3,1),
+      translate 1100ms cubic-bezier(.16,1,.3,1),
+      filter 1100ms cubic-bezier(.16,1,.3,1),
+      box-shadow 250ms ease !important;
+    transition-delay: var(--suda-reveal-delay, 0ms) !important;
+    will-change: opacity, translate, filter;
+  }
+  .suda-reveal-pending.suda-reveal-visible {
+    opacity: 1 !important;
+    translate: 0 0;
+    filter: blur(0);
+    will-change: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .suda-reveal-pending { opacity:1!important;translate:none!important;filter:none!important; }
+}
