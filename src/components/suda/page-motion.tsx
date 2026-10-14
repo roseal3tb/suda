@@ -43,64 +43,42 @@ export function PageThread({ pathname }: { pathname: string }) {
   </svg>;
 }
 
-/** Reveal elements only when they enter the viewport. A short stagger makes
- * the motion noticeable while keeping the page readable and accessible. */
+/** Secondary pages: cover legacy sections while core cards and home elements
+ * use per-component Reveal. No early-visible shortcut; the observer triggers
+ * at the viewport threshold and never replays on scroll-back. */
 export function ScrollReveal({ pathname }: { pathname: string }) {
   useEffect(() => {
     const main = document.getElementById('main-content');
     if (!main || window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
         !('IntersectionObserver' in window)) return;
-
     const targets = [
-      '.section-heading > *', '.opportunity-card', '.editorial-copy > *', '.editorial-photo',
-      '.suda-journey-intro > *', '.suda-journey-step',
-      '.inspiration-teaser-copy > *', '.inspiration-teaser-art', '.category-ribbon > a',
-      '.page-intro > *', '.filter-bar', '.category-tabs', '.work-card',
-      '.designer-tile', '.designer-expanded', '.profile-section', '.profile-person',
-      '.learning-row', '.admin-banner', '.admin-mobile-cards > *',
-      '.detail-visual', '.auth-form-wrap', '.auth-visual', '.empty-state',
-      '.inspiration-hero .content-wrap > *', '.result-line', '.demo-note',
-      '.section-wrap > h2', '.content-wrap > h2'
+      '.category-ribbon > a', '.category-tabs', '.filter-bar', '.result-line',
+      '.work-card', '.designer-tile', '.profile-person', '.profile-section',
+      '.learning-row', '.admin-banner', '.admin-mobile-card', '.admin-table-wrap',
+      '.auth-form-wrap', '.auth-visual', '.detail-visual', '.empty-state',
+      '.inspiration-hero .content-wrap > *', '.inspiration-main .section-heading',
+      '.inspiration-disclaimer', '.designer-expanded', '.teaser-label'
     ].join(',');
-
-    let index = 0;
+    let count = 0;
     const observer = new IntersectionObserver(entries => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
-        const element = entry.target as HTMLElement;
-        element.classList.add('suda-reveal-visible');
-        observer.unobserve(element);
-      }
-    }, {
-      threshold: 0.12,
-      rootMargin: '0px 0px -12% 0px'
-    });
-
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('suda-reveal-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -80px 0px' });
     const register = () => {
       main.querySelectorAll<HTMLElement>(targets).forEach(element => {
-        if (element.dataset.sudaReveal) return;
+        if (element.dataset.sudaReveal || element.closest('.suda-enter')) return;
         element.dataset.sudaReveal = 'true';
-        // Elements visible on initial load must remain accessible immediately;
-        // all elements further down begin faded and reveal on scroll.
-        const rect = element.getBoundingClientRect();
-        if (rect.top < window.innerHeight * .78 && rect.bottom > 0) {
-          element.classList.add('suda-reveal-visible');
-          return;
-        }
-        if (rect.bottom <= 0) {
-          element.classList.add('suda-reveal-visible');
-          return;
-        }
-        element.style.setProperty('--suda-reveal-delay', `${(index++ % 3) * 130}ms`);
+        element.style.setProperty('--suda-reveal-delay', `${(count++ % 3) * 90}ms`);
         element.classList.add('suda-reveal-pending');
         observer.observe(element);
       });
     };
-
     register();
     const changes = new MutationObserver(register);
     changes.observe(main, { childList: true, subtree: true });
-
     return () => {
       changes.disconnect();
       observer.disconnect();
