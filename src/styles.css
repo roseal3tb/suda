@@ -370,3 +370,106 @@ select, textarea, .login-button, .mobile-menu,
   .suda-modal, [role="dialog"] {border-radius: 14px;}
   .category-ribbon {border-radius: 14px;overflow:hidden;}
 }
+
+
+/* Long needle-and-thread motif on every interior page (the home page has its
+   own continuous thread). It sits behind content and never blocks clicks. */
+#main-content.suda-threaded-page { position:relative; isolation:isolate; overflow:hidden; }
+.suda-threaded-page > :not(.suda-page-thread) { position:relative; z-index:1; }
+.suda-page-thread { position:absolute; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; overflow:visible; }
+.suda-page-thread path { fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.suda-page-thread-shadow { stroke:#C5B1BC; stroke-width:5; opacity:.22; }
+.suda-page-thread-ink { stroke:#564E58; stroke-width:1.8; opacity:.68; }
+
+/* Scroll-triggered fade + subtle upward movement, never applied to navigation,
+   dialogs, forms controls, or the initial hero. JS activates it per element. */
+.suda-reveal-pending {
+  opacity:0;
+  translate:0 22px;
+  transition: opacity 850ms cubic-bezier(.2,.65,.2,1),
+              translate 850ms cubic-bezier(.2,.65,.2,1),
+              transform 250ms ease, box-shadow 250ms ease;
+  transition-delay:var(--suda-reveal-delay,0ms);
+}
+.suda-reveal-pending.suda-reveal-visible { opacity:1; translate:0 0; }
+@media(max-width:760px) {
+  .suda-page-thread-ink {stroke-width:1.5;opacity:.55;}
+  .suda-page-thread-shadow {stroke-width:3.5;opacity:.17;}
+  .suda-reveal-pending {translate:0 14px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .suda-reveal-pending {opacity:1!important;translate:none!important;transition:none!important;}
+  .suda-page-thread-ink {stroke-dasharray:none!important;stroke-dashoffset:0!important;}
+}
+
+
+/* SUDA editorial experience — inspired by the clarity and pacing of
+   contemporary Saudi initiative sites, not a replica of any reference. */
+html { scroll-behavior:smooth; scroll-padding-top:96px; }
+body { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+.suda-scroll-progress { position:fixed; top:0; right:0; left:0; height:3px; z-index:100; pointer-events:none; background:transparent; }
+.suda-scroll-progress span { display:block; height:100%; width:100%; background:#806578; transform-origin:right center; will-change:transform; }
+.hero-scroll-cue { position:absolute; bottom:36px; left:5%; display:inline-flex; align-items:center; gap:14px; padding:10px 16px; border-radius:999px; background:rgb(250 246 241 / .92); color:#564E58; border:1px solid rgb(250 246 241 / .6); font-size:12px; z-index:3; box-shadow:0 8px 28px rgb(33 23 32 / .12); }
+.hero-scroll-cue svg { animation:suda-scroll-nudge 2.2s ease-in-out infinite; }
+@keyframes suda-scroll-nudge { 0%,100%{translate:0 0;} 50%{translate:0 5px;} }
+.hero-scroll-cue:hover { background:#FFFDFC; transform:translateY(-2px); }
+/* Intentional typographic hierarchy and breathing space */
+.section-heading h2,.suda-journey-intro h2,.inspiration-teaser-copy h2 { letter-spacing:-.045em; }
+.section-heading p,.suda-journey-intro p,.editorial-copy p,.inspiration-teaser-copy p {line-height:2;}
+.section-heading .eyebrow,.suda-journey-intro .eyebrow,.editorial-copy .eyebrow,.inspiration-teaser-copy .eyebrow { letter-spacing:.015em; font-size:12px; }
+.suda-journey { padding-top:110px; padding-bottom:120px; }
+.suda-journey-intro { display:grid; grid-template-columns:1.15fr .85fr; align-items:end; gap:55px; padding-bottom:36px; border-bottom:1px solid #D8C9D1; margin-bottom:30px; }
+.suda-journey-intro h2 { font-size:clamp(34px,4.4vw,62px); line-height:1.4; margin-top:12px; }
+.suda-journey-intro > p { max-width:400px; font-size:15px; color:#645B65; }
+.suda-journey-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
+.suda-journey-step { min-height:355px; padding:32px 30px 27px; border:1px solid #DFD1DA; background:linear-gradient(155deg,#FFFDFC 0%,#F6EEF2 100%); border-radius:18px; display:flex; flex-direction:column; align-items:flex-start; box-shadow:0 12px 38px rgb(86 78 88 / .035); transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease; }
+.suda-journey-step:hover { transform:translateY(-6px); border-color:#C5B1BC; box-shadow:0 24px 50px rgb(86 78 88 / .09); }
+.suda-journey-step-top { width:100%; display:flex; justify-content:space-between; align-items:center; color:#806578; padding-bottom:40px; }
+.suda-journey-number { font:500 clamp(35px,4vw,58px)/1 Georgia,serif; letter-spacing:-.06em; color:#BDA7B3; direction:ltr; }
+.suda-journey-step h3 { font-size:clamp(20px,2vw,26px); font-weight:600; line-height:1.55; margin-bottom:12px; }
+.suda-journey-step p { color:#645B65; font-size:13px; line-height:1.95; max-width:340px; }
+.suda-journey-link { display:inline-flex; align-items:center; gap:12px; margin-top:auto; padding-top:24px; border-bottom:1px solid #A195A2; font-size:13px; font-weight:600; }
+.suda-journey-link svg,.text-link svg { transition:transform .25s ease; }
+.suda-journey-link:hover svg,.text-link:hover svg { transform:translateX(-4px); }
+/* Keep the thread as an accent, never an opaque overlay over important content. */
+.home-thread-story > .suda-journey { position:relative; z-index:1; }
+.home-thread-journey { opacity:.78; }
+.home-thread-line { stroke-width:1.65; }
+.home-thread-shadow { stroke-width:4; opacity:.14; }
+.thread-journey-breath { height:175px; }
+/* Unified subtle interactions across cards and imagery */
+.opportunity-card,.work-card,.designer-tile { transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s ease,border-color .35s ease; }
+.opportunity-card:hover,.work-card:hover,.designer-tile:hover { box-shadow:0 24px 55px rgb(86 78 88 / .10); }
+.category-ribbon { max-width:1440px; margin:20px auto 0; border:1px solid #DFD1DA; border-radius:16px; overflow:hidden; padding:0; }
+.category-ribbon a { min-height:104px; }
+.category-ribbon a:focus-visible,.suda-journey-link:focus-visible { outline-offset:-4px; }
+@media(max-width:900px) {
+ .suda-journey { padding-top:80px; padding-bottom:85px; }
+ .suda-journey-grid { gap:12px; }
+ .suda-journey-step { padding:26px 20px; min-height:340px; }
+ .suda-journey-step-top { padding-bottom:28px; }
+ .suda-journey-intro { gap:25px; }
+}
+@media(max-width:760px) {
+ html { scroll-padding-top:80px; }
+ .hero-scroll-cue { bottom:18px; left:5%; font-size:11px; padding:7px 12px; }
+ .suda-journey { padding-top:66px; padding-bottom:75px; }
+ .suda-journey-intro { grid-template-columns:1fr; gap:13px; margin-bottom:18px; padding-bottom:25px; }
+ .suda-journey-intro h2 { font-size:34px; }
+ .suda-journey-intro > p { font-size:13px; }
+ .suda-journey-grid { grid-template-columns:1fr; gap:12px; }
+ .suda-journey-step { min-height:0; padding:23px; }
+ .suda-journey-step-top { padding-bottom:18px; }
+ .suda-journey-number { font-size:39px; }
+ .suda-journey-step h3 { font-size:22px; }
+ .suda-journey-step p { font-size:12px; }
+ .suda-journey-link { padding-top:17px; }
+ .thread-journey-breath { height:105px; }
+ .category-ribbon { margin:12px 4% 0; }
+ .category-ribbon a { min-height:86px; }
+}
+@media(prefers-reduced-motion:reduce) {
+ html { scroll-behavior:auto; }
+ .hero-scroll-cue svg { animation:none!important; }
+ .suda-journey-step:hover { transform:none; }
+}
