@@ -1,0 +1,128 @@
+[
+  {
+    "path": "/",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/opportunities",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/opportunities/pattern",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/opportunities/heritage",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/opportunities/atelier",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/opportunities/designer",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/opportunities/draping",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/opportunities/textile",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/opportunities/studio",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/opportunities/pattern-career",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/login",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/register",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/profile",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/portfolio",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/learning",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/admin",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/inspiration",
+    "status": 200,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  },
+  {
+    "path": "/missing-page",
+    "status": 404,
+    "rtl": true,
+    "arabic": true,
+    "errorPage": false
+  }
+]

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 /** Decorative scroll position cue, not a control. */
 export function ScrollProgress() {
@@ -14,13 +14,17 @@ export function ScrollProgress() {
       });
     };
     update();
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
     return () => {
-      window.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
       cancelAnimationFrame(raf.current);
     };
   }, []);
-  return <div className="suda-scroll-progress" aria-hidden="true"><span style={{ transform: `scaleX(${progress})` }} /></div>;
+  return (
+    <div className="suda-scroll-progress" aria-hidden="true">
+      <span style={{ transform: `scaleX(${progress})` }} />
+    </div>
+  );
 }

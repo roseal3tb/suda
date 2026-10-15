@@ -20,7 +20,9 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">الصفحة غير موجودة</h2>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">
+          الصفحة غير موجودة
+        </h2>
         <p className="mt-2 text-sm text-muted-foreground">
           لم نعثر على الصفحة المطلوبة.
         </p>
@@ -75,34 +77,46 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   );
 }
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "سُدى | فرص تصميم الأزياء" },
-      { name: "description", content: "مساحة عربية لفرص تصميم الأزياء والتعلّم وبناء الملف المهني." },
-      
-      { property: "og:title", content: "سُدى | فرص تصميم الأزياء" },
-      { property: "og:description", content: "مساحة عربية لفرص تصميم الأزياء والتعلّم وبناء الملف المهني." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-      { rel: "icon", href: "/favicon.png", type: "image/png" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;450;500;600;700&family=Tajawal:wght@400;500;600;700&display=swap" },
-    ],
-  }),
-  shellComponent: RootShell,
-  component: RootComponent,
-  notFoundComponent: NotFoundComponent,
-  errorComponent: ErrorComponent,
-});
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
+  {
+    head: () => ({
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { title: "سُدى | فرص تصميم الأزياء" },
+        {
+          name: "description",
+          content:
+            "مساحة عربية لفرص تصميم الأزياء والتعلّم وبناء الملف المهني.",
+        },
+
+        { property: "og:title", content: "سُدى | فرص تصميم الأزياء" },
+        {
+          property: "og:description",
+          content:
+            "مساحة عربية لفرص تصميم الأزياء والتعلّم وبناء الملف المهني.",
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [
+        {
+          rel: "stylesheet",
+          href: appCss,
+        },
+        { rel: "icon", href: "/favicon.png", type: "image/png" },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;450;500;600;700&family=Tajawal:wght@400;500;600;700&display=swap",
+        },
+      ],
+    }),
+    shellComponent: RootShell,
+    component: RootComponent,
+    notFoundComponent: NotFoundComponent,
+    errorComponent: ErrorComponent,
+  },
+);
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
@@ -112,6 +126,12 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         {children}
+        <noscript>
+          <style>{`[style*="opacity:0"], [style*="opacity: 0"] { opacity: 1 !important; transform: none !important; }`}</style>
+          <p className="demo-note">
+            فعّلي JavaScript لاستخدام نماذج العرض التجريبي والبحث.
+          </p>
+        </noscript>
         <Scripts />
       </body>
     </html>
@@ -124,7 +144,11 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <DemoProvider><Shell><Outlet /></Shell></DemoProvider>
+      <DemoProvider>
+        <Shell>
+          <Outlet />
+        </Shell>
+      </DemoProvider>
     </QueryClientProvider>
   );
 }

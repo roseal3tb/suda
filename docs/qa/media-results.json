@@ -1,0 +1,67 @@
+[
+  {
+    "file": "public/editorial/motion/hero_atelier_montage.mp4",
+    "bytes": 1184136,
+    "duration_seconds": 11.958333,
+    "streams": [
+      {
+        "type": "video",
+        "codec": "h264",
+        "width": 540,
+        "height": 960
+      }
+    ]
+  },
+  {
+    "file": "public/editorial/motion/hero_atelier_montage.webm",
+    "bytes": 778976,
+    "duration_seconds": 11.959,
+    "streams": [
+      {
+        "type": "video",
+        "codec": "vp9",
+        "width": 540,
+        "height": 960
+      }
+    ]
+  },
+  {
+    "file": "public/editorial/motion/loop_beading.mp4",
+    "bytes": 534920,
+    "duration_seconds": 3.5,
+    "streams": [
+      {
+        "type": "video",
+        "codec": "h264",
+        "width": 540,
+        "height": 960
+      }
+    ]
+  },
+  {
+    "file": "public/editorial/motion/loop_draping.mp4",
+    "bytes": 378795,
+    "duration_seconds": 3.5,
+    "streams": [
+      {
+        "type": "video",
+        "codec": "h264",
+        "width": 540,
+        "height": 960
+      }
+    ]
+  },
+  {
+    "file": "public/editorial/motion/loop_sewing.mp4",
+    "bytes": 417686,
+    "duration_seconds": 3.5,
+    "streams": [
+      {
+        "type": "video",
+        "codec": "h264",
+        "width": 540,
+        "height": 960
+      }
+    ]
+  }
+]

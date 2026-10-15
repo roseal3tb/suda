@@ -1,30 +1,283 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { ArrowLeft, ArrowUpLeft, ArrowDown, Scissors, Images, UserRound, BookOpen, Sparkles, GraduationCap, BriefcaseBusiness } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { OpportunityCard, categoryIcons, DemoNote } from '@/components/suda/shared';
-import { images, categories, pageHead } from '@/features/suda/mock-data';
-import { designers } from '@/features/suda/designers';
-import { ThreadJourney } from '@/components/suda/thread-interlude';
-import { Reveal, WordsReveal } from '@/components/suda/reveal';
-import { useDemo } from '@/features/suda/demo-context';
-export const Route=createFileRoute('/')({head:()=>pageHead('الرئيسية','سُدى: منصة عربية لفرص تصميم الأزياء، الملف المهني، ومعرض الأعمال.'),component:Home});
+import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  ArrowLeft,
+  ArrowUpLeft,
+  ArrowDown,
+  Scissors,
+  Images,
+  UserRound,
+  BookOpen,
+  Sparkles,
+  GraduationCap,
+  BriefcaseBusiness,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  OpportunityCard,
+  categoryIcons,
+  DemoNote,
+} from "@/components/suda/shared";
+import { images, categories, pageHead } from "@/features/suda/mock-data";
+import { designers } from "@/features/suda/designers";
+import { AtelierFilm } from "@/components/suda/atelier-film";
+import { ThreadJourney } from "@/components/suda/thread-interlude";
+import { Reveal, WordsReveal } from "@/components/suda/reveal";
+import { useDemo } from "@/features/suda/demo-context";
+export const Route = createFileRoute("/")({
+  head: () =>
+    pageHead(
+      "الرئيسية",
+      "سُدى: منصة عربية لفرص تصميم الأزياء، الملف المهني، ومعرض الأعمال.",
+    ),
+  component: Home,
+});
 const journeySteps = [
- {number:'01',title:'اكتشفي ما يناسبك',body:'تصفّحي الدورات والمسابقات وفرص التدريب والعمل، واختاري الخطوة المناسبة لاهتماماتك.',to:'/opportunities' as const,action:'تصفّحي الفرص',Icon:Sparkles},
- {number:'02',title:'تابعي تعلّمك',body:'سجّلي التحاقك بالدورات المتاحة في النسخة التجريبية، وتابعي تقدّمك التعليمي بنفسك.',to:'/learning' as const,action:'رحلتي التعليمية',Icon:GraduationCap},
- {number:'03',title:'اصنعي حضورك المهني',body:'اجمعي مهاراتك وخبراتك وأعمال تصميم الأزياء في ملف مهني ومعرض خاص بك.',to:'/portfolio' as const,action:'معرض الأعمال',Icon:BriefcaseBusiness},
+  {
+    number: "01",
+    title: "اكتشفي ما يناسبك",
+    body: "تصفّحي الدورات والمسابقات وفرص التدريب والعمل، واختاري الخطوة المناسبة لاهتماماتك.",
+    to: "/opportunities" as const,
+    action: "تصفّحي الفرص",
+    Icon: Sparkles,
+  },
+  {
+    number: "02",
+    title: "تابعي تعلّمك",
+    body: "سجّلي التحاقك بالدورات المتاحة في النسخة التجريبية، وتابعي تقدّمك التعليمي بنفسك.",
+    to: "/learning" as const,
+    action: "رحلتي التعليمية",
+    Icon: GraduationCap,
+  },
+  {
+    number: "03",
+    title: "اصنعي حضورك المهني",
+    body: "اجمعي مهاراتك وخبراتك وأعمال تصميم الأزياء في ملف مهني ومعرض خاص بك.",
+    to: "/portfolio" as const,
+    action: "معرض الأعمال",
+    Icon: BriefcaseBusiness,
+  },
 ];
-const subtitles=['دورات مجانية','منافسات تصميم','تجارب مهنية','مسارات عمل'];
-function Home(){const {opportunities}=useDemo();return <>
- <section className="hero"><img className="hero-image" src={images.atelier} alt="صورة فوتوغرافية لعمل في مشغل أزياء" width={1536} height={1024} fetchPriority="high"/><div className="hero-content"><span className="eyebrow"><span className="tiny-line"/>منصة فرص الأزياء السعودية</span><img className="hero-brand-art" src="/suda-logo-transparent.png" alt="شعار سُدى الأصلي" width={1582} height={1128}/><h1 className="sr-only">سُدى</h1><h2>رُؤى تُنسَج</h2><p className="hero-description">اكتشفي دورات ومسابقات وفرص تدريب وعمل في تصميم الأزياء، وأنشئي ملفك المهني ومعرض أعمالك في مساحة واحدة.</p><div className="hero-actions"><Button asChild size="lg"><Link to="/opportunities">استكشاف الفرص <ArrowLeft/></Link></Button><Link to="/portfolio" className="text-link">معرض الأعمال <ArrowLeft size={15}/></Link></div><span className="hero-note"><Scissors size={14}/>نسخة تجريبية لمشروع جامعي</span></div><a className="hero-scroll-cue" href="#suda-journey" aria-label="تعرّفي على خطواتك في سُدى"><span>اكتشفي المزيد</span><ArrowDown size={16}/></a></section>
- <section id="suda-journey" className="suda-journey section-wrap" aria-labelledby="suda-journey-title">
-  <Reveal className="suda-journey-intro"><div><span className="eyebrow"><span className="tiny-line"/>01 / رحلتك مع سُدى</span><h2 id="suda-journey-title"><WordsReveal text="خطواتك في عالم الأزياء" /></h2></div><p>من اكتشاف الفرصة المناسبة إلى بناء معرض أعمالك، كل خطوة تجد مكانها في سُدى.</p></Reveal>
-  <div className="suda-journey-grid">{journeySteps.map(({number,title,body,to,action,Icon},i)=><Reveal as="article" className="suda-journey-step" delay={i*0.15} key={number}><div className="suda-journey-step-top"><span className="suda-journey-number" aria-hidden="true">{number}</span><Icon size={24} strokeWidth={1.35} aria-hidden="true"/></div><h3>{title}</h3><p>{body}</p><Link to={to} className="suda-journey-link">{action}<ArrowLeft size={17}/></Link></Reveal>)}</div>
- </section>
- <nav className="category-ribbon" aria-label="أنواع الفرص">{categories.map((type,i)=>{const Icon=categoryIcons[type];return <Link key={type} to="/opportunities" search={{category:type}}><Icon className="ribbon-icon" size={27} strokeWidth={1}/><div><h3>{type}</h3><small>{subtitles[i]}</small></div><ArrowUpLeft className="ribbon-arrow" size={17}/></Link>;})}</nav>
- <section id="suda-opportunities" className="section-wrap home-opportunities"><Reveal className="section-heading"><div><span className="eyebrow"><span className="tiny-line"/>02 / استكشفي</span><h2><WordsReveal text="فرص تصميم الأزياء" /></h2><p>دورات ومسابقات وتدريب وفرص وظيفية ضمن تجربة واحدة.</p></div><Link to="/opportunities" className="text-link">عرض جميع الفرص <ArrowLeft size={15}/></Link></Reveal><div className="opportunity-grid">{opportunities.slice(0,3).map((item,i)=><OpportunityCard key={item.id} item={item} delay={i*0.15}/>)}</div><DemoNote/></section>
- <ThreadJourney>
- <section className="editorial-band"><Reveal className="editorial-copy"><span className="eyebrow"><span className="tiny-line"/>03 / ملفك المهني</span><h2>مهاراتك وأعمالك<br/>في مساحة واحدة</h2><p>أنشئي ملفًا مهنيًا يضم مهاراتك واهتماماتك وخبراتك، ثم أضيفي أعمال تصميم الأزياء إلى معرضك الخاص.</p><div className="editorial-actions"><Button asChild variant="outline"><Link to="/profile"><UserRound size={16}/>الملف المهني <ArrowLeft/></Link></Button><Button asChild variant="outline"><Link to="/portfolio"><Images size={16}/>معرض الأعمال <ArrowLeft/></Link></Button></div></Reveal><Reveal className="editorial-photo" delay={0.13}><img src={images.draping} alt="صورة فوتوغرافية لعمل تصميم وتشكيل أزياء" loading="lazy" width={1024} height={1024}/></Reveal></section>
- <div className="thread-journey-breath" aria-hidden="true"/>
- <section className="inspiration-teaser section-wrap"><Reveal className="inspiration-teaser-copy"><span className="eyebrow"><span className="tiny-line"/>04 / من مشهد الأزياء المحلي</span><h2><WordsReveal text="إلهام سعودي" /></h2><p>تعرّفي على مصممات سعوديات من خلال نبذات موثقة وروابط إلى مصادر أعمالهن. الصور الخاصة بالمصممات قيد التوثيق.</p><Button asChild><Link to="/inspiration">اكتشفي المصممات <ArrowLeft/></Link></Button></Reveal><Reveal className="inspiration-teaser-art" aria-label="أسماء مختارة من الدليل"><span className="teaser-label"><BookOpen size={15}/>دليل تحريري</span>{designers.slice(0,4).map((d,i)=><span key={d.id} className={`teaser-designer teaser-designer-${i}`}>{d.name}</span>)}<span className="teaser-count">+ {designers.length.toLocaleString('ar-SA')} أسماء موثقة</span></Reveal></section>
- </ThreadJourney>
- </>}
+const subtitles = [
+  "دورات مجانية",
+  "منافسات تصميم",
+  "تجارب مهنية",
+  "مسارات عمل",
+];
+function Home() {
+  const { opportunities } = useDemo();
+  return (
+    <>
+      <section className="atelier-hero" aria-labelledby="atelier-title">
+        <div className="atelier-hero-copy">
+          <span className="eyebrow">
+            <span className="tiny-line" />
+            مساحتك في عالم تصميم الأزياء
+          </span>
+          <img
+            className="atelier-hero-logo"
+            src="/suda-logo-transparent.png"
+            alt="سُدى"
+            width={1582}
+            height={1128}
+          />
+          <h1 id="atelier-title">
+            رُؤى <span>تُنسَج</span>
+          </h1>
+          <p className="atelier-hero-description">
+            من أول خيط، إلى فرصتك القادمة.
+          </p>
+          <p className="atelier-hero-body">
+            اكتشفي دورات ومسابقات وفرص تدريب وعمل في تصميم الأزياء، واجمعي
+            مهاراتك وأعمالك في مساحة تُعبّر عنك.
+          </p>
+          <div className="atelier-hero-actions">
+            <Button asChild size="lg">
+              <Link to="/opportunities">
+                اكتشفي الفرص <ArrowLeft />
+              </Link>
+            </Button>
+            <Link to="/portfolio" className="text-link">
+              ابني معرض أعمالك <ArrowUpLeft size={17} />
+            </Link>
+          </div>
+          <div className="atelier-hero-foot">
+            <span>صُمّمت لبدايتك، ولما بعدها.</span>
+            <a href="#suda-journey" aria-label="اكتشفي رحلتك في سُدى">
+              <ArrowDown size={16} />
+              اكتشفي سُدى
+            </a>
+          </div>
+        </div>
+        <AtelierFilm />
+      </section>
+      <section
+        id="suda-journey"
+        className="suda-journey section-wrap"
+        aria-labelledby="suda-journey-title"
+      >
+        <Reveal className="suda-journey-intro">
+          <div>
+            <span className="eyebrow">
+              <span className="tiny-line" />
+              01 / رحلتك مع سُدى
+            </span>
+            <h2 id="suda-journey-title">
+              <WordsReveal text="خطواتك في عالم الأزياء" />
+            </h2>
+          </div>
+          <p>
+            من اكتشاف الفرصة المناسبة إلى بناء معرض أعمالك، كل خطوة تجد مكانها
+            في سُدى.
+          </p>
+        </Reveal>
+        <div className="suda-journey-grid">
+          {journeySteps.map(({ number, title, body, to, action, Icon }, i) => (
+            <Reveal
+              as="article"
+              className="suda-journey-step"
+              delay={i * 0.15}
+              key={number}
+            >
+              <div className="suda-journey-step-top">
+                <span className="suda-journey-number" aria-hidden="true">
+                  {number}
+                </span>
+                <Icon size={24} strokeWidth={1.35} aria-hidden="true" />
+              </div>
+              <h3>{title}</h3>
+              <p>{body}</p>
+              <Link to={to} className="suda-journey-link">
+                {action}
+                <ArrowLeft size={17} />
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+      <nav className="category-ribbon" aria-label="أنواع الفرص">
+        {categories.map((type, i) => {
+          const Icon = categoryIcons[type];
+          return (
+            <Link key={type} to="/opportunities" search={{ category: type }}>
+              <Icon className="ribbon-icon" size={27} strokeWidth={1} />
+              <div>
+                <h3>{type}</h3>
+                <small>{subtitles[i]}</small>
+              </div>
+              <ArrowUpLeft className="ribbon-arrow" size={17} />
+            </Link>
+          );
+        })}
+      </nav>
+      <section
+        id="suda-opportunities"
+        className="section-wrap home-opportunities"
+      >
+        <Reveal className="section-heading">
+          <div>
+            <span className="eyebrow">
+              <span className="tiny-line" />
+              02 / استكشفي
+            </span>
+            <h2>
+              <WordsReveal text="فرص تصميم الأزياء" />
+            </h2>
+            <p>دورات ومسابقات وتدريب وفرص وظيفية ضمن تجربة واحدة.</p>
+          </div>
+          <Link to="/opportunities" className="text-link">
+            عرض جميع الفرص <ArrowLeft size={15} />
+          </Link>
+        </Reveal>
+        <div className="opportunity-grid home-opportunity-grid">
+          {opportunities.slice(0, 4).map((item, i) => (
+            <OpportunityCard key={item.id} item={item} delay={i * 0.15} />
+          ))}
+        </div>
+        <DemoNote />
+      </section>
+      <ThreadJourney>
+        <section className="editorial-band">
+          <Reveal className="editorial-copy">
+            <span className="eyebrow">
+              <span className="tiny-line" />
+              03 / ملفك المهني
+            </span>
+            <h2>
+              مهاراتك وأعمالك
+              <br />
+              في مساحة واحدة
+            </h2>
+            <p>
+              أنشئي ملفًا مهنيًا يضم مهاراتك واهتماماتك وخبراتك، ثم أضيفي أعمال
+              تصميم الأزياء إلى معرضك الخاص.
+            </p>
+            <div className="editorial-actions">
+              <Button asChild variant="outline">
+                <Link to="/profile">
+                  <UserRound size={16} />
+                  الملف المهني <ArrowLeft />
+                </Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link to="/portfolio">
+                  <Images size={16} />
+                  معرض الأعمال <ArrowLeft />
+                </Link>
+              </Button>
+            </div>
+          </Reveal>
+          <Reveal className="editorial-photo" delay={0.13}>
+            <img
+              src={images.draping}
+              alt="يدان تشكّلان طيات القماش على مانيكان"
+              loading="lazy"
+              width={1024}
+              height={1024}
+            />
+          </Reveal>
+        </section>
+        <div className="thread-journey-breath" aria-hidden="true" />
+        <section className="inspiration-teaser section-wrap">
+          <Reveal className="inspiration-teaser-copy">
+            <span className="eyebrow">
+              <span className="tiny-line" />
+              04 / من مشهد الأزياء المحلي
+            </span>
+            <h2>
+              <WordsReveal text="إلهام سعودي" />
+            </h2>
+            <p>
+              تعرّفي على مصممات سعوديات من خلال نبذات موثقة وروابط إلى مصادر
+              أعمالهن. الصور الخاصة بالمصممات قيد التوثيق.
+            </p>
+            <Button asChild>
+              <Link to="/inspiration">
+                اكتشفي المصممات <ArrowLeft />
+              </Link>
+            </Button>
+          </Reveal>
+          <Reveal
+            className="inspiration-teaser-art"
+            aria-label="أسماء مختارة من الدليل"
+          >
+            <span className="teaser-label">
+              <BookOpen size={15} />
+              دليل تحريري
+            </span>
+            {designers.slice(0, 4).map((d, i) => (
+              <span
+                key={d.id}
+                className={`teaser-designer teaser-designer-${i}`}
+              >
+                {d.name}
+              </span>
+            ))}
+            <span className="teaser-count">
+              {designers.length.toLocaleString("ar-SA")} أسماء في الدليل
+            </span>
+          </Reveal>
+        </section>
+      </ThreadJourney>
+    </>
+  );
+}

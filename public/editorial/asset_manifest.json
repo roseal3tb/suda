@@ -1,0 +1,108 @@
+[
+  {
+    "asset": "images/course_sewing_machine.webp",
+    "source": "reelsvideo.io_1792068777441.mp4",
+    "timestamp_s": 10.7,
+    "category": "course",
+    "size_px": "720x900"
+  },
+  {
+    "asset": "images/course_pattern_making.webp",
+    "source": "reelsvideo.io_1792068834191.mp4",
+    "timestamp_s": 3.3,
+    "category": "course",
+    "size_px": "720x900"
+  },
+  {
+    "asset": "images/internship_draping.webp",
+    "source": "reelsvideo.io_1792068813736.mp4",
+    "timestamp_s": 8.3,
+    "category": "internship",
+    "size_px": "720x900"
+  },
+  {
+    "asset": "images/internship_beadwork.webp",
+    "source": "reelsvideo.io_1792068834191.mp4",
+    "timestamp_s": 18.2,
+    "category": "internship",
+    "size_px": "720x900"
+  },
+  {
+    "asset": "images/internship_pink_embroidery.webp",
+    "source": "reelsvideo.io_1792068796270.mp4",
+    "timestamp_s": 16.7,
+    "category": "internship",
+    "size_px": "720x900"
+  },
+  {
+    "asset": "images/career_gold_embellishment.webp",
+    "source": "reelsvideo.io_1792068777441.mp4",
+    "timestamp_s": 18.4,
+    "category": "career",
+    "size_px": "720x900"
+  },
+  {
+    "asset": "images/career_studio_sewing.webp",
+    "source": "reelsvideo.io_1792068834191.mp4",
+    "timestamp_s": 7.9,
+    "category": "career",
+    "size_px": "720x900"
+  },
+  {
+    "asset": "images/competition_embroidered_couture.webp",
+    "source": "reelsvideo.io_1792068914358.mp4",
+    "timestamp_s": 14.5,
+    "category": "competition",
+    "size_px": "720x900"
+  },
+  {
+    "asset": "images/competition_pink_couture.webp",
+    "source": "reelsvideo.io_1792068934872.mp4",
+    "timestamp_s": 3.1,
+    "category": "competition",
+    "size_px": "720x900"
+  },
+  {
+    "asset": "images/portfolio_draped_gown.webp",
+    "source": "reelsvideo.io_1792068813736.mp4",
+    "timestamp_s": 30.4,
+    "category": "portfolio",
+    "size_px": "720x900"
+  },
+  {
+    "asset": "images/editorial_teal_gown.webp",
+    "source": "reelsvideo.io_1792068877075.jpeg",
+    "category": "competition",
+    "size_px": "1000x1250"
+  },
+  {
+    "asset": "images/editorial_couture_duo.webp",
+    "source": "reelsvideo.io_1792068891670.jpeg",
+    "category": "competition",
+    "size_px": "1000x1250"
+  },
+  {
+    "asset": "images/editorial_pastel_gown.webp",
+    "source": "reelsvideo.io_1792068977977.jpeg",
+    "category": "competition",
+    "size_px": "1000x1250"
+  },
+  {
+    "asset": "images/editorial_group_gowns.webp",
+    "source": "reelsvideo.io_1792069016808.jpeg",
+    "category": "competition",
+    "size_px": "1000x1250"
+  },
+  {
+    "asset": "images/editorial_black_couture.webp",
+    "source": "reelsvideo.io_1792068858339.jpeg",
+    "category": "portfolio",
+    "size_px": "1000x1250"
+  },
+  {
+    "asset": "images/editorial_burgundy_look.webp",
+    "source": "SaveVid.Net_847630179_18600507208066455_2804835299101429849_n.jpg",
+    "category": "portfolio",
+    "size_px": "1000x1250"
+  }
+]
