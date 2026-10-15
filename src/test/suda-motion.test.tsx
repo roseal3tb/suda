@@ -57,9 +57,14 @@ describe("Editorial motion safeguards", () => {
     const view = render(<AtelierFilm />);
     const video = view.container.querySelector("video")!;
     expect(video.muted).toBe(true);
+    expect(video.defaultMuted).toBe(true);
+    expect(video.controls).toBe(false);
     expect(video).toHaveAttribute("playsinline");
     expect(video.querySelectorAll("source")).toHaveLength(2);
     fireEvent.playing(video);
+    expect(screen.getByRole("img")).toHaveClass("is-hidden");
+    fireEvent.pause(video);
+    expect(screen.getByRole("img")).not.toHaveClass("is-hidden");
     expect(video).toHaveAttribute("autoplay");
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
     fireEvent.error(video);

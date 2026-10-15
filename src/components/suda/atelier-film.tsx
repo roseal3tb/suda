@@ -4,11 +4,8 @@ import { editorialMedia } from "@/features/suda/mock-data";
 /** One small, silent editorial film. No video is requested for reduced-motion
  * visitors; the same poster remains visible if playback fails or is blocked. */
 export function AtelierFilm() {
-  const frame = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const [allowed, setAllowed] = useState(false);
-  const [inView, setInView] = useState(true);
-  const [pageVisible, setPageVisible] = useState(true);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
 
@@ -17,38 +14,39 @@ export function AtelierFilm() {
     const update = () => setAllowed(!preference.matches);
     update();
     preference.addEventListener("change", update);
-    const visibility = () => setPageVisible(!document.hidden);
-    document.addEventListener("visibilitychange", visibility);
-    const observer =
-      typeof IntersectionObserver === "undefined"
-        ? null
-        : new IntersectionObserver(
-            ([entry]) => setInView(Boolean(entry?.isIntersecting)),
-            { threshold: 0.05 },
-          );
-    if (frame.current) observer?.observe(frame.current);
-    return () => {
-      preference.removeEventListener("change", update);
-      document.removeEventListener("visibilitychange", visibility);
-      observer?.disconnect();
-    };
+    return () => preference.removeEventListener("change", update);
   }, []);
 
   useEffect(() => {
     const element = video.current;
-    if (!element) return;
-    if (allowed && inView && pageVisible && !failed) {
+    if (!element || !allowed || failed) return;
+    // Set both the DOM properties and attributes before requesting playback.
+    // Safari must see a silent, inline element from the outset.
+    element.muted = true;
+    element.defaultMuted = true;
+    element.controls = false;
+    element.playsInline = true;
+    element.setAttribute("muted", "");
+    const play = () => {
       void element.play().catch(() => setReady(false));
-    } else {
-      element.pause();
-    }
-  }, [allowed, inView, pageVisible, failed]);
+    };
+    const resume = () => {
+      if (!document.hidden) play();
+    };
+    element.addEventListener("canplay", play);
+    document.addEventListener("visibilitychange", resume);
+    play();
+    return () => {
+      element.removeEventListener("canplay", play);
+      document.removeEventListener("visibilitychange", resume);
+    };
+  }, [allowed, failed]);
 
   return (
     <figure className="atelier-film" aria-label="من الخيط إلى التصميم">
-      <div className="atelier-film-frame" ref={frame}>
+      <div className="atelier-film-frame">
         <img
-          className="atelier-film-poster"
+          className={`atelier-film-poster ${ready ? "is-hidden" : ""}`}
           src={editorialMedia.poster}
           alt="يد تعمل على قص باترون أزياء، من مقاطع حرفة التصميم المقدمة للمشروع"
           width={720}
@@ -58,24 +56,30 @@ export function AtelierFilm() {
         {allowed && !failed && (
           <video
             ref={video}
-            className={`atelier-film-video ${ready ? "is-playing" : ""}`}
+            className="atelier-film-video"
             autoPlay
             muted
             loop
             playsInline
-            preload="metadata"
+            controls={false}
+            disablePictureInPicture
+            disableRemotePlayback
+            controlsList="nodownload nofullscreen noremoteplayback"
+            tabIndex={-1}
+            preload="auto"
             poster={editorialMedia.poster}
             aria-hidden="true"
             onPlaying={() => {
               setReady(true);
             }}
+            onPause={() => setReady(false)}
             onError={() => {
               setFailed(true);
               setReady(false);
             }}
           >
-            <source src={editorialMedia.montageWebm} type="video/webm" />
             <source src={editorialMedia.montageMp4} type="video/mp4" />
+            <source src={editorialMedia.montageWebm} type="video/webm" />
           </video>
         )}
         <div className="atelier-film-caption" aria-hidden="true">
