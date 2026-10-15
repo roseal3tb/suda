@@ -3,18 +3,20 @@
   "images_decode": true,
   "videos": [
     {
-      "file": "hero_atelier_montage.webm",
-      "duration": "7.466000",
-      "bytes": 849296,
+      "file": "/editorial/film/hero.73a9eaca7a52.mp4",
+      "duration": "7.466667",
+      "bytes": 676238,
       "width": 720,
       "height": 800,
       "decodes": true,
-      "audio": false
+      "audio": false,
+      "fastStart": true,
+      "reductionPercent": 40.2
     },
     {
-      "file": "hero_atelier_montage.mp4",
-      "duration": "7.466667",
-      "bytes": 1130148,
+      "file": "/editorial/film/hero.d41639b55e2e.webm",
+      "duration": "7.466000",
+      "bytes": 710059,
       "width": 720,
       "height": 800,
       "decodes": true,

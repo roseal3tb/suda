@@ -1,6 +1,6 @@
 // HTTP/SSR checks, not browser-rendered or end-to-end tests.
 import { createServer } from "vite";
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 const server = await createServer({
   server: { host: "127.0.0.1", port: 5199, strictPort: true },
 });
@@ -57,11 +57,10 @@ try {
       if (m[1].startsWith("/")) media.add(m[1]);
     results.push(entry);
   }
-  for (const path of [
-    "/editorial/motion/hero_atelier_montage.mp4",
-    "/editorial/motion/hero_atelier_montage.webm",
-  ])
-    media.add(path);
+  const manifest = JSON.parse(
+    await readFile("public/editorial/fashion-media-manifest.json", "utf8"),
+  );
+  for (const path of Object.values(manifest.playback)) media.add(path);
   const assets = [];
   for (const path of media) {
     const r = await fetch(base + path);

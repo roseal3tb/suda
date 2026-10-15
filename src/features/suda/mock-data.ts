@@ -1,3 +1,5 @@
+import { filmAssets } from "./film-assets";
+
 /** User-supplied editorial media. These images illustrate fictional opportunities;
  * they are never represented as work owned by a demo user or a named designer. */
 const media = (file: string) => `/editorial/images/${file}.webp`;
@@ -65,8 +67,8 @@ export const fashionMedia = {
 };
 export const editorialMedia = {
   poster: media("hero_atelier_poster"),
-  montageWebm: "/editorial/motion/hero_atelier_montage.webm",
-  montageMp4: "/editorial/motion/hero_atelier_montage.mp4",
+  montageWebm: filmAssets.webm,
+  montageMp4: filmAssets.mp4,
   sewing: "/editorial/motion/loop_sewing.mp4",
   draping: "/editorial/motion/loop_draping.mp4",
   beading: "/editorial/motion/loop_beading.mp4",

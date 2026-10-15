@@ -28,6 +28,7 @@ export function AtelierFilm() {
     element.playsInline = true;
     element.setAttribute("muted", "");
     const play = () => {
+      if (!element.paused) return;
       void element.play().catch(() => setReady(false));
     };
     const resume = () => {

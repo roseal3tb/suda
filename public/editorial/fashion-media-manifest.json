@@ -35,6 +35,10 @@
       "source": "reelsvideo.io_1792069035883.jpeg"
     }
   ],
+  "playback": {
+    "mp4": "/editorial/film/hero.73a9eaca7a52.mp4",
+    "webm": "/editorial/film/hero.d41639b55e2e.webm"
+  },
   "montage": [
     {
       "source": "reelsvideo.io_1792068834191.mp4",

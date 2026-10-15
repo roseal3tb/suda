@@ -1,0 +1,31 @@
+{
+  "inspectedDeployment": "https://sudadesign.vercel.app/",
+  "revision": "before optimized film files",
+  "browser": "remote Chrome; not Safari",
+  "observed": {
+    "paused": false,
+    "muted": true,
+    "readyState": 4,
+    "buffered": [
+      0,
+      7.466667
+    ],
+    "duration": 7.466667,
+    "timeSamples": [
+      3.665599,
+      5.283231
+    ]
+  },
+  "http": {
+    "mp4Bytes": 1130148,
+    "cacheControl": "public, max-age=0, must-revalidate",
+    "cdn": "HIT",
+    "rangeStatus": 206,
+    "acceptRanges": "bytes"
+  },
+  "limitations": [
+    "Stall not reproduced in remote Chrome",
+    "No measurement of user Safari or connection",
+    "Optimized version not deployed or browser-tested"
+  ]
+}
