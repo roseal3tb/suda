@@ -1,0 +1,75 @@
+{
+  "images": [
+    {
+      "asset": "career_pattern_cutting.webp",
+      "source": "reelsvideo.io_1792068834191.mp4",
+      "seconds": 5.6
+    },
+    {
+      "asset": "profile_red_carpet_gold.webp",
+      "source": "reelsvideo.io_1792068689368.mp4",
+      "seconds": 1.15
+    },
+    {
+      "asset": "inspiration_yellow_model.webp",
+      "source": "reelsvideo.io_1792068759589.mp4",
+      "seconds": 6.4
+    },
+    {
+      "asset": "inspiration_lilac_model.webp",
+      "source": "reelsvideo.io_1792068759589.mp4",
+      "seconds": 31.8
+    },
+    {
+      "asset": "inspiration_mauve_model.webp",
+      "source": "reelsvideo.io_1792068962750.mp4",
+      "seconds": 2.1
+    },
+    {
+      "asset": "inspiration_monochrome_model.webp",
+      "source": "reelsvideo.io_1792068716233.mp4",
+      "seconds": 23
+    },
+    {
+      "asset": "profile_red_carpet_black.webp",
+      "source": "reelsvideo.io_1792069035883.jpeg"
+    }
+  ],
+  "montage": [
+    {
+      "source": "reelsvideo.io_1792068834191.mp4",
+      "start": 4.3,
+      "duration": 0.85
+    },
+    {
+      "source": "reelsvideo.io_1792068689368.mp4",
+      "start": 1.05,
+      "duration": 1.25
+    },
+    {
+      "source": "reelsvideo.io_1792068777441.mp4",
+      "start": 10.1,
+      "duration": 0.85
+    },
+    {
+      "source": "reelsvideo.io_1792068759589.mp4",
+      "start": 6.0,
+      "duration": 1.2
+    },
+    {
+      "source": "reelsvideo.io_1792068796270.mp4",
+      "start": 13.0,
+      "duration": 0.85
+    },
+    {
+      "source": "reelsvideo.io_1792068759589.mp4",
+      "start": 31.2,
+      "duration": 1.2
+    },
+    {
+      "source": "reelsvideo.io_1792068962750.mp4",
+      "start": 1.0,
+      "duration": 1.2
+    }
+  ]
+}

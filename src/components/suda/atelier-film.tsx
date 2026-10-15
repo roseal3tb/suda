@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Pause, Play } from "lucide-react";
 import { editorialMedia } from "@/features/suda/mock-data";
 
 /** One small, silent editorial film. No video is requested for reduced-motion
@@ -10,9 +9,7 @@ export function AtelierFilm() {
   const [allowed, setAllowed] = useState(false);
   const [inView, setInView] = useState(true);
   const [pageVisible, setPageVisible] = useState(true);
-  const [paused, setPaused] = useState(false);
   const [ready, setReady] = useState(false);
-  const [playing, setPlaying] = useState(false);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -40,22 +37,12 @@ export function AtelierFilm() {
   useEffect(() => {
     const element = video.current;
     if (!element) return;
-    if (allowed && inView && pageVisible && !paused && !failed) {
-      void element.play().catch(() => setPlaying(false));
+    if (allowed && inView && pageVisible && !failed) {
+      void element.play().catch(() => setReady(false));
     } else {
       element.pause();
     }
-  }, [allowed, inView, pageVisible, paused, failed]);
-
-  function toggle() {
-    if (playing) {
-      setPaused(true);
-      video.current?.pause();
-    } else {
-      setPaused(false);
-      void video.current?.play().catch(() => setPlaying(false));
-    }
-  }
+  }, [allowed, inView, pageVisible, failed]);
 
   return (
     <figure className="atelier-film" aria-label="من الخيط إلى التصميم">
@@ -64,28 +51,27 @@ export function AtelierFilm() {
           className="atelier-film-poster"
           src={editorialMedia.poster}
           alt="يد تعمل على قص باترون أزياء، من مقاطع حرفة التصميم المقدمة للمشروع"
-          width={540}
-          height={960}
+          width={720}
+          height={800}
           fetchPriority="high"
         />
         {allowed && !failed && (
           <video
             ref={video}
             className={`atelier-film-video ${ready ? "is-playing" : ""}`}
+            autoPlay
             muted
             loop
             playsInline
-            preload="none"
+            preload="metadata"
             poster={editorialMedia.poster}
             aria-hidden="true"
             onPlaying={() => {
               setReady(true);
-              setPlaying(true);
             }}
-            onPause={() => setPlaying(false)}
             onError={() => {
               setFailed(true);
-              setPlaying(false);
+              setReady(false);
             }}
           >
             <source src={editorialMedia.montageWebm} type="video/webm" />
@@ -93,27 +79,16 @@ export function AtelierFilm() {
           </video>
         )}
         <span className="atelier-film-index" aria-hidden="true">
-          01 — 05
+          01 — 07
         </span>
-        {allowed && !failed && (
-          <button
-            className="atelier-film-toggle"
-            type="button"
-            onClick={toggle}
-            aria-label={playing ? "إيقاف حركة الفيلم" : "تشغيل فيلم الحرفة"}
-          >
-            {playing ? <Pause size={15} /> : <Play size={15} />}
-            <span>{playing ? "إيقاف الحركة" : "تشغيل الفيلم"}</span>
-          </button>
-        )}
         <div className="atelier-film-caption" aria-hidden="true">
           <span>من الخيط تبدأ الحكاية</span>
-          <small>قصّ · خياطة · تشكيل · تطريز</small>
+          <small>حرفة · تفاصيل · إطلالات</small>
         </div>
       </div>
       <figcaption>
         <span>حرفةٌ تصنع الفارق</span>
-        <span>لقطات من مراحل صناعة الأزياء</span>
+        <span>من الأتيليه إلى الإطلالة</span>
       </figcaption>
     </figure>
   );

@@ -4,7 +4,7 @@ import { ArrowLeft, Eye, EyeOff, Info } from "lucide-react";
 import { Reveal } from "@/components/suda/reveal";
 import { Button } from "@/components/ui/button";
 import { FormField, Wordmark } from "@/components/suda/shared";
-import { images } from "./mock-data";
+import { fashionMedia } from "./mock-data";
 import { useDemo } from "./demo-context";
 
 export function AuthPage({ register = false }: { register?: boolean }) {
@@ -232,10 +232,10 @@ export function AuthPage({ register = false }: { register?: boolean }) {
       </Reveal>
       <Reveal className="auth-visual" delay={0.18}>
         <img
-          src={images.sketches}
-          alt="يدان تعملان على قص باترون ورقي لتصميم أزياء"
-          width={720}
-          height={900}
+          src={register ? fashionMedia.register.src : fashionMedia.login.src}
+          alt={register ? fashionMedia.register.alt : fashionMedia.login.alt}
+          width={1000}
+          height={1250}
         />
         <div>
           <span className="eyebrow">من الفكرة إلى التفاصيل</span>

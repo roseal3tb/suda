@@ -137,7 +137,7 @@ button.bg-primary:focus-visible, a.bg-primary:focus-visible {color:#FFFFFF!impor
 .editorial-copy h2 {font-size:clamp(30px,3.2vw,49px);line-height:1.5;}
 .editorial-actions {display:flex;gap:12px;flex-wrap:wrap;}
 .editorial-actions a {white-space:nowrap;}
-/* Lower homepage teaser — no invented designer imagery */
+/* Lower homepage teaser */
 .inspiration-teaser {display:grid;grid-template-columns:.8fr 1.2fr;gap:6%;align-items:center;padding-top:110px;padding-bottom:115px;}
 .inspiration-teaser-copy h2 {font-size:clamp(40px,4vw,62px);margin:15px 0;}
 .inspiration-teaser-copy p {max-width:400px;color:#645B65;margin-bottom:28px;line-height:2;}
@@ -698,9 +698,9 @@ img, svg { max-width: 100%; }
    Local media and the original logo retain their source aspect ratios. */
 :root { --atelier-ink: #564E58; --atelier-muted: #6D626F; --atelier-paper: #FAF6F1; }
 .atelier-hero {
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  align-items: center; gap: clamp(36px, 6vw, 92px); max-width: 1440px;
-  margin-inline: auto; padding: 46px clamp(24px, 5vw, 80px) 38px;
+  display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+  align-items: center; gap: clamp(28px, 4vw, 64px); max-width: 1660px;
+  margin-inline: auto; padding: 30px clamp(24px, 3vw, 50px) 38px;
   background: var(--atelier-paper); min-height: min(760px, calc(100svh - 96px));
 }
 .atelier-hero-copy { min-width: 0; padding-block: 18px; position: relative; }
@@ -715,16 +715,13 @@ img, svg { max-width: 100%; }
 .atelier-hero-actions .text-link { border-color: #A195A2; }
 .atelier-hero-foot { border-top: 1px solid #D8CCD2; margin-top: 42px; padding-top: 22px; max-width: 410px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between; align-items: center; font-size: 12px; color: var(--atelier-muted); }
 .atelier-hero-foot a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--atelier-ink); }
-.atelier-film { margin: 0; min-width: 0; width: 100%; max-width: 540px; justify-self: end; }
-.atelier-film-frame { position: relative; aspect-ratio: .85; max-height: 655px; overflow: hidden; background: #DCD1D1; border-radius: 160px 4px 4px 4px; isolation: isolate; }
+.atelier-film { margin: 0; min-width: 0; width: 100%; max-width: 780px; justify-self: end; }
+.atelier-film-frame { position: relative; aspect-ratio: .9; overflow: hidden; background: #DCD1D1; border-radius: 160px 4px 4px 4px; isolation: isolate; }
 .atelier-film-frame::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 55%, rgb(40 31 35 / .6)); pointer-events: none; z-index: 1; }
 .atelier-film-poster, .atelier-film-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
 .atelier-film-video { opacity: 0; transition: opacity .35s ease; }
 .atelier-film-video.is-playing { opacity: 1; }
 .atelier-film-index { position: absolute; top: 24px; right: 24px; z-index: 2; color: #FFF; direction: ltr; font-size: 11px; letter-spacing: .12em; padding: 8px 12px; background: rgb(42 34 39 / .58); border-radius: 30px; }
-.atelier-film-toggle { position: absolute; bottom: 26px; left: 24px; z-index: 3; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 44px; min-height: 44px; padding: 10px 13px; border: 1px solid rgb(255 255 255 / .6); color: #FFF; background: rgb(39 29 36 / .72); border-radius: 99px; font-size: 11px; }
-.atelier-film-toggle:hover { background: #564E58; }
-.atelier-film-toggle:focus-visible { outline: 3px solid white; outline-offset: -6px; }
 .atelier-film-caption { position: absolute; right: 28px; bottom: 28px; z-index: 2; color: #FFF; display: flex; flex-direction: column; gap: 7px; max-width: 57%; }
 .atelier-film-caption > span { font-size: clamp(16px, 1.7vw, 24px); }
 .atelier-film-caption small { font-size: 11px; line-height: 1.7; }
@@ -796,10 +793,8 @@ img, svg { max-width: 100%; }
  .atelier-hero-description { font-size: 18px; }
  .atelier-hero-body { font-size: 14px; line-height: 1.9; }
  .atelier-hero-actions { gap: 12px; margin-top: 20px; }
- .atelier-film-frame { aspect-ratio: .72; border-top-left-radius: 110px; }
+ .atelier-film-frame { aspect-ratio: .88; border-top-left-radius: 110px; }
  .atelier-film-caption { right: 18px; bottom: 20px; max-width: 62%; }
- .atelier-film-toggle { left: 14px; bottom: 18px; padding: 10px; }
- .atelier-film-toggle span { display: none; }
  .atelier-film figcaption { font-size: 10px; flex-wrap: wrap; }
 }
 @media (max-width: 700px) {
@@ -817,8 +812,6 @@ img, svg { max-width: 100%; }
  .atelier-film-poster, .atelier-film-video { object-position: center 48%; }
  .atelier-film-caption > span { font-size: 22px; }
  .atelier-film-caption { right: 22px; bottom: 23px; }
- .atelier-film-toggle { left: 20px; bottom: 22px; }
- .atelier-film-toggle span { display: inline; }
  .atelier-film figcaption { font-size: 11px; }
  .card-image { aspect-ratio: 1.3; }
  .thread-intro-logo { width: min(70vw, 310px); }
@@ -831,11 +824,51 @@ img, svg { max-width: 100%; }
  .atelier-hero-actions { gap: 12px; }
  .atelier-hero h1 { font-size: 46px; }
  .atelier-film-caption > span { font-size: 18px; }
- .atelier-film-toggle span { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
  .thread-intro { display: none !important; }
  .atelier-film-video { display: none; transition: none; }
  .opportunity-card, .opportunity-card img { transition: none !important; }
  html { scroll-behavior: auto !important; }
+}
+
+/* User-selected fashion photography. Each section has its own images. */
+.profile-fashion-triptych { position: relative; min-width: 0; min-height: 535px; padding: 45px 28px 55px; display: flex; align-items: center; gap: 0; background: #C5B1BC; overflow: hidden; isolation: isolate; }
+.profile-fashion-shot { position: relative; flex: 0 0 36%; margin: 0; height: 390px; overflow: hidden; border: 5px solid #FAF6F1; border-radius: 4px; box-shadow: 0 18px 35px rgb(59 42 52 / .19); }
+.profile-fashion-shot img { width: 100%; height: 100%; object-fit: cover; object-position: center 38%; display: block; }
+.profile-fashion-shot-0 { transform: rotate(5deg) translateY(12px); z-index: 1; }
+.profile-fashion-shot-1 { margin-inline-start: -5%; transform: rotate(-3deg) translateY(-15px); z-index: 3; }
+.profile-fashion-shot-2 { margin-inline-start: -5%; transform: rotate(5deg) translateY(20px); z-index: 2; }
+.profile-fashion-shot-2 img { object-position: 45% center; }
+.profile-fashion-caption { position: absolute; bottom: 20px; inset-inline: 28px; text-align: center; font-size: 12px; color: #443C47; }
+.inspiration-fashion-collage { padding: 0; min-height: 580px; display: block; background: #E9DFE2; isolation: isolate; }
+.inspiration-fashion-shot { position: absolute; margin: 0; width: 29%; height: 44%; border: 5px solid #FAF6F1; box-shadow: 0 13px 30px rgb(56 39 49 / .18); overflow: hidden; background: #D9CDD2; }
+.inspiration-fashion-shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.inspiration-fashion-shot-0 { left: 7%; top: 7%; transform: rotate(-10deg); z-index: 2; }
+.inspiration-fashion-shot-1 { left: 37%; top: 4%; transform: rotate(6deg); z-index: 1; }
+.inspiration-fashion-shot-2 { right: 4%; top: 20%; transform: rotate(11deg); z-index: 3; }
+.inspiration-fashion-shot-3 { left: 4%; bottom: 9%; transform: rotate(5deg); z-index: 4; }
+.inspiration-fashion-shot-4 { left: 32%; bottom: 12%; transform: rotate(-8deg); z-index: 5; }
+.inspiration-fashion-shot-5 { right: 7%; bottom: 8%; transform: rotate(4deg); z-index: 6; }
+.inspiration-fashion-shot-6 { left: 34%; top: 28%; width: 33%; height: 42%; transform: rotate(2deg); z-index: 7; }
+.fashion-collage-caption { position: absolute; bottom: 13px; inset-inline: 14px; font-size: 12px; text-align: center; color: #443C47; z-index: 8; }
+@media (min-width: 761px) and (max-width: 1050px) {
+ .profile-fashion-triptych { min-height: 465px; padding-inline: 20px; }
+ .profile-fashion-shot { height: 325px; border-width: 3px; }
+ .inspiration-fashion-collage { min-height: 490px; }
+}
+@media (max-width: 850px) {
+ .inspiration-fashion-collage { min-height: 560px; }
+}
+@media (max-width: 760px) {
+ .profile-fashion-triptych { min-height: 460px; padding: 35px 25px 55px; }
+ .profile-fashion-shot { height: 350px; }
+}
+@media (max-width: 500px) {
+ .profile-fashion-triptych { min-height: 345px; padding: 30px 16px 45px; }
+ .profile-fashion-shot { height: 265px; border-width: 3px; }
+ .profile-fashion-caption { font-size: 11px; bottom: 14px; }
+ .inspiration-fashion-collage { min-height: 410px; }
+ .inspiration-fashion-shot { border-width: 3px; }
+ .fashion-collage-caption { font-size: 11px; bottom: 10px; }
 }

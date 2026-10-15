@@ -82,3 +82,7 @@ See [asset mapping](docs/atelier-asset-map.md), [QA and compliance](docs/atelier
 ## Verification limits
 
 See the delivery report for executed results. DOM tests are not a substitute for a rendered browser/device test. The remote browser could not access the local development server; physical device QA, visual crop/timing review in the running browser, and production performance testing remain unverified. Nine existing Fast Refresh export warnings are non-blocking; lint must report zero errors. No claim is made that Jira instructor access or deployment of this revision has been completed.
+
+## Latest visual revision
+
+See [docs/visual-refresh.md](docs/visual-refresh.md) for the requested homepage/auth imagery, enlarged autoplay hero, source mapping, executed checks and remaining browser-verification limitation. The film is a silent 7.47-second craft/model montage with no visible play control.

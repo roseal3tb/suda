@@ -1,0 +1,186 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> verify
+> npm run typecheck && npm run test && npm run lint && npm run build
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> typecheck
+> tsc --noEmit
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> test
+> vitest run
+
+
+ RUN  v4.1.11 /workspace/scratch/2005d566926d/suda
+
+
+ Test Files  6 passed (6)
+      Tests  28 passed (28)
+   Start at  16:00:09
+   Duration  3.06s (transform 931ms, setup 404ms, import 1.97s, tests 2.40s, environment 2.05s)
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> lint
+> eslint .
+
+
+/workspace/scratch/2005d566926d/suda/src/components/suda/reveal.tsx
+  15:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/workspace/scratch/2005d566926d/suda/src/components/suda/shared.tsx
+  31:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/workspace/scratch/2005d566926d/suda/src/components/ui/badge.tsx
+  37:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/workspace/scratch/2005d566926d/suda/src/components/ui/button.tsx
+  58:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/workspace/scratch/2005d566926d/suda/src/components/ui/form.tsx
+  171:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/workspace/scratch/2005d566926d/suda/src/components/ui/navigation-menu.tsx
+  119:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/workspace/scratch/2005d566926d/suda/src/components/ui/sidebar.tsx
+  778:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/workspace/scratch/2005d566926d/suda/src/components/ui/toggle.tsx
+  43:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/workspace/scratch/2005d566926d/suda/src/features/suda/demo-context.tsx
+  210:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+✖ 9 problems (0 errors, 9 warnings)
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> build
+> vite build
+
+The plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the resolve.tsconfigPaths option. You can remove the plugin and set resolve.tsconfigPaths: true in your Vite config instead.
+vite v8.1.5 building client environment for production...
+[2Ktransforming...✓ 2393 modules transformed.
+rendering chunks...
+computing gzip size...
+.output/public/assets/styles-ceWvD0YG.css              128.17 kB │ gzip:  23.66 kB
+.output/public/assets/check-BWLiDywG.js                  0.11 kB │ gzip:   0.13 kB
+.output/public/assets/login-BjOdnSKi.js                  0.13 kB │ gzip:   0.13 kB
+.output/public/assets/register-CLFLhm-h.js               0.14 kB │ gzip:   0.14 kB
+.output/public/assets/search-BWPsYvUE.js                 0.16 kB │ gzip:   0.16 kB
+.output/public/assets/user-round-BJVlM2SU.js             0.17 kB │ gzip:   0.17 kB
+.output/public/assets/useNavigate-BNLYIdXY.js            0.22 kB │ gzip:   0.19 kB
+.output/public/assets/pencil-C1mEyDBn.js                 0.26 kB │ gzip:   0.21 kB
+.output/public/assets/trash-2-DqYYMZoc.js                0.31 kB │ gzip:   0.20 kB
+.output/public/assets/images-Cxz6zfAI.js                 0.36 kB │ gzip:   0.26 kB
+.output/public/assets/opportunities._id-CpkclmAW.js      0.63 kB │ gzip:   0.44 kB
+.output/public/assets/opportunities.index-VS9hokMV.js    0.89 kB │ gzip:   0.58 kB
+.output/public/assets/opportunities.index-Ddhi4oYk.js    3.27 kB │ gzip:   1.30 kB
+.output/public/assets/learning-DWUUEqtd.js               3.96 kB │ gzip:   1.91 kB
+.output/public/assets/opportunities._id-Bs5rQani.js      4.22 kB │ gzip:   1.60 kB
+.output/public/assets/profile-DmZW_Kba.js                4.55 kB │ gzip:   1.64 kB
+.output/public/assets/preload-helper-BfW6tO6q.js         5.65 kB │ gzip:   2.21 kB
+.output/public/assets/auth-page-B3r8cJF9.js              6.41 kB │ gzip:   2.49 kB
+.output/public/assets/portfolio-2kPB5my6.js              6.57 kB │ gzip:   2.74 kB
+.output/public/assets/admin-Bl3YuIG1.js                  8.48 kB │ gzip:   2.88 kB
+.output/public/assets/inspiration-C1qf8d56.js           11.54 kB │ gzip:   3.77 kB
+.output/public/assets/routes-CKt3oBs_.js                11.90 kB │ gzip:   4.00 kB
+.output/public/assets/shared-CsFbWHKw.js               103.66 kB │ gzip:  36.08 kB
+.output/public/assets/reveal-D4zWE7Oq.js               133.06 kB │ gzip:  43.79 kB
+.output/public/assets/index-B57OgC1M.js                354.63 kB │ gzip: 112.57 kB
+
+✓ built in 1.01s
+vite v8.1.5 building ssr environment for production...
+[2Ktransforming...✓ 95 modules transformed.
+rendering chunks...
+computing gzip size...
+node_modules/.nitro/vite/services/ssr/assets/styles-ceWvD0YG.css                     128.17 kB │ gzip: 23.66 kB
+node_modules/.nitro/vite/services/ssr/assets/empty-plugin-adapters-D9UWiqvJ.js         0.22 kB │ gzip:  0.16 kB
+node_modules/.nitro/vite/services/ssr/assets/login-OWI8VpxY.js                         0.26 kB │ gzip:  0.20 kB
+node_modules/.nitro/vite/services/ssr/assets/register-D0Jo8vBI.js                      0.28 kB │ gzip:  0.21 kB
+node_modules/.nitro/vite/services/ssr/assets/opportunities._id-C--NP42q.js             0.61 kB │ gzip:  0.40 kB
+node_modules/.nitro/vite/services/ssr/assets/opportunities.index-BZxIvAl6.js           0.76 kB │ gzip:  0.48 kB
+node_modules/.nitro/vite/services/ssr/assets/start-RKGGYzjZ.js                         1.57 kB │ gzip:  0.71 kB
+node_modules/.nitro/vite/services/ssr/assets/reveal-CE_F_Gx_.js                        2.20 kB │ gzip:  1.02 kB
+node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-CUXz2UoL.js    2.99 kB │ gzip:  0.80 kB
+node_modules/.nitro/vite/services/ssr/assets/createCsrfMiddleware-B2To0gPJ.js          3.19 kB │ gzip:  1.01 kB
+node_modules/.nitro/vite/services/ssr/index.js                                         4.61 kB │ gzip:  1.92 kB
+node_modules/.nitro/vite/services/ssr/assets/opportunities.index-ItN_Qxdx.js           5.29 kB │ gzip:  1.66 kB
+node_modules/.nitro/vite/services/ssr/assets/learning-K6p0T01x.js                      6.02 kB │ gzip:  2.26 kB
+node_modules/.nitro/vite/services/ssr/assets/opportunities._id-B3ULcCum.js             6.73 kB │ gzip:  2.06 kB
+node_modules/.nitro/vite/services/ssr/assets/profile-BGpPgOn5.js                       7.38 kB │ gzip:  2.03 kB
+node_modules/.nitro/vite/services/ssr/assets/auth-page-BcirtAK2.js                     9.07 kB │ gzip:  2.71 kB
+node_modules/.nitro/vite/services/ssr/assets/portfolio-CDrvRCao.js                    10.12 kB │ gzip:  3.33 kB
+node_modules/.nitro/vite/services/ssr/assets/admin-DwNAdQfd.js                        13.56 kB │ gzip:  3.38 kB
+node_modules/.nitro/vite/services/ssr/assets/inspiration-DvAOaIiy.js                  14.33 kB │ gzip:  4.07 kB
+node_modules/.nitro/vite/services/ssr/assets/routes-B3KuGQ13.js                       17.20 kB │ gzip:  4.78 kB
+node_modules/.nitro/vite/services/ssr/assets/router-C6Lu715z.js                       27.86 kB │ gzip:  7.76 kB
+node_modules/.nitro/vite/services/ssr/assets/shared-GMnpeXQm.js                       28.23 kB │ gzip:  8.54 kB
+node_modules/.nitro/vite/services/ssr/assets/server-C3EeAkd9.js                       66.34 kB │ gzip: 16.95 kB
+
+✓ built in 628ms
+
+[nitro] ◐ Building [Nitro] (preset: cloudflare-module, compatibility: 2026-10-15)
+[nitro] ✔ Generated public .output/public
+vite v8.1.5 building nitro environment for production...
+
+ WARN  inlineDynamicImports option is ignored because the codeSplitting option is specified.
+
+[2Ktransforming...✓ 2436 modules transformed.
+rendering chunks...
+computing gzip size...
+.output/server/_ssr/empty-plugin-adapters-D9UWiqvJ.mjs         0.23 kB │ gzip:   0.16 kB
+.output/server/_ssr/login-OWI8VpxY.mjs                         0.40 kB │ gzip:   0.27 kB
+.output/server/_ssr/register-D0Jo8vBI.mjs                      0.42 kB │ gzip:   0.27 kB
+.output/server/_chunks/ssr-renderer.mjs                        0.60 kB │ gzip:   0.36 kB
+.output/server/_ssr/opportunities._id-C--NP42q.mjs             0.68 kB │ gzip:   0.45 kB
+.output/server/_ssr/opportunities.index-BZxIvAl6.mjs           0.84 kB │ gzip:   0.53 kB
+.output/server/_libs/hookable.mjs                              1.17 kB │ gzip:   0.52 kB
+.output/server/_runtime.mjs                                    1.18 kB │ gzip:   0.57 kB
+.output/server/_ssr/start-RKGGYzjZ.mjs                         1.53 kB │ gzip:   0.70 kB
+.output/server/_libs/tanstack__react-query.mjs                 1.68 kB │ gzip:   0.77 kB
+.output/server/_libs/radix-ui__primitive.mjs                   1.83 kB │ gzip:   0.72 kB
+.output/server/_ssr/reveal-CE_F_Gx_.mjs                        2.45 kB │ gzip:   1.10 kB
+.output/server/_tanstack-start-manifest_v-CUXz2UoL.mjs         3.05 kB │ gzip:   0.83 kB
+.output/server/_ssr/createCsrfMiddleware-B2To0gPJ.mjs          3.11 kB │ gzip:   1.01 kB
+.output/server/_libs/class-variance-authority+clsx.mjs         3.17 kB │ gzip:   1.24 kB
+.output/server/_ssr/ssr.mjs                                    4.55 kB │ gzip:   1.92 kB
+.output/server/_libs/radix-ui__react-context+react.mjs         5.74 kB │ gzip:   1.67 kB
+.output/server/_ssr/opportunities.index-ItN_Qxdx.mjs           6.47 kB │ gzip:   1.80 kB
+.output/server/_ssr/learning-K6p0T01x.mjs                      7.33 kB │ gzip:   2.42 kB
+.output/server/_ssr/opportunities._id-B3ULcCum.mjs             8.37 kB │ gzip:   2.16 kB
+.output/server/_ssr/profile-BGpPgOn5.mjs                       8.88 kB │ gzip:   2.17 kB
+.output/server/_libs/h3-v2+rou3+srvx.mjs                       9.87 kB │ gzip:   3.06 kB
+.output/server/_ssr/auth-page-BcirtAK2.mjs                    10.63 kB │ gzip:   2.89 kB
+.output/server/_ssr/portfolio-CDrvRCao.mjs                    11.61 kB │ gzip:   3.47 kB
+.output/server/_libs/tanstack__history.mjs                    12.50 kB │ gzip:   3.70 kB
+.output/server/_ssr/inspiration-DvAOaIiy.mjs                  15.84 kB │ gzip:   4.21 kB
+.output/server/_ssr/admin-DwNAdQfd.mjs                        16.19 kB │ gzip:   3.55 kB
+.output/server/_libs/h3+rou3+srvx.mjs                         17.32 kB │ gzip:   4.99 kB
+.output/server/_libs/@radix-ui/react-compose-refs+[...].mjs   17.67 kB │ gzip:   4.85 kB
+.output/server/_libs/lucide-react.mjs                         18.63 kB │ gzip:   4.06 kB
+.output/server/_ssr/routes-B3KuGQ13.mjs                       20.30 kB │ gzip:   4.95 kB
+.output/server/index.mjs                                      23.81 kB │ gzip:   6.20 kB
+.output/server/_libs/@tanstack/router-core+[...].mjs          29.60 kB │ gzip:   7.98 kB
+.output/server/_ssr/shared-GMnpeXQm.mjs                       30.11 kB │ gzip:   8.68 kB
+.output/server/_ssr/router-C6Lu715z.mjs                       30.49 kB │ gzip:   7.88 kB
+.output/server/_ssr/server-C3EeAkd9.mjs                       64.79 kB │ gzip:  16.84 kB
+.output/server/_libs/tailwind-merge.mjs                       88.92 kB │ gzip:  15.71 kB
+.output/server/_libs/@radix-ui/react-dialog+[...].mjs         90.83 kB │ gzip:  21.44 kB
+.output/server/_libs/tanstack__query-core.mjs                113.15 kB │ gzip:  26.67 kB
+.output/server/_libs/framer-motion+[...].mjs                 352.56 kB │ gzip:  93.54 kB
+.output/server/_libs/@tanstack/react-router+[...].mjs        779.37 kB │ gzip: 164.34 kB
+
+✓ built in 393ms
+[nitro] ℹ Using auto generated worker name: roseal3tb-suda
+ℹ Generated .output/server/wrangler.json
+ℹ Generated .wrangler/deploy/config.json
+ℹ Generated .output/public/_headers
+ℹ Generated .output/nitro.json
+
+[nitro] ✔ You can preview this build using npx vite preview
+[nitro] ✔ You can deploy this build using npx nitro deploy --prebuilt

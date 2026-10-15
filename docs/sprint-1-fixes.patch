@@ -1,0 +1,1522 @@
+diff --git a/README.md b/README.md
+index 2b350b7..4f7f9a1 100644
+--- a/README.md
++++ b/README.md
+@@ -4,7 +4,7 @@ An Arabic-first, RTL, premium Saudi fashion editorial and opportunities demo bui
+ 
+ ## Purpose and boundaries
+ 
+-SUDA lets visitors browse **four opportunity categories** (free courses, competitions, internships, careers), combine Arabic search and filters, and view details. A demo designer can maintain a professional profile and fashion portfolio, enroll in free courses, and update progress and achievements manually. A demo administrator can add, edit and delete opportunities. A separate text-only **إلهام سعودي** editorial page features eight sourced designer profiles with in-page expansion.
++SUDA lets visitors browse **four opportunity categories** (free courses, competitions, internships, careers), combine Arabic search and filters, and view details. A demo designer can maintain a professional profile and fashion portfolio, enroll in free courses, and update progress and achievements manually. A demo administrator can add, edit and delete opportunities. A separate text-only **إلهام سعودي** editorial page features eleven sourced designer profiles with in-page expansion.
+ 
+ This is **Sprint 1 frontend demonstration only**: no database, production authentication, backend, email, file hosting, video hosting, job application processing, or secure roles. All sample opportunities and organizers are fictional. A correctly formatted demo email and a six-character *fictional* password activate a mock session; passwords are never saved. Do not enter actual credentials or personal data.
+ 
+@@ -33,7 +33,7 @@ The original Lovable project uses `bun.lock`, so Bun may also be used (`bun inst
+ | `/portfolio` | Per-demo-email portfolio CRUD and locally compressed photos |
+ | `/learning` | Enrollments, manually updated progress and achievements; verified Zoom links only |
+ | `/admin` | Four-category opportunity CRUD, desktop table and mobile cards |
+-| `/inspiration` | Eight sourced Saudi female designer profiles, text-only in-page expansion |
++| `/inspiration` | Eleven sourced Saudi female designer profiles, text-only in-page expansion |
+ 
+ ## Local demo storage
+ 
+@@ -51,7 +51,7 @@ Official palette: Linen `#FAF6F1`, Dusty Rose `#E8D7E1`, Lavender Taupe `#C5B1BC
+ 
+ General atelier/craft photos are linked from **Unsplash**, with credited authors and original photo pages in `src/features/suda/mock-data.ts` and visible footer credits. These are general stock photos, **not** representations of named Saudi designers. Please check the linked source and the current [Unsplash License](https://unsplash.com/license) before public deployment; no rights for designer imagery are assumed.
+ 
+-The eight Saudi designer profiles in `src/features/suda/designers.ts` cite official designer/brand pages or published reporting (Honayda, Arwa, Reem, Tima, Nora, Noura, Kawthar, Hala). They intentionally use **no designer photographs and no unsourced specific collection claims** until the project team verifies both content and image reuse permissions. This editorial addition is subject to project team approval.
++The eleven Saudi designer profiles in `src/features/suda/designers.ts` cite official designer/brand pages or published reporting (including Waad, Iman, Rahaf, Honayda, Arwa, Reem, Tima, Nora, Noura, Kawthar, and Hala). They intentionally use **no designer photographs and no unsourced specific collection claims** until the project team verifies both content and image reuse permissions. This editorial addition is subject to project team approval.
+ 
+ ## Project organization
+ 
+diff --git a/src/routes/admin.tsx b/src/routes/admin.tsx
+index 622e92a..3ee5dd7 100644
+--- a/src/routes/admin.tsx
++++ b/src/routes/admin.tsx
+@@ -1,10 +1,422 @@
+-import { createFileRoute } from '@tanstack/react-router';
+-import { useState, type FormEvent } from 'react';
+-import { Pencil, Trash2, Check, Shield, Search } from 'lucide-react';
+-import { Reveal } from '@/components/suda/reveal';
+-import { Button } from '@/components/ui/button';
+-import { AddButton, ConfirmDelete, DemoNote, EmptyState, FormField, MemberGate, Modal, PageIntro } from '@/components/suda/shared';
+-import { categories, emptyFilters, filterOpportunities, formatDate, images, pageHead, validateOpportunity, isValidZoomUrl, isValidExternalUrl, type Opportunity, type Category } from '@/features/suda/mock-data';
+-import { useDemo } from '@/features/suda/demo-context';
+-export const Route=createFileRoute('/admin')({head:()=>pageHead('إدارة الفرص','واجهة تجريبية للمشرفة لإضافة فرص الأزياء وتعديلها وحذفها، دون حماية أمنية حقيقية.'),component:()=> <MemberGate admin><Admin/></MemberGate>});
+-function Admin(){const {opportunities,saveOpportunity,deleteOpportunity}=useDemo();const [form,setForm]=useState<Opportunity|null>(null);const [deleting,setDeleting]=useState<Opportunity|null>(null);const [error,setError]=useState('');const [query,setQuery]=useState('');const [type,setType]=useState('');const [saved,setSaved]=useState(false);const items=filterOpportunities(opportunities,{...emptyFilters,query,type});function start(item?:Opportunity){setError('');setForm(item?{...item}:{id:`opportunity-${Date.now()}`,title:'',type:'الدورات',organization:'',location:'عن بُعد',mode:'عن بُعد',level:'مبتدئ',description:'',requirements:'',deadline:'',image:images.atelier,externalUrl:'',zoomUrl:''});}function submit(e:FormEvent){e.preventDefault();if(!form)return;if(!validateOpportunity(form)||!form.location.trim()){setError('أكملي عنوان الفرصة والجهة والموقع والوصف والمتطلبات.');return;}if(form.externalUrl&&!isValidExternalUrl(form.externalUrl)){setError('رابط الجهة يجب أن يبدأ بـ https://. اتركيه فارغًا إذا لم يوجد رابط موثّق.');return;}if(form.type==='الدورات'&&form.zoomUrl&&!isValidZoomUrl(form.zoomUrl)){setError('استخدمي رابط اجتماع Zoom رسميًا يبدأ بـ https:// وينتمي إلى zoom.us.');return;}if(!saveOpportunity({...form,title:form.title.trim(),organization:form.organization.trim(),externalUrl:form.type==='الدورات'?undefined:form.externalUrl?.trim()||undefined,zoomUrl:form.type==='الدورات'?form.zoomUrl?.trim()||undefined:undefined})){setError('تعذّر حفظ الفرصة محليًا.');return;}setForm(null);setSaved(true);}return <div className="content-wrap"><div className="admin-banner"><Shield size={17}/>وضع المشرفة التجريبي · تقييد عرض فقط، وليس تحققًا آمنًا من الصلاحيات.</div><PageIntro eyebrow="مساحة الإدارة" title="إدارة الفرص" description="إضافة الدورات والمسابقات وفرص التدريب والعمل وتعديلها وحذفها." action={<AddButton onClick={()=>start()}>إضافة فرصة</AddButton>}/>{saved&&<p role="status" className="success-message"><Check size={16}/>حُفظت الفرصة في القائمة التجريبية.</p>}<div className="form-grid mb-6"><div className="search-input"><Search size={17}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="البحث في الفرص" aria-label="البحث في فرص الإدارة"/></div><select aria-label="نوع الفرصة" value={type} onChange={e=>setType(e.target.value)}><option value="">جميع الأنواع</option>{categories.map(c=><option key={c}>{c}</option>)}</select></div>{items.length?<><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>الفرصة</th><th>النوع</th><th>الجهة</th><th>آخر موعد</th><th>الإجراءات</th></tr></thead><tbody>{items.map(item=><tr key={item.id}><td>{item.title}</td><td><span className="type-label">{item.type}</span></td><td>{item.organization}</td><td>{formatDate(item.deadline)}</td><td><div className="admin-actions"><Button variant="ghost" size="icon" title="تعديل الفرصة" aria-label={`تعديل ${item.title}`} onClick={()=>start(item)}><Pencil/></Button><Button variant="ghost" size="icon" title="حذف الفرصة" aria-label={`حذف ${item.title}`} onClick={()=>setDeleting(item)}><Trash2/></Button></div></td></tr>)}</tbody></table></div><div className="admin-mobile-cards">{items.map(item=><Reveal as="article" className="admin-mobile-card" key={item.id}><span className="type-label">{item.type}</span><h3>{item.title}</h3><p>{item.organization} · {formatDate(item.deadline)}</p><div className="admin-actions"><Button variant="outline" size="sm" onClick={()=>start(item)}><Pencil size={15}/>تعديل</Button><Button variant="outline" size="sm" onClick={()=>setDeleting(item)}><Trash2 size={15}/>حذف</Button></div></Reveal>)}</div></>:<EmptyState title="لا توجد فرص تطابق البحث" description="عدّلي البحث أو أضيفي فرصة جديدة."/>}<DemoNote/><Modal open={Boolean(form)} onClose={()=>setForm(null)} title={form&&opportunities.some(o=>o.id===form.id)?'تعديل الفرصة':'إضافة فرصة'}>{form&&<form className="form-stack" noValidate onSubmit={submit}><FormField label="عنوان الفرصة *"><input value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/></FormField><div className="form-grid"><FormField label="نوع الفرصة *"><select value={form.type} onChange={e=>setForm({...form,type:e.target.value as Category})}>{categories.map(c=><option key={c}>{c}</option>)}</select></FormField><FormField label="الجهة المنظمة *" hint="استخدمي اسمًا خياليًا واضحًا في العرض."><input value={form.organization} onChange={e=>setForm({...form,organization:e.target.value})}/></FormField></div><div className="form-grid"><FormField label="طريقة المشاركة *"><select value={form.mode} onChange={e=>setForm({...form,mode:e.target.value==='حضوري'?'حضوري':'عن بُعد'})}><option>عن بُعد</option><option>حضوري</option></select></FormField><FormField label="الموقع *"><input value={form.location} onChange={e=>setForm({...form,location:e.target.value})}/></FormField><FormField label="المستوى *"><select value={form.level} onChange={e=>setForm({...form,level:e.target.value as Opportunity['level']})}><option>مبتدئ</option><option>متوسط</option><option>جميع المستويات</option></select></FormField><FormField label="آخر موعد — اختياري"><input type="date" value={form.deadline} onChange={e=>setForm({...form,deadline:e.target.value})}/></FormField></div><FormField label="وصف الفرصة *"><textarea value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/></FormField><FormField label="المتطلبات *"><textarea value={form.requirements} onChange={e=>setForm({...form,requirements:e.target.value})}/></FormField>{form.type!=='الدورات'&&<FormField label="الرابط الرسمي — اختياري" hint="لا تضيفي رابطًا غير موثّق؛ الطلبات تُقدّم خارج سُدى."><input dir="ltr" type="url" value={form.externalUrl||''} onChange={e=>setForm({...form,externalUrl:e.target.value})} placeholder="https://"/></FormField>}{form.type==='الدورات'&&<><FormField label="رابط اجتماع Zoom — اختياري" hint="أضيفي رابطًا رسميًا موثّقًا فقط. لا يظهر للمستخدمة إلا بعد الالتحاق."><input dir="ltr" type="url" value={form.zoomUrl||''} onChange={e=>setForm({...form,zoomUrl:e.target.value})} placeholder="https://us02web.zoom.us/j/..."/></FormField><p className="demo-note">الدورات مجانية، ولا يُنشأ رابط اجتماع افتراضي إذا لم تُقدّمه الجهة.</p></>}{error&&<p className="form-error" role="alert">{error}</p>}<div className="form-actions"><Button type="submit">حفظ الفرصة <Check/></Button><Button type="button" variant="outline" onClick={()=>setForm(null)}>إلغاء</Button></div></form>}</Modal><ConfirmDelete open={Boolean(deleting)} onClose={()=>setDeleting(null)} name={deleting?.title||''} onConfirm={()=>{if(deleting&&deleteOpportunity(deleting.id))setDeleting(null);}}/></div>;}
++import { createFileRoute } from "@tanstack/react-router";
++import { useState, type FormEvent } from "react";
++import { Pencil, Trash2, Check, Shield, Search } from "lucide-react";
++import { Reveal } from "@/components/suda/reveal";
++import { Button } from "@/components/ui/button";
++import {
++  AddButton,
++  ConfirmDelete,
++  DemoNote,
++  EmptyState,
++  FormField,
++  MemberGate,
++  Modal,
++  PageIntro,
++} from "@/components/suda/shared";
++import {
++  categories,
++  emptyFilters,
++  filterOpportunities,
++  formatDate,
++  images,
++  pageHead,
++  validateOpportunity,
++  isValidZoomUrl,
++  isValidExternalUrl,
++  type Opportunity,
++  type Category,
++} from "@/features/suda/mock-data";
++import { useDemo } from "@/features/suda/demo-context";
++export const Route = createFileRoute("/admin")({
++  head: () =>
++    pageHead(
++      "إدارة الفرص",
++      "واجهة تجريبية للمشرفة لإضافة فرص الأزياء وتعديلها وحذفها، دون حماية أمنية حقيقية.",
++    ),
++  component: () => (
++    <MemberGate admin>
++      <Admin />
++    </MemberGate>
++  ),
++});
++function Admin() {
++  const { opportunities, saveOpportunity, deleteOpportunity } = useDemo();
++  const [form, setForm] = useState<Opportunity | null>(null);
++  const [deleting, setDeleting] = useState<Opportunity | null>(null);
++  const [error, setError] = useState("");
++  const [query, setQuery] = useState("");
++  const [type, setType] = useState("");
++  const [saved, setSaved] = useState(false);
++  const items = filterOpportunities(opportunities, {
++    ...emptyFilters,
++    query,
++    type,
++  });
++  function start(item?: Opportunity) {
++    setError("");
++    setForm(
++      item
++        ? { ...item }
++        : {
++            id: `opportunity-${Date.now()}`,
++            title: "",
++            type: "الدورات",
++            organization: "",
++            location: "عن بُعد",
++            mode: "عن بُعد",
++            level: "مبتدئ",
++            description: "",
++            requirements: "",
++            deadline: "",
++            image: images.atelier,
++            externalUrl: "",
++            zoomUrl: "",
++          },
++    );
++  }
++  function submit(e: FormEvent) {
++    e.preventDefault();
++    if (!form) return;
++    if (!validateOpportunity(form) || !form.location.trim()) {
++      setError("أكملي عنوان الفرصة والجهة والموقع والوصف والمتطلبات.");
++      return;
++    }
++    if (form.externalUrl && !isValidExternalUrl(form.externalUrl)) {
++      setError(
++        "رابط الجهة يجب أن يبدأ بـ https://. اتركيه فارغًا إذا لم يوجد رابط موثّق.",
++      );
++      return;
++    }
++    if (
++      form.type === "الدورات" &&
++      form.zoomUrl &&
++      !isValidZoomUrl(form.zoomUrl)
++    ) {
++      setError(
++        "استخدمي رابط اجتماع Zoom رسميًا يبدأ بـ https:// وينتمي إلى zoom.us.",
++      );
++      return;
++    }
++    const { externalUrl, zoomUrl, ...fields } = form;
++    const links =
++      form.type === "الدورات"
++        ? zoomUrl?.trim()
++          ? { zoomUrl: zoomUrl.trim() }
++          : {}
++        : externalUrl?.trim()
++          ? { externalUrl: externalUrl.trim() }
++          : {};
++    if (
++      !saveOpportunity({
++        ...fields,
++        title: form.title.trim(),
++        organization: form.organization.trim(),
++        ...links,
++      })
++    ) {
++      setError("تعذّر حفظ الفرصة محليًا.");
++      return;
++    }
++    setForm(null);
++    setSaved(true);
++  }
++  return (
++    <div className="content-wrap">
++      <div className="admin-banner">
++        <Shield size={17} />
++        وضع المشرفة التجريبي · تقييد عرض فقط، وليس تحققًا آمنًا من الصلاحيات.
++      </div>
++      <PageIntro
++        eyebrow="مساحة الإدارة"
++        title="إدارة الفرص"
++        description="إضافة الدورات والمسابقات وفرص التدريب والعمل وتعديلها وحذفها."
++        action={<AddButton onClick={() => start()}>إضافة فرصة</AddButton>}
++      />
++      {saved && (
++        <p role="status" className="success-message">
++          <Check size={16} />
++          حُفظت الفرصة في القائمة التجريبية.
++        </p>
++      )}
++      <div className="form-grid mb-6">
++        <div className="search-input">
++          <Search size={17} />
++          <input
++            value={query}
++            onChange={(e) => setQuery(e.target.value)}
++            placeholder="البحث في الفرص"
++            aria-label="البحث في فرص الإدارة"
++          />
++        </div>
++        <select
++          aria-label="نوع الفرصة"
++          value={type}
++          onChange={(e) => setType(e.target.value)}
++        >
++          <option value="">جميع الأنواع</option>
++          {categories.map((c) => (
++            <option key={c}>{c}</option>
++          ))}
++        </select>
++      </div>
++      {items.length ? (
++        <>
++          <div className="admin-table-wrap">
++            <table className="admin-table">
++              <thead>
++                <tr>
++                  <th>الفرصة</th>
++                  <th>النوع</th>
++                  <th>الجهة</th>
++                  <th>آخر موعد</th>
++                  <th>الإجراءات</th>
++                </tr>
++              </thead>
++              <tbody>
++                {items.map((item) => (
++                  <tr key={item.id}>
++                    <td>{item.title}</td>
++                    <td>
++                      <span className="type-label">{item.type}</span>
++                    </td>
++                    <td>{item.organization}</td>
++                    <td>{formatDate(item.deadline)}</td>
++                    <td>
++                      <div className="admin-actions">
++                        <Button
++                          variant="ghost"
++                          size="icon"
++                          title="تعديل الفرصة"
++                          aria-label={`تعديل ${item.title}`}
++                          onClick={() => start(item)}
++                        >
++                          <Pencil />
++                        </Button>
++                        <Button
++                          variant="ghost"
++                          size="icon"
++                          title="حذف الفرصة"
++                          aria-label={`حذف ${item.title}`}
++                          onClick={() => setDeleting(item)}
++                        >
++                          <Trash2 />
++                        </Button>
++                      </div>
++                    </td>
++                  </tr>
++                ))}
++              </tbody>
++            </table>
++          </div>
++          <div className="admin-mobile-cards">
++            {items.map((item) => (
++              <Reveal as="article" className="admin-mobile-card" key={item.id}>
++                <span className="type-label">{item.type}</span>
++                <h3>{item.title}</h3>
++                <p>
++                  {item.organization} · {formatDate(item.deadline)}
++                </p>
++                <div className="admin-actions">
++                  <Button
++                    variant="outline"
++                    size="sm"
++                    onClick={() => start(item)}
++                  >
++                    <Pencil size={15} />
++                    تعديل
++                  </Button>
++                  <Button
++                    variant="outline"
++                    size="sm"
++                    onClick={() => setDeleting(item)}
++                  >
++                    <Trash2 size={15} />
++                    حذف
++                  </Button>
++                </div>
++              </Reveal>
++            ))}
++          </div>
++        </>
++      ) : (
++        <EmptyState
++          title="لا توجد فرص تطابق البحث"
++          description="عدّلي البحث أو أضيفي فرصة جديدة."
++        />
++      )}
++      <DemoNote />
++      <Modal
++        open={Boolean(form)}
++        onClose={() => setForm(null)}
++        title={
++          form && opportunities.some((o) => o.id === form.id)
++            ? "تعديل الفرصة"
++            : "إضافة فرصة"
++        }
++      >
++        {form && (
++          <form className="form-stack" noValidate onSubmit={submit}>
++            <FormField label="عنوان الفرصة *">
++              <input
++                value={form.title}
++                onChange={(e) => setForm({ ...form, title: e.target.value })}
++              />
++            </FormField>
++            <div className="form-grid">
++              <FormField label="نوع الفرصة *">
++                <select
++                  value={form.type}
++                  onChange={(e) =>
++                    setForm({ ...form, type: e.target.value as Category })
++                  }
++                >
++                  {categories.map((c) => (
++                    <option key={c}>{c}</option>
++                  ))}
++                </select>
++              </FormField>
++              <FormField
++                label="الجهة المنظمة *"
++                hint="استخدمي اسمًا خياليًا واضحًا في العرض."
++              >
++                <input
++                  value={form.organization}
++                  onChange={(e) =>
++                    setForm({ ...form, organization: e.target.value })
++                  }
++                />
++              </FormField>
++            </div>
++            <div className="form-grid">
++              <FormField label="طريقة المشاركة *">
++                <select
++                  value={form.mode}
++                  onChange={(e) =>
++                    setForm({
++                      ...form,
++                      mode: e.target.value === "حضوري" ? "حضوري" : "عن بُعد",
++                    })
++                  }
++                >
++                  <option>عن بُعد</option>
++                  <option>حضوري</option>
++                </select>
++              </FormField>
++              <FormField label="الموقع *">
++                <input
++                  value={form.location}
++                  onChange={(e) =>
++                    setForm({ ...form, location: e.target.value })
++                  }
++                />
++              </FormField>
++              <FormField label="المستوى *">
++                <select
++                  value={form.level}
++                  onChange={(e) =>
++                    setForm({
++                      ...form,
++                      level: e.target.value as Opportunity["level"],
++                    })
++                  }
++                >
++                  <option>مبتدئ</option>
++                  <option>متوسط</option>
++                  <option>جميع المستويات</option>
++                </select>
++              </FormField>
++              <FormField label="آخر موعد — اختياري">
++                <input
++                  type="date"
++                  value={form.deadline}
++                  onChange={(e) =>
++                    setForm({ ...form, deadline: e.target.value })
++                  }
++                />
++              </FormField>
++            </div>
++            <FormField label="وصف الفرصة *">
++              <textarea
++                value={form.description}
++                onChange={(e) =>
++                  setForm({ ...form, description: e.target.value })
++                }
++              />
++            </FormField>
++            <FormField label="المتطلبات *">
++              <textarea
++                value={form.requirements}
++                onChange={(e) =>
++                  setForm({ ...form, requirements: e.target.value })
++                }
++              />
++            </FormField>
++            {form.type !== "الدورات" && (
++              <FormField
++                label="الرابط الرسمي — اختياري"
++                hint="لا تضيفي رابطًا غير موثّق؛ الطلبات تُقدّم خارج سُدى."
++              >
++                <input
++                  dir="ltr"
++                  type="url"
++                  value={form.externalUrl || ""}
++                  onChange={(e) =>
++                    setForm({ ...form, externalUrl: e.target.value })
++                  }
++                  placeholder="https://"
++                />
++              </FormField>
++            )}
++            {form.type === "الدورات" && (
++              <>
++                <FormField
++                  label="رابط اجتماع Zoom — اختياري"
++                  hint="أضيفي رابطًا رسميًا موثّقًا فقط. لا يظهر للمستخدمة إلا بعد الالتحاق."
++                >
++                  <input
++                    dir="ltr"
++                    type="url"
++                    value={form.zoomUrl || ""}
++                    onChange={(e) =>
++                      setForm({ ...form, zoomUrl: e.target.value })
++                    }
++                    placeholder="https://us02web.zoom.us/j/..."
++                  />
++                </FormField>
++                <p className="demo-note">
++                  الدورات مجانية، ولا يُنشأ رابط اجتماع افتراضي إذا لم تُقدّمه
++                  الجهة.
++                </p>
++              </>
++            )}
++            {error && (
++              <p className="form-error" role="alert">
++                {error}
++              </p>
++            )}
++            <div className="form-actions">
++              <Button type="submit">
++                حفظ الفرصة <Check />
++              </Button>
++              <Button
++                type="button"
++                variant="outline"
++                onClick={() => setForm(null)}
++              >
++                إلغاء
++              </Button>
++            </div>
++          </form>
++        )}
++      </Modal>
++      <ConfirmDelete
++        open={Boolean(deleting)}
++        onClose={() => setDeleting(null)}
++        name={deleting?.title || ""}
++        onConfirm={() => {
++          if (deleting && deleteOpportunity(deleting.id)) setDeleting(null);
++        }}
++      />
++    </div>
++  );
++}
+diff --git a/src/routes/learning.tsx b/src/routes/learning.tsx
+index 84d58a9..7057e9e 100644
+--- a/src/routes/learning.tsx
++++ b/src/routes/learning.tsx
+@@ -1,11 +1,198 @@
+-import { createFileRoute, Link } from '@tanstack/react-router';
+-import { useState, type FormEvent } from 'react';
+-import { Check, Plus, ArrowLeft, Video } from 'lucide-react';
+-import { Button } from '@/components/ui/button';
+-import { Reveal } from '@/components/suda/reveal';
+-import { DemoNote, EmptyState, MemberGate, PageIntro } from '@/components/suda/shared';
+-import { pageHead, isValidZoomUrl, type Enrollment, type Opportunity } from '@/features/suda/mock-data';
+-import { useDemo } from '@/features/suda/demo-context';
+-export const Route=createFileRoute('/learning')({head:()=>pageHead('رحلتي التعليمية','دوراتك المجانية وتقدّمك الذي تحدثينه يدويًا وإنجازاتك التعليمية في سُدى.'),component:()=> <MemberGate><Learning/></MemberGate>});
+-function Learning(){const {enrollments,opportunities}=useDemo();return <div className="content-wrap"><PageIntro eyebrow="التعلّم" title="رحلتي التعليمية" description="تابعي دوراتك، حدّثي تقدّمك بنفسك، وسجّلي ما أنجزتِه."/>{enrollments.length?enrollments.map(enrollment=>{const course=opportunities.find(o=>o.id===enrollment.courseId);return course?<LearningRow key={course.id} course={course} enrollment={enrollment}/>:null;}):<EmptyState title="لا توجد دورات ملتحقة بعد" description="التحقي بإحدى الدورات المجانية، وستجدينها هنا مع رابط اللقاء ومتابعة تقدّمك." action={<Button asChild><Link to="/opportunities" search={{category:'الدورات'}}>استكشفي الدورات <ArrowLeft/></Link></Button>}/>}<DemoNote/></div>;}
+-function LearningRow({course,enrollment}:{course:Opportunity;enrollment:Enrollment}){const {updateProgress,addAchievement}=useDemo();const [progress,setProgress]=useState(enrollment.progress);const [achievement,setAchievement]=useState('');const [saved,setSaved]=useState(false);const [error,setError]=useState('');const [zoom,setZoom]=useState(false);function submit(e:FormEvent){e.preventDefault();if(!achievement.trim()){setError('اكتبي إنجازك أولًا.');return;}if(!addAchievement(course.id,achievement)){setError('تعذّر حفظ الإنجاز.');return;}setAchievement('');setError('');}return <Reveal as="article" className="learning-row"><img src={course.image} alt="تفاصيل تصميم أزياء توضيحية" width={1024} height={1024}/><div><small>دورة مجانية · {course.organization}</small><h2><Link to="/opportunities/$id" params={{id:course.id}}>{course.title}</Link></h2><small>التقدّم يُحدَّث يدويًا بواسطتك، ولا يُرصد تلقائيًا.</small><div className="progress-controls"><input type="range" min="0" max="100" step="1" aria-label={`تقدم ${course.title}`} value={progress} onChange={e=>{setProgress(Number(e.target.value));setSaved(false);}}/><output>{progress.toLocaleString('ar-SA')}٪</output><Button variant="outline" size="sm" onClick={()=>{if(updateProgress(course.id,progress))setSaved(true);else setError('تعذّر حفظ التقدم.');}}><Check/>حفظ التقدّم</Button></div>{saved&&<p className="success-message" role="status">حُدّث التقدّم إلى {enrollment.progress.toLocaleString('ar-SA')}٪ في هذا المتصفح.</p>}<form className="achievement-form" onSubmit={submit}><input aria-label={`إنجاز جديد في ${course.title}`} value={achievement} onChange={e=>setAchievement(e.target.value)} placeholder="إنجازك، مثل: أتممت رسم الباترون الأول"/><Button type="submit" variant="outline"><Plus/>إضافة إنجاز</Button></form>{error&&<p className="form-error" role="alert">{error}</p>}<div className="achievement-list">{enrollment.achievements.map((text,i)=><span key={i}><Check size={14}/>{text}</span>)}</div><Button variant="link" onClick={()=>setZoom(!zoom)}><Video/>{zoom?'إخفاء رابط اللقاء':'عرض رابط زووم'}</Button>{zoom&&<div className="zoom-demo">{course.zoomUrl&&isValidZoomUrl(course.zoomUrl)?<a className="zoom-link" href={course.zoomUrl} target="_blank" rel="noopener noreferrer">فتح اجتماع Zoom الرسمي <Video size={15}/></a>:<p>لم تُرفق الجهة المنظمة رابط Zoom موثّقًا بعد.</p>}</div>}</div></Reveal>;}
++import { createFileRoute, Link } from "@tanstack/react-router";
++import { useState, type FormEvent } from "react";
++import { Check, Plus, ArrowLeft, Video } from "lucide-react";
++import { Button } from "@/components/ui/button";
++import { Reveal } from "@/components/suda/reveal";
++import {
++  DemoNote,
++  EmptyState,
++  MemberGate,
++  PageIntro,
++} from "@/components/suda/shared";
++import {
++  pageHead,
++  isValidZoomUrl,
++  type Enrollment,
++  type Opportunity,
++} from "@/features/suda/mock-data";
++import { useDemo } from "@/features/suda/demo-context";
++export const Route = createFileRoute("/learning")({
++  head: () =>
++    pageHead(
++      "رحلتي التعليمية",
++      "دوراتك المجانية وتقدّمك الذي تحدثينه يدويًا وإنجازاتك التعليمية في سُدى.",
++    ),
++  component: () => (
++    <MemberGate>
++      <Learning />
++    </MemberGate>
++  ),
++});
++function Learning() {
++  const { enrollments, opportunities } = useDemo();
++  const activeEnrollments = enrollments.filter((enrollment) =>
++    opportunities.some(
++      (course) =>
++        course.id === enrollment.courseId && course.type === "الدورات",
++    ),
++  );
++  return (
++    <div className="content-wrap">
++      <PageIntro
++        eyebrow="التعلّم"
++        title="رحلتي التعليمية"
++        description="تابعي دوراتك، حدّثي تقدّمك بنفسك، وسجّلي ما أنجزتِه."
++      />
++      {activeEnrollments.length ? (
++        activeEnrollments.map((enrollment) => {
++          const course = opportunities.find(
++            (o) => o.id === enrollment.courseId,
++          );
++          return course ? (
++            <LearningRow
++              key={course.id}
++              course={course}
++              enrollment={enrollment}
++            />
++          ) : null;
++        })
++      ) : (
++        <EmptyState
++          title="لا توجد دورات ملتحقة بعد"
++          description="التحقي بإحدى الدورات المجانية، وستجدينها هنا مع رابط اللقاء ومتابعة تقدّمك."
++          action={
++            <Button asChild>
++              <Link to="/opportunities" search={{ category: "الدورات" }}>
++                استكشفي الدورات <ArrowLeft />
++              </Link>
++            </Button>
++          }
++        />
++      )}
++      <DemoNote />
++    </div>
++  );
++}
++function LearningRow({
++  course,
++  enrollment,
++}: {
++  course: Opportunity;
++  enrollment: Enrollment;
++}) {
++  const { updateProgress, addAchievement } = useDemo();
++  const [progress, setProgress] = useState(enrollment.progress);
++  const [achievement, setAchievement] = useState("");
++  const [saved, setSaved] = useState(false);
++  const [error, setError] = useState("");
++  const [zoom, setZoom] = useState(false);
++  function submit(e: FormEvent) {
++    e.preventDefault();
++    if (!achievement.trim()) {
++      setError("اكتبي إنجازك أولًا.");
++      return;
++    }
++    if (!addAchievement(course.id, achievement)) {
++      setError("تعذّر حفظ الإنجاز.");
++      return;
++    }
++    setAchievement("");
++    setError("");
++  }
++  return (
++    <Reveal as="article" className="learning-row">
++      <img
++        src={course.image}
++        alt="تفاصيل تصميم أزياء توضيحية"
++        width={1024}
++        height={1024}
++      />
++      <div>
++        <small>دورة مجانية · {course.organization}</small>
++        <h2>
++          <Link to="/opportunities/$id" params={{ id: course.id }}>
++            {course.title}
++          </Link>
++        </h2>
++        <small>التقدّم يُحدَّث يدويًا بواسطتك، ولا يُرصد تلقائيًا.</small>
++        <div className="progress-controls">
++          <input
++            type="range"
++            min="0"
++            max="100"
++            step="1"
++            aria-label={`تقدم ${course.title}`}
++            value={progress}
++            onChange={(e) => {
++              setProgress(Number(e.target.value));
++              setSaved(false);
++            }}
++          />
++          <output>{progress.toLocaleString("ar-SA")}٪</output>
++          <Button
++            variant="outline"
++            size="sm"
++            onClick={() => {
++              if (updateProgress(course.id, progress)) setSaved(true);
++              else setError("تعذّر حفظ التقدم.");
++            }}
++          >
++            <Check />
++            حفظ التقدّم
++          </Button>
++        </div>
++        {saved && (
++          <p className="success-message" role="status">
++            حُدّث التقدّم إلى {enrollment.progress.toLocaleString("ar-SA")}٪ في
++            هذا المتصفح.
++          </p>
++        )}
++        <form className="achievement-form" onSubmit={submit}>
++          <input
++            aria-label={`إنجاز جديد في ${course.title}`}
++            value={achievement}
++            onChange={(e) => setAchievement(e.target.value)}
++            placeholder="إنجازك، مثل: أتممت رسم الباترون الأول"
++          />
++          <Button type="submit" variant="outline">
++            <Plus />
++            إضافة إنجاز
++          </Button>
++        </form>
++        {error && (
++          <p className="form-error" role="alert">
++            {error}
++          </p>
++        )}
++        <div className="achievement-list">
++          {enrollment.achievements.map((text, i) => (
++            <span key={i}>
++              <Check size={14} />
++              {text}
++            </span>
++          ))}
++        </div>
++        <Button variant="link" onClick={() => setZoom(!zoom)}>
++          <Video />
++          {zoom ? "إخفاء رابط اللقاء" : "عرض رابط زووم"}
++        </Button>
++        {zoom && (
++          <div className="zoom-demo">
++            {course.zoomUrl && isValidZoomUrl(course.zoomUrl) ? (
++              <a
++                className="zoom-link"
++                href={course.zoomUrl}
++                target="_blank"
++                rel="noopener noreferrer"
++              >
++                فتح اجتماع Zoom الرسمي <Video size={15} />
++              </a>
++            ) : (
++              <p>لم تُرفق الجهة المنظمة رابط Zoom موثّقًا بعد.</p>
++            )}
++          </div>
++        )}
++      </div>
++    </Reveal>
++  );
++}
+diff --git a/src/routes/opportunities.index.tsx b/src/routes/opportunities.index.tsx
+index 8ef2936..d1b076f 100644
+--- a/src/routes/opportunities.index.tsx
++++ b/src/routes/opportunities.index.tsx
+@@ -1,9 +1,164 @@
+-import { createFileRoute } from '@tanstack/react-router';
+-import { Search, RotateCcw } from 'lucide-react';
+-import { useEffect, useState } from 'react';
+-import { Button } from '@/components/ui/button';
+-import { DemoNote, EmptyState, OpportunityCard, PageIntro, categoryIcons } from '@/components/suda/shared';
+-import { categories, emptyFilters, filterOpportunities, pageHead } from '@/features/suda/mock-data';
+-import { useDemo } from '@/features/suda/demo-context';
+-export const Route=createFileRoute('/opportunities/')({validateSearch:(search:Record<string,unknown>)=>({category:typeof search.category==='string'&&categories.some(c=>c===search.category)?search.category:undefined}),head:()=>pageHead('الفرص','استكشفي دورات ومسابقات وفرص تدريب وفرص وظيفية في تصميم الأزياء.'),component:Opportunities});
+-function Opportunities(){const {opportunities}=useDemo();const {category}=Route.useSearch();const [filters,setFilters]=useState({...emptyFilters,type:category||''});useEffect(()=>{setFilters(prev=>({...prev,type:category||''}));},[category]);const items=filterOpportunities(opportunities,filters);function change(key:keyof typeof filters,value:string){setFilters(prev=>({...prev,[key]:value}));}return <div className="content-wrap"><PageIntro eyebrow="الفرص" title="استكشاف الفرص" description="ابحثي في الدورات والمسابقات والتدريب والفرص الوظيفية، واستخدمي الفلاتر لتحديد ما يناسبك."/><div className="category-tabs"><Button variant={!filters.type?'default':'outline'} onClick={()=>change('type','')}>جميع الفرص</Button>{categories.map(type=>{const Icon=categoryIcons[type];return <Button key={type} variant={filters.type===type?'default':'outline'} onClick={()=>change('type',type)}><Icon/>{type}</Button>;})}</div><div className="filter-bar"><label className="query-filter">ابحثي عن فرصتك<div className="search-input"><Search size={17}/><input aria-label="البحث عن الفرص" placeholder="باترون، تصميم، تشكيل…" value={filters.query} onChange={e=>change('query',e.target.value)}/></div></label><label>طريقة المشاركة<select value={filters.mode} onChange={e=>change('mode',e.target.value)}><option value="">جميع الطرق</option><option>عن بُعد</option><option>حضوري</option></select></label><label>المستوى<select value={filters.level} onChange={e=>change('level',e.target.value)}><option value="">جميع المستويات</option><option>مبتدئ</option><option>متوسط</option><option value="جميع المستويات">مناسب لجميع المستويات</option></select></label><label>الموقع<select value={filters.location} onChange={e=>change('location',e.target.value)}><option value="">جميع المواقع</option>{Array.from(new Set(opportunities.map(o=>o.location))).map(location=><option key={location}>{location}</option>)}</select></label></div><div className="result-line"><span aria-live="polite">{items.length.toLocaleString('ar-SA')} نتائج تجريبية</span><Button variant="ghost" className="reset" onClick={()=>setFilters({...emptyFilters})}><RotateCcw/>مسح الفلاتر</Button></div>{items.length?<div className="opportunity-grid">{items.map((item,i)=><OpportunityCard key={item.id} item={item} delay={(i%3)*0.15}/>)}</div>:<EmptyState title="لا توجد نتائج" description="لا توجد فرص تطابق بحثك. جرّبي كلمة أخرى أو امسحي الفلاتر." action={<Button variant="outline" onClick={()=>setFilters({...emptyFilters})}><RotateCcw/>عرض جميع الفرص</Button>}/>}<DemoNote/></div>;}
++import { createFileRoute } from "@tanstack/react-router";
++import { Search, RotateCcw } from "lucide-react";
++import { useEffect, useState } from "react";
++import { Button } from "@/components/ui/button";
++import {
++  DemoNote,
++  EmptyState,
++  OpportunityCard,
++  PageIntro,
++  categoryIcons,
++} from "@/components/suda/shared";
++import {
++  categories,
++  emptyFilters,
++  filterOpportunities,
++  pageHead,
++} from "@/features/suda/mock-data";
++import { useDemo } from "@/features/suda/demo-context";
++export const Route = createFileRoute("/opportunities/")({
++  validateSearch: (search: Record<string, unknown>): { category?: string } => {
++    const category = search["category"];
++    return typeof category === "string" &&
++      categories.some((c) => c === category)
++      ? { category }
++      : {};
++  },
++  head: () =>
++    pageHead(
++      "الفرص",
++      "استكشفي دورات ومسابقات وفرص تدريب وفرص وظيفية في تصميم الأزياء.",
++    ),
++  component: Opportunities,
++});
++function Opportunities() {
++  const { opportunities } = useDemo();
++  const { category } = Route.useSearch();
++  const [filters, setFilters] = useState({
++    ...emptyFilters,
++    type: category || "",
++  });
++  useEffect(() => {
++    setFilters((prev) => ({ ...prev, type: category || "" }));
++  }, [category]);
++  const items = filterOpportunities(opportunities, filters);
++  function change(key: keyof typeof filters, value: string) {
++    setFilters((prev) => ({ ...prev, [key]: value }));
++  }
++  return (
++    <div className="content-wrap">
++      <PageIntro
++        eyebrow="الفرص"
++        title="استكشاف الفرص"
++        description="ابحثي في الدورات والمسابقات والتدريب والفرص الوظيفية، واستخدمي الفلاتر لتحديد ما يناسبك."
++      />
++      <div className="category-tabs">
++        <Button
++          variant={!filters.type ? "default" : "outline"}
++          onClick={() => change("type", "")}
++        >
++          جميع الفرص
++        </Button>
++        {categories.map((type) => {
++          const Icon = categoryIcons[type];
++          return (
++            <Button
++              key={type}
++              variant={filters.type === type ? "default" : "outline"}
++              onClick={() => change("type", type)}
++            >
++              <Icon />
++              {type}
++            </Button>
++          );
++        })}
++      </div>
++      <div className="filter-bar">
++        <label className="query-filter">
++          ابحثي عن فرصتك
++          <div className="search-input">
++            <Search size={17} />
++            <input
++              aria-label="البحث عن الفرص"
++              placeholder="باترون، تصميم، تشكيل…"
++              value={filters.query}
++              onChange={(e) => change("query", e.target.value)}
++            />
++          </div>
++        </label>
++        <label>
++          طريقة المشاركة
++          <select
++            value={filters.mode}
++            onChange={(e) => change("mode", e.target.value)}
++          >
++            <option value="">جميع الطرق</option>
++            <option>عن بُعد</option>
++            <option>حضوري</option>
++          </select>
++        </label>
++        <label>
++          المستوى
++          <select
++            value={filters.level}
++            onChange={(e) => change("level", e.target.value)}
++          >
++            <option value="">جميع المستويات</option>
++            <option>مبتدئ</option>
++            <option>متوسط</option>
++            <option value="جميع المستويات">مناسب لجميع المستويات</option>
++          </select>
++        </label>
++        <label>
++          الموقع
++          <select
++            value={filters.location}
++            onChange={(e) => change("location", e.target.value)}
++          >
++            <option value="">جميع المواقع</option>
++            {Array.from(new Set(opportunities.map((o) => o.location))).map(
++              (location) => (
++                <option key={location}>{location}</option>
++              ),
++            )}
++          </select>
++        </label>
++      </div>
++      <div className="result-line">
++        <span aria-live="polite">
++          {items.length.toLocaleString("ar-SA")} نتائج تجريبية
++        </span>
++        <Button
++          variant="ghost"
++          className="reset"
++          onClick={() => setFilters({ ...emptyFilters })}
++        >
++          <RotateCcw />
++          مسح الفلاتر
++        </Button>
++      </div>
++      {items.length ? (
++        <div className="opportunity-grid">
++          {items.map((item, i) => (
++            <OpportunityCard key={item.id} item={item} delay={(i % 3) * 0.15} />
++          ))}
++        </div>
++      ) : (
++        <EmptyState
++          title="لا توجد نتائج"
++          description="لا توجد فرص تطابق بحثك. جرّبي كلمة أخرى أو امسحي الفلاتر."
++          action={
++            <Button
++              variant="outline"
++              onClick={() => setFilters({ ...emptyFilters })}
++            >
++              <RotateCcw />
++              عرض جميع الفرص
++            </Button>
++          }
++        />
++      )}
++      <DemoNote />
++    </div>
++  );
++}
+diff --git a/src/routes/portfolio.tsx b/src/routes/portfolio.tsx
+index 6391482..81c64c0 100644
+--- a/src/routes/portfolio.tsx
++++ b/src/routes/portfolio.tsx
+@@ -1,29 +1,283 @@
+-import { createFileRoute } from '@tanstack/react-router';
+-import { useState, type FormEvent } from 'react';
+-import { Pencil, Trash2, Check, Plus, ImagePlus } from 'lucide-react';
+-import { Reveal } from '@/components/suda/reveal';
+-import { Button } from '@/components/ui/button';
+-import { AddButton, ConfirmDelete, DemoNote, EmptyState, FormField, MemberGate, Modal, PageIntro } from '@/components/suda/shared';
+-import { pageHead, type Work } from '@/features/suda/mock-data';
+-import { preparePortfolioImage } from '@/features/suda/image-utils';
+-import { useDemo } from '@/features/suda/demo-context';
+-export const Route=createFileRoute('/portfolio')({head:()=>pageHead('معرض الأعمال','معرض شخصي لإضافة وتعديل وحذف أعمال تصميم الأزياء محليًا.'),component:()=> <MemberGate><Portfolio/></MemberGate>});
+-function Portfolio(){
+- const {works,saveWork,deleteWork}=useDemo();
+- const [form,setForm]=useState<Work|null>(null);
+- const [view,setView]=useState<Work|null>(null);
+- const [deleting,setDeleting]=useState<Work|null>(null);
+- const [error,setError]=useState('');
+- const [busy,setBusy]=useState(false);
+- const [saved,setSaved]=useState(false);
+- function start(work?:Work){setError('');setSaved(false);setForm(work?{...work}:{id:`work-${Date.now()}`,title:'',description:'',image:''});}
+- function submit(e:FormEvent){e.preventDefault();if(!form||busy)return;if(!form.title.trim()||!form.description.trim()){setError('أضيفي عنوان العمل ووصفه قبل الحفظ.');return;}if(!saveWork({...form,title:form.title.trim(),description:form.description.trim()})){setError('تعذّر حفظ العمل في المتصفح. جرّبي صورة أصغر أو امسحي بيانات قديمة.');return;}setForm(null);setSaved(true);}
+- async function chooseImage(file?:File){if(!file)return;setError('');setBusy(true);try{const data=await preparePortfolioImage(file);setForm(prev=>prev?{...prev,image:data}:prev);}catch(err){setError(err instanceof Error?err.message:'تعذّر قراءة الصورة.');}finally{setBusy(false);}}
+- return <div className="content-wrap portfolio-page"><PageIntro eyebrow="معرض الأعمال" title="معرض أعمالي" description="أضيفي مشروعاتك وصور تصاميمك الحقيقية، واحتفظي بها محليًا في هذا المتصفح." action={works.length>0?<AddButton onClick={()=>start()}>إضافة عمل</AddButton>:undefined}/>{saved&&<p role="status" className="success-message"><Check size={16}/>حُفظ العمل في هذا المتصفح.</p>}
+- {works.length?<div className="work-grid">{works.map((work,i)=><Reveal as="article" className="work-card" key={work.id} delay={(i%3)*0.15}><button className="work-image" type="button" aria-label={`عرض ${work.title}`} onClick={()=>setView(work)}>{work.image?<img src={work.image} alt={work.title} loading="lazy"/>:<span className="work-image-empty"><ImagePlus size={36}/>عرض العمل</span>}</button><div className="work-title-row"><h2>{work.title}</h2><div><Button size="icon" variant="ghost" aria-label={`تعديل ${work.title}`} onClick={()=>start(work)}><Pencil/></Button><Button size="icon" variant="ghost" aria-label={`حذف ${work.title}`} onClick={()=>setDeleting(work)}><Trash2/></Button></div></div><p>{work.description}</p></Reveal>)}</div>:<EmptyState title="معرضك جاهز لأعمالك" description="لا توجد أعمال بعد. أضيفي تصميمًا أو مشروعًا دراسيًا لتبدئي معرضك." action={<Button variant="outline" onClick={()=>start()}><Plus/>إضافة أول عمل</Button>}/>}
+- <DemoNote/>
+- <Modal open={Boolean(form)} onClose={()=>{if(!busy)setForm(null);}} title={form&&works.some(w=>w.id===form.id)?'تعديل العمل':'إضافة عمل جديد'}>{form&&<form className="form-stack" onSubmit={submit} noValidate><FormField label="عنوان العمل *"><input value={form.title} maxLength={90} onChange={e=>setForm({...form,title:e.target.value})} placeholder="عنوان التصميم"/></FormField><FormField label="وصف العمل *"><textarea value={form.description} maxLength={1200} onChange={e=>setForm({...form,description:e.target.value})} placeholder="فكرة العمل والخامات والتقنيات المستخدمة"/></FormField><FormField label="صورة عملك — اختيارية" hint="اختاري صورة من جهازك؛ ستُضغط وتُحفظ محليًا في هذا المتصفح فقط. لا تستخدمي صور أعمال الآخرين."><input className="file-input" type="file" accept="image/jpeg,image/png,image/webp,image/avif" disabled={busy} onChange={e=>{void chooseImage(e.target.files?.[0]);e.target.value='';}}/></FormField>{form.image?<div className="portfolio-preview"><img className="preview-image" src={form.image} alt="معاينة صورة العمل"/><Button type="button" variant="outline" onClick={()=>setForm({...form,image:''})}>إزالة الصورة</Button></div>:<div className="upload-placeholder"><ImagePlus size={25}/>يمكنك حفظ العمل بدون صورة وإضافتها لاحقًا.</div>}{error&&<p className="form-error" role="alert">{error}</p>}<div className="form-actions"><Button type="submit" disabled={busy}>{busy?'جارٍ تجهيز الصورة…':'حفظ العمل'} <Check/></Button><Button type="button" variant="outline" disabled={busy} onClick={()=>setForm(null)}>إلغاء</Button></div></form>}</Modal>
+- <Modal open={Boolean(view)} onClose={()=>setView(null)} title={view?.title||'عرض العمل'} description={view?.description}>{view&&(view.image?<img className="work-view-image" src={view.image} alt={view.title}/>:<div className="upload-placeholder">هذا العمل لا يحتوي على صورة.</div>)}</Modal>
+- <ConfirmDelete open={Boolean(deleting)} onClose={()=>setDeleting(null)} name={deleting?.title||''} onConfirm={()=>{if(deleting&&deleteWork(deleting.id)){setDeleting(null);setSaved(false);}}}/>
+- </div>;
++import { createFileRoute } from "@tanstack/react-router";
++import { useState, type FormEvent } from "react";
++import { Pencil, Trash2, Check, Plus, ImagePlus } from "lucide-react";
++import { Reveal } from "@/components/suda/reveal";
++import { Button } from "@/components/ui/button";
++import {
++  AddButton,
++  ConfirmDelete,
++  DemoNote,
++  EmptyState,
++  FormField,
++  MemberGate,
++  Modal,
++  PageIntro,
++} from "@/components/suda/shared";
++import { pageHead, type Work } from "@/features/suda/mock-data";
++import { preparePortfolioImage } from "@/features/suda/image-utils";
++import { useDemo } from "@/features/suda/demo-context";
++export const Route = createFileRoute("/portfolio")({
++  head: () =>
++    pageHead(
++      "معرض الأعمال",
++      "معرض شخصي لإضافة وتعديل وحذف أعمال تصميم الأزياء محليًا.",
++    ),
++  component: () => (
++    <MemberGate>
++      <Portfolio />
++    </MemberGate>
++  ),
++});
++function Portfolio() {
++  const { works, saveWork, deleteWork } = useDemo();
++  const [form, setForm] = useState<Work | null>(null);
++  const [view, setView] = useState<Work | null>(null);
++  const [deleting, setDeleting] = useState<Work | null>(null);
++  const [error, setError] = useState("");
++  const [busy, setBusy] = useState(false);
++  const [saved, setSaved] = useState(false);
++  function start(work?: Work) {
++    setError("");
++    setSaved(false);
++    setForm(
++      work
++        ? { ...work }
++        : { id: `work-${Date.now()}`, title: "", description: "", image: "" },
++    );
++  }
++  function submit(e: FormEvent) {
++    e.preventDefault();
++    if (!form || busy) return;
++    if (!form.title.trim() || !form.description.trim()) {
++      setError("أضيفي عنوان العمل ووصفه قبل الحفظ.");
++      return;
++    }
++    if (
++      !saveWork({
++        ...form,
++        title: form.title.trim(),
++        description: form.description.trim(),
++      })
++    ) {
++      setError(
++        "تعذّر حفظ العمل في المتصفح. جرّبي صورة أصغر أو امسحي بيانات قديمة.",
++      );
++      return;
++    }
++    setForm(null);
++    setSaved(true);
++  }
++  async function chooseImage(file?: File) {
++    if (!file) return;
++    setError("");
++    setBusy(true);
++    try {
++      const data = await preparePortfolioImage(file);
++      setForm((prev) => (prev ? { ...prev, image: data } : prev));
++    } catch (err) {
++      setError(err instanceof Error ? err.message : "تعذّر قراءة الصورة.");
++    } finally {
++      setBusy(false);
++    }
++  }
++  return (
++    <div className="content-wrap portfolio-page">
++      <PageIntro
++        eyebrow="معرض الأعمال"
++        title="معرض أعمالي"
++        description="أضيفي مشروعاتك وصور تصاميمك الحقيقية، واحتفظي بها محليًا في هذا المتصفح."
++        action={
++          works.length > 0 ? (
++            <AddButton onClick={() => start()}>إضافة عمل</AddButton>
++          ) : undefined
++        }
++      />
++      {saved && (
++        <p role="status" className="success-message">
++          <Check size={16} />
++          حُفظ العمل في هذا المتصفح.
++        </p>
++      )}
++      {works.length ? (
++        <div className="work-grid">
++          {works.map((work, i) => (
++            <Reveal
++              as="article"
++              className="work-card"
++              key={work.id}
++              delay={(i % 3) * 0.15}
++            >
++              <button
++                className="work-image"
++                type="button"
++                aria-label={`عرض ${work.title}`}
++                onClick={() => setView(work)}
++              >
++                {work.image ? (
++                  <img src={work.image} alt={work.title} loading="lazy" />
++                ) : (
++                  <span className="work-image-empty">
++                    <ImagePlus size={36} />
++                    عرض العمل
++                  </span>
++                )}
++              </button>
++              <div className="work-title-row">
++                <h2>{work.title}</h2>
++                <div>
++                  <Button
++                    size="icon"
++                    variant="ghost"
++                    aria-label={`تعديل ${work.title}`}
++                    onClick={() => start(work)}
++                  >
++                    <Pencil />
++                  </Button>
++                  <Button
++                    size="icon"
++                    variant="ghost"
++                    aria-label={`حذف ${work.title}`}
++                    onClick={() => setDeleting(work)}
++                  >
++                    <Trash2 />
++                  </Button>
++                </div>
++              </div>
++              <p>{work.description}</p>
++            </Reveal>
++          ))}
++        </div>
++      ) : (
++        <EmptyState
++          title="معرضك جاهز لأعمالك"
++          description="لا توجد أعمال بعد. أضيفي تصميمًا أو مشروعًا دراسيًا لتبدئي معرضك."
++          action={
++            <Button variant="outline" onClick={() => start()}>
++              <Plus />
++              إضافة أول عمل
++            </Button>
++          }
++        />
++      )}
++      <DemoNote />
++      <Modal
++        open={Boolean(form)}
++        onClose={() => {
++          if (!busy) setForm(null);
++        }}
++        title={
++          form && works.some((w) => w.id === form.id)
++            ? "تعديل العمل"
++            : "إضافة عمل جديد"
++        }
++      >
++        {form && (
++          <form className="form-stack" onSubmit={submit} noValidate>
++            <FormField label="عنوان العمل *">
++              <input
++                value={form.title}
++                maxLength={90}
++                onChange={(e) => setForm({ ...form, title: e.target.value })}
++                placeholder="عنوان التصميم"
++              />
++            </FormField>
++            <FormField label="وصف العمل *">
++              <textarea
++                value={form.description}
++                maxLength={1200}
++                onChange={(e) =>
++                  setForm({ ...form, description: e.target.value })
++                }
++                placeholder="فكرة العمل والخامات والتقنيات المستخدمة"
++              />
++            </FormField>
++            <FormField
++              label="صورة عملك — اختيارية"
++              hint="اختاري صورة من جهازك؛ ستُضغط وتُحفظ محليًا في هذا المتصفح فقط. لا تستخدمي صور أعمال الآخرين."
++            >
++              <input
++                className="file-input"
++                type="file"
++                accept="image/jpeg,image/png,image/webp,image/avif"
++                disabled={busy}
++                onChange={(e) => {
++                  void chooseImage(e.target.files?.[0]);
++                  e.target.value = "";
++                }}
++              />
++            </FormField>
++            {form.image ? (
++              <div className="portfolio-preview">
++                <img
++                  className="preview-image"
++                  src={form.image}
++                  alt="معاينة صورة العمل"
++                />
++                <Button
++                  type="button"
++                  variant="outline"
++                  onClick={() => setForm({ ...form, image: "" })}
++                >
++                  إزالة الصورة
++                </Button>
++              </div>
++            ) : (
++              <div className="upload-placeholder">
++                <ImagePlus size={25} />
++                يمكنك حفظ العمل بدون صورة وإضافتها لاحقًا.
++              </div>
++            )}
++            {error && (
++              <p className="form-error" role="alert">
++                {error}
++              </p>
++            )}
++            <div className="form-actions">
++              <Button type="submit" disabled={busy}>
++                {busy ? "جارٍ تجهيز الصورة…" : "حفظ العمل"} <Check />
++              </Button>
++              <Button
++                type="button"
++                variant="outline"
++                disabled={busy}
++                onClick={() => setForm(null)}
++              >
++                إلغاء
++              </Button>
++            </div>
++          </form>
++        )}
++      </Modal>
++      <Modal
++        open={Boolean(view)}
++        onClose={() => setView(null)}
++        title={view?.title || "عرض العمل"}
++        {...(view ? { description: view.description } : {})}
++      >
++        {view &&
++          (view.image ? (
++            <img
++              className="work-view-image"
++              src={view.image}
++              alt={view.title}
++            />
++          ) : (
++            <div className="upload-placeholder">
++              هذا العمل لا يحتوي على صورة.
++            </div>
++          ))}
++      </Modal>
++      <ConfirmDelete
++        open={Boolean(deleting)}
++        onClose={() => setDeleting(null)}
++        name={deleting?.title || ""}
++        onConfirm={() => {
++          if (deleting && deleteWork(deleting.id)) {
++            setDeleting(null);
++            setSaved(false);
++          }
++        }}
++      />
++    </div>
++  );
+ }
+diff --git a/src/routes/profile.tsx b/src/routes/profile.tsx
+index b402bf4..62de2a3 100644
+--- a/src/routes/profile.tsx
++++ b/src/routes/profile.tsx
+@@ -1,10 +1,201 @@
+-import { createFileRoute } from '@tanstack/react-router';
+-import { useState, type FormEvent } from 'react';
+-import { Pencil, Plus, Check } from 'lucide-react';
+-import { Reveal } from '@/components/suda/reveal';
+-import { Button } from '@/components/ui/button';
+-import { DemoNote, EmptyState, FormField, MemberGate, Modal, PageIntro } from '@/components/suda/shared';
+-import { pageHead, type Profile } from '@/features/suda/mock-data';
+-import { useDemo } from '@/features/suda/demo-context';
+-export const Route=createFileRoute('/profile')({head:()=>pageHead('الملف المهني','مهاراتك واهتماماتك وتجاربك في تصميم الأزياء، في ملف مهني يشبهك.'),component:()=> <MemberGate><ProfilePage/></MemberGate>});
+-function ProfilePage(){const {profile,saveProfile,session}=useDemo();const [editing,setEditing]=useState(false);const [error,setError]=useState('');const [saved,setSaved]=useState(false);const [form,setForm]=useState({name:'',bio:'',skills:'',interests:'',experience:''});function start(){setForm({name:profile?.name||session?.name||'',bio:profile?.bio||'',skills:profile?.skills.join('، ')||'',interests:profile?.interests.join('، ')||'',experience:profile?.experience||''});setError('');setEditing(true);}function submit(e:FormEvent){e.preventDefault();if(form.name.trim().length<2||!form.skills.trim()||!form.interests.trim()){setError('أكملي الاسم والمهارات والاهتمامات قبل الحفظ.');return;}const split=(text:string)=>text.split(/[,،\n]/).map(s=>s.trim()).filter(Boolean);if(!saveProfile({...form,name:form.name.trim(),skills:split(form.skills),interests:split(form.interests)})){setError('تعذّر حفظ الملف في المتصفح.');return;}setEditing(false);setSaved(true);}return <div className="content-wrap"><PageIntro eyebrow="الملف المهني" title="ملفك المهني" description="أضيفي مهاراتك واهتماماتك وخبراتك المهنية." action={profile?<Button onClick={start}><Pencil/>تعديل الملف</Button>:undefined}/>{saved&&<p className="success-message" role="status"><Check size={16}/>حُفظ ملفك محليًا في هذا المتصفح.</p>}{profile?<div className="profile-layout"><Reveal className="profile-person"><div className="profile-avatar">{profile.name.charAt(0)}</div><span className="eyebrow">الملف المهني</span><h2>{profile.name}</h2><p>{profile.bio||'لم تُضاف نبذة بعد.'}</p></Reveal><div><Reveal as="section" className="profile-section" delay={0.15}><h2>المهارات</h2><div className="chips">{profile.skills.map((skill,i)=><span className="chip" key={i}>{skill}</span>)}</div></Reveal><Reveal as="section" className="profile-section" delay={0.3}><h2>الاهتمامات</h2><div className="chips">{profile.interests.map((interest,i)=><span className="chip" key={i}>{interest}</span>)}</div></Reveal><Reveal as="section" className="profile-section" delay={0.45}><h2>الخبرات</h2><p>{profile.experience||'لم تُضاف خبرات بعد.'}</p></Reveal></div></div>:<EmptyState title="ملفك المهني" description="ابدئي باسمك، أضيفي مهاراتك واهتماماتك، وأكملي نبذتك المهنية." action={<Button variant="outline" onClick={start}><Plus/>إنشاء ملفي المهني</Button>}/>}<DemoNote/><Modal open={editing} onClose={()=>setEditing(false)} title={profile?'تعديل الملف المهني':'إنشاء الملف المهني'}><form className="form-stack" onSubmit={submit} noValidate><FormField label="الاسم *"><input value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></FormField><FormField label="نبذة عني"><textarea value={form.bio} onChange={e=>setForm({...form,bio:e.target.value})} placeholder="عن شغفك وأسلوبك في التصميم"/></FormField><FormField label="المهارات *" hint="افصلي بين المهارات بفاصلة."><input value={form.skills} onChange={e=>setForm({...form,skills:e.target.value})} placeholder="رسم الأزياء، الباترون، الخياطة"/></FormField><FormField label="الاهتمامات *" hint="افصلي بين الاهتمامات بفاصلة."><input value={form.interests} onChange={e=>setForm({...form,interests:e.target.value})} placeholder="الأزياء التراثية، الأقمشة، التشكيل"/></FormField><FormField label="الخبرات"><textarea value={form.experience} onChange={e=>setForm({...form,experience:e.target.value})} placeholder="مشروعاتك الدراسية أو تجاربك السابقة"/></FormField>{error&&<p className="form-error" role="alert">{error}</p>}<div className="form-actions"><Button type="submit">حفظ الملف <Check/></Button><Button type="button" variant="outline" onClick={()=>setEditing(false)}>إلغاء</Button></div></form></Modal></div>;}
++import { createFileRoute } from "@tanstack/react-router";
++import { useState, type FormEvent } from "react";
++import { Pencil, Plus, Check } from "lucide-react";
++import { Reveal } from "@/components/suda/reveal";
++import { Button } from "@/components/ui/button";
++import {
++  DemoNote,
++  EmptyState,
++  FormField,
++  MemberGate,
++  Modal,
++  PageIntro,
++} from "@/components/suda/shared";
++import { pageHead, type Profile } from "@/features/suda/mock-data";
++import { useDemo } from "@/features/suda/demo-context";
++export const Route = createFileRoute("/profile")({
++  head: () =>
++    pageHead(
++      "الملف المهني",
++      "مهاراتك واهتماماتك وتجاربك في تصميم الأزياء، في ملف مهني يشبهك.",
++    ),
++  component: () => (
++    <MemberGate>
++      <ProfilePage />
++    </MemberGate>
++  ),
++});
++function ProfilePage() {
++  const { profile, saveProfile, session } = useDemo();
++  const [editing, setEditing] = useState(false);
++  const [error, setError] = useState("");
++  const [saved, setSaved] = useState(false);
++  const [form, setForm] = useState({
++    name: "",
++    bio: "",
++    skills: "",
++    interests: "",
++    experience: "",
++  });
++  function start() {
++    setForm({
++      name: profile?.name || session?.name || "",
++      bio: profile?.bio || "",
++      skills: profile?.skills.join("، ") || "",
++      interests: profile?.interests.join("، ") || "",
++      experience: profile?.experience || "",
++    });
++    setError("");
++    setEditing(true);
++  }
++  function submit(e: FormEvent) {
++    e.preventDefault();
++    const split = (text: string) =>
++      text
++        .split(/[,،\n]/)
++        .map((s) => s.trim())
++        .filter(Boolean);
++    const skills = split(form.skills);
++    const interests = split(form.interests);
++    if (form.name.trim().length < 2 || !skills.length || !interests.length) {
++      setError("أكملي الاسم وأضيفي مهارة واهتمامًا على الأقل قبل الحفظ.");
++      return;
++    }
++    if (!saveProfile({ ...form, name: form.name.trim(), skills, interests })) {
++      setError("تعذّر حفظ الملف في المتصفح.");
++      return;
++    }
++    setEditing(false);
++    setSaved(true);
++  }
++  return (
++    <div className="content-wrap">
++      <PageIntro
++        eyebrow="الملف المهني"
++        title="ملفك المهني"
++        description="أضيفي مهاراتك واهتماماتك وخبراتك المهنية."
++        action={
++          profile ? (
++            <Button onClick={start}>
++              <Pencil />
++              تعديل الملف
++            </Button>
++          ) : undefined
++        }
++      />
++      {saved && (
++        <p className="success-message" role="status">
++          <Check size={16} />
++          حُفظ ملفك محليًا في هذا المتصفح.
++        </p>
++      )}
++      {profile ? (
++        <div className="profile-layout">
++          <Reveal className="profile-person">
++            <div className="profile-avatar">{profile.name.charAt(0)}</div>
++            <span className="eyebrow">الملف المهني</span>
++            <h2>{profile.name}</h2>
++            <p>{profile.bio || "لم تُضاف نبذة بعد."}</p>
++          </Reveal>
++          <div>
++            <Reveal as="section" className="profile-section" delay={0.15}>
++              <h2>المهارات</h2>
++              <div className="chips">
++                {profile.skills.map((skill, i) => (
++                  <span className="chip" key={i}>
++                    {skill}
++                  </span>
++                ))}
++              </div>
++            </Reveal>
++            <Reveal as="section" className="profile-section" delay={0.3}>
++              <h2>الاهتمامات</h2>
++              <div className="chips">
++                {profile.interests.map((interest, i) => (
++                  <span className="chip" key={i}>
++                    {interest}
++                  </span>
++                ))}
++              </div>
++            </Reveal>
++            <Reveal as="section" className="profile-section" delay={0.45}>
++              <h2>الخبرات</h2>
++              <p>{profile.experience || "لم تُضاف خبرات بعد."}</p>
++            </Reveal>
++          </div>
++        </div>
++      ) : (
++        <EmptyState
++          title="ملفك المهني"
++          description="ابدئي باسمك، أضيفي مهاراتك واهتماماتك، وأكملي نبذتك المهنية."
++          action={
++            <Button variant="outline" onClick={start}>
++              <Plus />
++              إنشاء ملفي المهني
++            </Button>
++          }
++        />
++      )}
++      <DemoNote />
++      <Modal
++        open={editing}
++        onClose={() => setEditing(false)}
++        title={profile ? "تعديل الملف المهني" : "إنشاء الملف المهني"}
++      >
++        <form className="form-stack" onSubmit={submit} noValidate>
++          <FormField label="الاسم *">
++            <input
++              value={form.name}
++              onChange={(e) => setForm({ ...form, name: e.target.value })}
++            />
++          </FormField>
++          <FormField label="نبذة عني">
++            <textarea
++              value={form.bio}
++              onChange={(e) => setForm({ ...form, bio: e.target.value })}
++              placeholder="عن شغفك وأسلوبك في التصميم"
++            />
++          </FormField>
++          <FormField label="المهارات *" hint="افصلي بين المهارات بفاصلة.">
++            <input
++              value={form.skills}
++              onChange={(e) => setForm({ ...form, skills: e.target.value })}
++              placeholder="رسم الأزياء، الباترون، الخياطة"
++            />
++          </FormField>
++          <FormField label="الاهتمامات *" hint="افصلي بين الاهتمامات بفاصلة.">
++            <input
++              value={form.interests}
++              onChange={(e) => setForm({ ...form, interests: e.target.value })}
++              placeholder="الأزياء التراثية، الأقمشة، التشكيل"
++            />
++          </FormField>
++          <FormField label="الخبرات">
++            <textarea
++              value={form.experience}
++              onChange={(e) => setForm({ ...form, experience: e.target.value })}
++              placeholder="مشروعاتك الدراسية أو تجاربك السابقة"
++            />
++          </FormField>
++          {error && (
++            <p className="form-error" role="alert">
++              {error}
++            </p>
++          )}
++          <div className="form-actions">
++            <Button type="submit">
++              حفظ الملف <Check />
++            </Button>
++            <Button
++              type="button"
++              variant="outline"
++              onClick={() => setEditing(false)}
++            >
++              إلغاء
++            </Button>
++          </div>
++        </form>
++      </Modal>
++    </div>
++  );
++}
+diff --git a/src/styles.css b/src/styles.css
+index 112f979..2b0cce0 100644
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -253,7 +253,7 @@ button.bg-primary:focus-visible, a.bg-primary:focus-visible {color:#FFFFFF!impor
+ .footer-bottom {align-items:center;}
+ .reset-link {display:inline-flex;align-items:center;gap:6px;background:transparent;border:0;border-bottom:1px solid #A195A2;padding:6px 0;color:#564E58;}
+ /* Fix all dark button variants: Radix/shadcn uses background CSS vars, keep explicit foreground */
+-.bg-primary,.hover\\:bg-primary\/90:hover {color:#FFFFFF!important;}
++.bg-primary,.hover\:bg-primary\/90:hover {color:#FFFFFF!important;}
+ .bg-destructive {color:#FFFFFF!important;}
+ @media(max-width:1150px){.main-nav {gap:13px;font-size:11px;}.wordmark {width:115px;height:70px;}.hero-content {padding-right:6%;}.hero-brand-art {height:145px;}}
+ @media(max-width:850px){.designer-gallery {grid-template-columns:repeat(2,minmax(0,1fr));}.inspiration-teaser {grid-template-columns:1fr;gap:30px;}.inspiration-teaser-art {min-height:360px;}.site-header {height:82px;}.site-header.is-scrolled {height:72px;}.mobile-menu {display:inline-flex;}.main-nav {display:none;position:absolute;top:100%;left:0;right:0;background:#FAF6F1;padding:20px 6%;border-bottom:1px solid #D8C9D1;box-shadow:var(--shadow-soft);}.main-nav.is-open {display:flex;flex-direction:column;align-items:stretch;gap:5px;}.main-nav a {font-size:14px;padding:9px 0;}.admin-table-wrap {display:none;}.admin-mobile-cards {display:grid;gap:12px;}}
+diff --git a/src/test/suda-extended.test.ts b/src/test/suda-extended.test.ts
+index 82d0a40..d1e9cb6 100644
+--- a/src/test/suda-extended.test.ts
++++ b/src/test/suda-extended.test.ts
+@@ -39,10 +39,10 @@ describe('SUDA Sprint 1 extensions',()=>{
+   expect(canAccessZoom([],course.id)).toBe(false);
+   expect(canAccessZoom(enrollCourse([],course),course.id)).toBe(true);
+  });
+- it('uses eight sourced text-only designers without images',()=>{
+-  expect(designers).toHaveLength(8);
+-  expect(new Set(designers.map(d=>d.id)).size).toBe(8);
+-  expect(designers.every(d=>d.name&&d.bio&&d.source.startsWith('https://'))).toBe(true);
++ it('uses the current eleven sourced text-only designers without images',()=>{
++  expect(designers).toHaveLength(11);
++  expect(new Set(designers.map(d=>d.id)).size).toBe(11);
++  expect(designers.every(d=>d.name&&d.bio&&d.source?.startsWith('https://'))).toBe(true);
+   expect(designers.every(d=>!('image' in d))).toBe(true);
+  });
+ });
+diff --git a/src/test/suda-rules.test.ts b/src/test/suda-rules.test.ts
+index fadf99e..7c224f3 100644
+--- a/src/test/suda-rules.test.ts
++++ b/src/test/suda-rules.test.ts
+@@ -4,9 +4,9 @@ describe('Suda report rules',()=>{
+  it('contains exactly the four reported opportunity types',()=>expect([...new Set(initialOpportunities.map(o=>o.type))]).toEqual([...categories]));
+  it('combines Arabic keyword, category and mode filters',()=>{expect(filterOpportunities(initialOpportunities,{...emptyFilters,query:'الباترون',type:'الدورات',mode:'عن بُعد'}).map(o=>o.id)).toEqual(['pattern']);expect(filterOpportunities(initialOpportunities,{...emptyFilters,query:'الباترون',type:'الدورات',mode:'حضوري'})).toHaveLength(0);});
+  it('clearing filters restores all opportunities',()=>expect(filterOpportunities(initialOpportunities,{...emptyFilters})).toHaveLength(8));
+- it('only free courses support enrollment, without duplicates',()=>{const course=initialOpportunities[0];const competition=initialOpportunities[1];expect(enrollCourse([],competition)).toEqual([]);const enrolled=enrollCourse([],course);expect(enrollCourse(enrolled,course)).toHaveLength(1);});
+- it('Zoom is accessible only after local enrollment',()=>{expect(canAccessZoom([],'pattern')).toBe(false);expect(canAccessZoom(enrollCourse([],initialOpportunities[0]),'pattern')).toBe(true);});
++ it('only free courses support enrollment, without duplicates',()=>{const course=initialOpportunities[0]!;const competition=initialOpportunities[1]!;expect(enrollCourse([],competition)).toEqual([]);const enrolled=enrollCourse([],course);expect(enrollCourse(enrolled,course)).toHaveLength(1);});
++ it('Zoom is accessible only after local enrollment',()=>{expect(canAccessZoom([],'pattern')).toBe(false);expect(canAccessZoom(enrollCourse([],initialOpportunities[0]!),'pattern')).toBe(true);});
+  it('manual learning progress stays within zero to one hundred',()=>{expect(clampProgress(-10)).toBe(0);expect(clampProgress(150)).toBe(100);expect(clampProgress(63)).toBe(63);});
+- it('admin opportunity forms reject each missing required field',()=>{const full=initialOpportunities[0];expect(validateOpportunity(full)).toBe(true);for(const key of ['title','organization','description','requirements'] as const)expect(validateOpportunity({...full,[key]:' '})).toBe(false);});
++ it('admin opportunity forms reject each missing required field',()=>{const full=initialOpportunities[0]!;expect(validateOpportunity(full)).toBe(true);for(const key of ['title','organization','description','requirements'] as const)expect(validateOpportunity({...full,[key]:' '})).toBe(false);});
+  it('mock opportunities never fabricate official URLs',()=>expect(initialOpportunities.every(o=>!o.externalUrl)).toBe(true));
+ });
+diff --git a/src/test/suda-audit.test.tsx b/src/test/suda-audit.test.tsx
+new file mode 100644
+index 0000000..496f000
+--- /dev/null
++++ b/src/test/suda-audit.test.tsx
+@@ -0,0 +1,75 @@
++import { beforeEach, describe, expect, it, vi } from "vitest";
++import { fireEvent, render, screen, cleanup } from "@testing-library/react";
++import type { ReactNode } from "react";
++import { initialOpportunities } from "@/features/suda/mock-data";
++const demo = vi.hoisted(() => ({
++  saveProfile: vi.fn(() => true),
++  enrollments: [] as {
++    courseId: string;
++    progress: number;
++    achievements: string[];
++  }[],
++}));
++vi.mock("@tanstack/react-router", () => ({
++  createFileRoute: () => (options: unknown) => ({ options }),
++  Link: ({ children }: { children: ReactNode }) => <a>{children}</a>,
++}));
++vi.mock("@/features/suda/demo-context", () => ({
++  useDemo: () => ({
++    profile: null,
++    session: { name: "اختبار" },
++    saveProfile: demo.saveProfile,
++    enrollments: demo.enrollments,
++    opportunities: initialOpportunities,
++  }),
++}));
++vi.mock("@/components/suda/reveal", () => ({
++  Reveal: ({ children }: { children: ReactNode }) => <div>{children}</div>,
++}));
++import { Route as ProfileRoute } from "@/routes/profile";
++import { Route as LearningRoute } from "@/routes/learning";
++const ProfilePage = ProfileRoute.options.component!;
++const LearningPage = LearningRoute.options.component!;
++describe("Audit regression cases", () => {
++  beforeEach(() => {
++    cleanup();
++    demo.saveProfile.mockClear();
++    demo.enrollments = [];
++  });
++  it("rejects separator-only profile lists, then saves real skills and interests", () => {
++    render(<ProfilePage />);
++    fireEvent.click(screen.getByRole("button", { name: "إنشاء ملفي المهني" }));
++    fireEvent.change(screen.getByLabelText("المهارات *", { exact: false }), {
++      target: { value: "، , ،" },
++    });
++    fireEvent.change(screen.getByLabelText("الاهتمامات *", { exact: false }), {
++      target: { value: ", ،" },
++    });
++    fireEvent.click(screen.getByRole("button", { name: /حفظ الملف/ }));
++    expect(demo.saveProfile).not.toHaveBeenCalled();
++    expect(screen.getByRole("alert")).toHaveTextContent("مهارة واهتمامًا");
++    fireEvent.change(screen.getByLabelText("المهارات *", { exact: false }), {
++      target: { value: "رسم، خياطة" },
++    });
++    fireEvent.change(screen.getByLabelText("الاهتمامات *", { exact: false }), {
++      target: { value: "أزياء" },
++    });
++    fireEvent.click(screen.getByRole("button", { name: /حفظ الملف/ }));
++    expect(demo.saveProfile).toHaveBeenCalledWith(
++      expect.objectContaining({
++        skills: ["رسم", "خياطة"],
++        interests: ["أزياء"],
++      }),
++    );
++  });
++  it("shows a useful empty state for enrollments referencing removed courses or non-courses", () => {
++    demo.enrollments = [
++      { courseId: "removed-course", progress: 0, achievements: [] },
++      { courseId: "heritage", progress: 0, achievements: [] },
++    ];
++    render(<LearningPage />);
++    expect(
++      screen.getByRole("heading", { name: "لا توجد دورات ملتحقة بعد" }),
++    ).toBeInTheDocument();
++  });
++});

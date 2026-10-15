@@ -1,0 +1,230 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/opportunities",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/opportunities/pattern",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/opportunities/heritage",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/opportunities/atelier",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/opportunities/designer",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/opportunities/draping",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/opportunities/textile",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/opportunities/studio",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/opportunities/pattern-career",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/login",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/register",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/profile",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/portfolio",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/learning",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/admin",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    },
+    {
+      "path": "/inspiration",
+      "status": 200,
+      "rtl": true,
+      "arabic": true
+    }
+  ],
+  "assets": [
+    {
+      "path": "/suda-logo-transparent.png",
+      "status": 200,
+      "type": "image/png"
+    },
+    {
+      "path": "/editorial/images/hero_atelier_poster.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/course_pattern_making.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/competition_embroidered_couture.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/internship_beadwork.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/career_studio_sewing.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/profile_red_carpet_gold.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/profile_red_carpet_black.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/editorial_burgundy_look.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/editorial_pastel_gown.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/inspiration_yellow_model.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/editorial_group_gowns.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/inspiration_lilac_model.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/editorial_black_couture.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/inspiration_mauve_model.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/inspiration_monochrome_model.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/internship_draping.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/competition_pink_couture.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/internship_pink_embroidery.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/career_pattern_cutting.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/editorial_teal_gown.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/images/editorial_couture_duo.webp",
+      "status": 200,
+      "type": "image/webp"
+    },
+    {
+      "path": "/editorial/motion/hero_atelier_montage.mp4",
+      "status": 200,
+      "type": "video/mp4"
+    },
+    {
+      "path": "/editorial/motion/hero_atelier_montage.webm",
+      "status": 200,
+      "type": "video/webm"
+    }
+  ],
+  "unknownRouteStatus": 404,
+  "browserRendered": false
+}

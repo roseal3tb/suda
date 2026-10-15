@@ -53,15 +53,15 @@ describe("Editorial motion safeguards", () => {
       "/editorial/images/hero_atelier_poster.webp",
     );
   });
-  it("offers muted inline film playback, pause and a static failure fallback", () => {
+  it("autoplays a muted inline film without a visible play control and falls back on failure", () => {
     const view = render(<AtelierFilm />);
     const video = view.container.querySelector("video")!;
     expect(video.muted).toBe(true);
     expect(video).toHaveAttribute("playsinline");
     expect(video.querySelectorAll("source")).toHaveLength(2);
     fireEvent.playing(video);
-    fireEvent.click(screen.getByRole("button", { name: "إيقاف حركة الفيلم" }));
-    expect(video.pause).toHaveBeenCalled();
+    expect(video).toHaveAttribute("autoplay");
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
     fireEvent.error(video);
     expect(view.container.querySelector("video")).toBeNull();
     expect(screen.getByRole("img")).toBeInTheDocument();

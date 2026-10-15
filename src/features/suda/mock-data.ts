@@ -7,6 +7,62 @@ export const images = {
   sketches: media("course_pattern_making"),
   studio: media("internship_beadwork"),
 };
+/** Distinct user-supplied photo selections for each homepage/auth location.
+ * Collective inspiration imagery is not assigned to individual designers. */
+export const fashionMedia = {
+  login: {
+    src: media("editorial_teal_gown"),
+    alt: "مودل بفستان تركوازي طويل بين أعمدة فاتحة",
+  },
+  register: {
+    src: media("editorial_couture_duo"),
+    alt: "مودلز بفساتين سهرة مطرزة بألوان هادئة",
+  },
+  profile: [
+    {
+      src: media("profile_red_carpet_gold"),
+      alt: "إطلالة بفستان ذهبي طويل على السجادة الحمراء",
+    },
+    {
+      src: media("profile_red_carpet_black"),
+      alt: "إطلالة بفستان أسود طويل في حفل جوائز",
+    },
+    {
+      src: media("editorial_burgundy_look"),
+      alt: "إطلالة بفستان خمري على درج أحمر",
+    },
+  ],
+  inspiration: [
+    {
+      src: media("editorial_pastel_gown"),
+      alt: "فستان راقٍ بألوان باستيلية وسط خلفية ملونة",
+    },
+    {
+      src: media("inspiration_yellow_model"),
+      alt: "مودل بفستان أصفر بتفاصيل بارزة",
+    },
+    {
+      src: media("editorial_group_gowns"),
+      alt: "مجموعة إطلالات متنوعة من فساتين السهرة",
+    },
+    {
+      src: media("inspiration_lilac_model"),
+      alt: "مودل بفستان ليلكي بتفاصيل مطرزة",
+    },
+    {
+      src: media("editorial_black_couture"),
+      alt: "تفاصيل فستان أسود بقصة أنيقة وتطريز لامع",
+    },
+    {
+      src: media("inspiration_mauve_model"),
+      alt: "فستان سهرة وردي فاتح بتنورة انسيابية",
+    },
+    {
+      src: media("inspiration_monochrome_model"),
+      alt: "إطلالة بفستان أسود في صورة بالأبيض والأسود",
+    },
+  ],
+};
 export const editorialMedia = {
   poster: media("hero_atelier_poster"),
   montageWebm: "/editorial/motion/hero_atelier_montage.webm",
@@ -167,7 +223,7 @@ export const initialOpportunities: Opportunity[] = [
       "فرصة تجريبية للعمل على تحويل الرسومات إلى باترونات ومراجعة ملاءمة العينات.",
     requirements: "خبرة في إعداد الباترون وقراءة القياسات وتعديل العينات.",
     deadline: "",
-    image: media("course_pattern_making"),
+    image: media("career_pattern_cutting"),
   },
 ];
 export interface Profile {

@@ -1,3 +1,5 @@
+> **Latest visual revision:** see [visual-refresh.md](visual-refresh.md) and [atelier-asset-map.md](atelier-asset-map.md). These supersede the original film dimensions, timing and visible pause-control description below. The current hero is larger, automatically plays a 7.47-second craft/model montage, and has no visible playback control. Homepage/profile/auth photography has been replaced per the user’s screenshots.
+
 # SUDA Atelier Edition — implementation, compliance and QA
 
 15 October 2026. Inputs: `suda(2).zip`, `Suda_Editorial_Assets(1).zip`, `SW Project(7).pdf`, `Phase3 - Sprint 1 - Tagged(2).pdf` and the supplied transformation brief. The uploaded source matches repository baseline `a59fe7c8ab2aa8950a764d625377455d7d27aedf`; prior verified frontend repairs are retained.

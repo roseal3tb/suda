@@ -6,7 +6,6 @@ import {
   Scissors,
   Images,
   UserRound,
-  BookOpen,
   Sparkles,
   GraduationCap,
   BriefcaseBusiness,
@@ -17,8 +16,7 @@ import {
   categoryIcons,
   DemoNote,
 } from "@/components/suda/shared";
-import { images, categories, pageHead } from "@/features/suda/mock-data";
-import { designers } from "@/features/suda/designers";
+import { fashionMedia, categories, pageHead } from "@/features/suda/mock-data";
 import { AtelierFilm } from "@/components/suda/atelier-film";
 import { ThreadJourney } from "@/components/suda/thread-interlude";
 import { Reveal, WordsReveal } from "@/components/suda/reveal";
@@ -226,14 +224,25 @@ function Home() {
               </Button>
             </div>
           </Reveal>
-          <Reveal className="editorial-photo" delay={0.13}>
-            <img
-              src={images.draping}
-              alt="يدان تشكّلان طيات القماش على مانيكان"
-              loading="lazy"
-              width={1024}
-              height={1024}
-            />
+          <Reveal className="profile-fashion-triptych" delay={0.13}>
+            {fashionMedia.profile.map((photo, index) => (
+              <figure
+                key={photo.src}
+                className={`profile-fashion-shot profile-fashion-shot-${index}`}
+              >
+                <img
+                  src={photo.src}
+                  alt={photo.alt}
+                  loading="lazy"
+                  decoding="async"
+                  width={720}
+                  height={1280}
+                />
+              </figure>
+            ))}
+            <span className="profile-fashion-caption">
+              من الفكرة إلى الإطلالة
+            </span>
           </Reveal>
         </section>
         <div className="thread-journey-breath" aria-hidden="true" />
@@ -247,8 +256,8 @@ function Home() {
               <WordsReveal text="إلهام سعودي" />
             </h2>
             <p>
-              تعرّفي على مصممات سعوديات من خلال نبذات موثقة وروابط إلى مصادر
-              أعمالهن. الصور الخاصة بالمصممات قيد التوثيق.
+              إطلالات وتفاصيل تفتح لك آفاقًا جديدة في التصميم. تعرّفي على مصممات
+              سعوديات، واستكشفي قصصهن ومصادر أعمالهن.
             </p>
             <Button asChild>
               <Link to="/inspiration">
@@ -257,23 +266,26 @@ function Home() {
             </Button>
           </Reveal>
           <Reveal
-            className="inspiration-teaser-art"
-            aria-label="أسماء مختارة من الدليل"
+            className="inspiration-teaser-art inspiration-fashion-collage"
+            aria-label="صور مختارة من تصاميم الأزياء"
           >
-            <span className="teaser-label">
-              <BookOpen size={15} />
-              دليل تحريري
-            </span>
-            {designers.slice(0, 4).map((d, i) => (
-              <span
-                key={d.id}
-                className={`teaser-designer teaser-designer-${i}`}
+            {fashionMedia.inspiration.map((photo, index) => (
+              <figure
+                key={photo.src}
+                className={`inspiration-fashion-shot inspiration-fashion-shot-${index}`}
               >
-                {d.name}
-              </span>
+                <img
+                  src={photo.src}
+                  alt={photo.alt}
+                  loading="lazy"
+                  decoding="async"
+                  width={720}
+                  height={1000}
+                />
+              </figure>
             ))}
-            <span className="teaser-count">
-              {designers.length.toLocaleString("ar-SA")} أسماء في الدليل
+            <span className="fashion-collage-caption">
+              تفاصيل تُلهم، وتصاميم تحكي.
             </span>
           </Reveal>
         </section>
