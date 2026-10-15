@@ -39,37 +39,44 @@
     {
       "source": "reelsvideo.io_1792068834191.mp4",
       "start": 4.3,
-      "duration": 0.85
+      "duration": 0.85,
+      "crop_y": 240
     },
     {
       "source": "reelsvideo.io_1792068689368.mp4",
       "start": 1.05,
-      "duration": 1.25
+      "duration": 1.25,
+      "crop_y": 180
     },
     {
       "source": "reelsvideo.io_1792068777441.mp4",
       "start": 10.1,
-      "duration": 0.85
+      "duration": 0.85,
+      "crop_y": 240
     },
     {
       "source": "reelsvideo.io_1792068759589.mp4",
       "start": 6.0,
-      "duration": 1.2
+      "duration": 1.2,
+      "crop_y": 0
     },
     {
       "source": "reelsvideo.io_1792068796270.mp4",
       "start": 13.0,
-      "duration": 0.85
+      "duration": 0.85,
+      "crop_y": 240
     },
     {
       "source": "reelsvideo.io_1792068759589.mp4",
       "start": 31.2,
-      "duration": 1.2
+      "duration": 1.2,
+      "crop_y": 150
     },
     {
       "source": "reelsvideo.io_1792068962750.mp4",
       "start": 1.0,
-      "duration": 1.2
+      "duration": 1.2,
+      "crop_y": 50
     }
   ]
 }

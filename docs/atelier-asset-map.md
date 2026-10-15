@@ -21,10 +21,10 @@ All served media is local under `public/editorial/` and comes from the user's su
 
 The twelve still images used across authentication, the professional-profile band and the inspiration collage are distinct. Photos are not seeded as a demo user's portfolio, nor individually assigned to named designers without a grounded source mapping. Existing opportunity detail pages naturally retain their corresponding card image.
 
-The new film is silent, 720×800, approximately 7.47 seconds, H.264/yuv420p/faststart and VP9/WebM (1,004,504 bytes / 699,287 bytes). It contains three craft scenes and four fashion-model scenes. The contained sharp foreground preserves full dresses; a soft background from the same source fills the wider frame. Clips play at 1.12× with fast editorial cuts. Original source pixels are not claimed to be enhanced.
+The new film is silent, 720×800, approximately 7.47 seconds, H.264/yuv420p/faststart and VP9/WebM (see current byte sizes in `qa/visual-refresh-media.json`). It contains three craft scenes and four fashion-model scenes. Every clip fills the frame with a direct cover crop from the original source. No blurred background or stretching is used; per-scene crop positions retain faces. Clips play at 1.12× with fast editorial cuts. Original source pixels are not claimed to be enhanced.
 
 `fashion-media-manifest.json` records original filenames and timestamps for new frames and film scenes. `asset_manifest.json` retains the earlier source map. Run `python3 scripts/prepare-fashion-media.py /path/to/extracted/photos` to reproduce this revision from the original `photos.zip` contents, with ffmpeg and Pillow installed.
 
-Video autoplays muted and inline, with no visible play/pause button as requested. It is omitted when reduced motion is requested and pauses offscreen or while the page is hidden. A static image remains if playback fails or is blocked. Autoplay remains subject to the visitor's browser settings.
+The desktop hero reaches the left viewport edge. The 01–07 badge is removed. Video autoplays muted and inline, with no visible play/pause button as requested. It is omitted when reduced motion is requested and pauses offscreen or while the page is hidden. A static image remains if playback fails or is blocked. Autoplay remains subject to the visitor's browser settings.
 
 Below-the-fold photos use lazy loading. The original SUDA logo is unchanged. Reserve loops/images remain available but are not all requested on page load. Preview GIFs and source archives are not included in the deployed public folder.

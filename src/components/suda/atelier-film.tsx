@@ -78,9 +78,6 @@ export function AtelierFilm() {
             <source src={editorialMedia.montageMp4} type="video/mp4" />
           </video>
         )}
-        <span className="atelier-film-index" aria-hidden="true">
-          01 — 07
-        </span>
         <div className="atelier-film-caption" aria-hidden="true">
           <span>من الخيط تبدأ الحكاية</span>
           <small>حرفة · تفاصيل · إطلالات</small>

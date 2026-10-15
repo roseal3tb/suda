@@ -3,18 +3,23 @@
   "images_decode": true,
   "videos": [
     {
-      "file": "suda/public/editorial/motion/hero_atelier_montage.mp4",
-      "duration": "7.466667",
-      "bytes": 1004504,
+      "file": "hero_atelier_montage.webm",
+      "duration": "7.466000",
+      "bytes": 849296,
+      "width": 720,
+      "height": 800,
       "decodes": true,
       "audio": false
     },
     {
-      "file": "suda/public/editorial/motion/hero_atelier_montage.webm",
-      "duration": "7.466000",
-      "bytes": 699287,
+      "file": "hero_atelier_montage.mp4",
+      "duration": "7.466667",
+      "bytes": 1130148,
+      "width": 720,
+      "height": 800,
       "decodes": true,
       "audio": false
     }
-  ]
+  ],
+  "fill_mode": "cover crop from source; no blur or stretched pixels"
 }
