@@ -18,6 +18,7 @@ import {
 } from "@/components/suda/shared";
 import { fashionMedia, categories, pageHead } from "@/features/suda/mock-data";
 import { HeroAtelierPattern } from "@/components/suda/hero-atelier-pattern";
+import { EditorialMotionStory } from "@/components/suda/editorial-motion-story";
 import { ThreadJourney } from "@/components/suda/thread-interlude";
 import { Reveal, WordsReveal } from "@/components/suda/reveal";
 import { useDemo } from "@/features/suda/demo-context";
@@ -108,6 +109,7 @@ function Home() {
         </div>
         <HeroAtelierPattern />
       </section>
+      <EditorialMotionStory />
       <section
         id="suda-journey"
         className="suda-journey section-wrap"
@@ -224,7 +226,7 @@ function Home() {
               </Button>
             </div>
           </Reveal>
-          <Reveal className="profile-fashion-triptych" delay={0.13}>
+          <Reveal className="profile-fashion-quad" delay={0.13}>
             {fashionMedia.profile.map((photo, index) => (
               <figure
                 key={photo.src}

@@ -8,7 +8,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { Reveal } from "@/components/suda/reveal";
-import { designers } from "@/features/suda/designers";
+import { designers, designerQuotes } from "@/features/suda/designers";
 import { pageHead } from "@/features/suda/mock-data";
 export const Route = createFileRoute("/inspiration")({
   head: () =>
@@ -61,6 +61,27 @@ function Inspiration() {
         </Reveal>
         <div className="inspiration-hero-deco" aria-hidden="true">
           سُدى
+        </div>
+      </section>
+      <section className="content-wrap designer-quote-section" aria-labelledby="designer-quote-heading">
+        <Reveal className="designer-quote-intro">
+          <span className="eyebrow"><span className="tiny-line" /> كلمات صنعت أثرًا</span>
+          <h2 id="designer-quote-heading">من أقوال مصممات سعوديات</h2>
+          <p>اقتباسات من مقابلات منشورة، مترجمة إلى العربية عن الإنجليزية، مع رابط مباشر للنص الأصلي لكل قول.</p>
+        </Reveal>
+        <div className="designer-quote-grid">
+          {designerQuotes.map((item, index) => (
+            <Reveal as="article" className="designer-quote-card" key={item.id} delay={(index % 4) * .08}>
+              <span className="designer-quote-mark" aria-hidden="true">“</span>
+              <blockquote><p>{item.quote}</p></blockquote>
+              <div className="designer-quote-bottom">
+                <div><strong>{item.name}</strong><small lang="en">{item.brand}</small></div>
+                <a href={item.source} target="_blank" rel="noopener noreferrer" aria-label={`مصدر الاقتباس عن ${item.name}`}>
+                  {item.sourceLabel} <ExternalLink size={15} aria-hidden="true" />
+                </a>
+              </div>
+            </Reveal>
+          ))}
         </div>
       </section>
       <section

@@ -22,16 +22,20 @@ export const fashionMedia = {
   },
   profile: [
     {
-      src: media("profile_red_carpet_gold"),
-      alt: "إطلالة بفستان ذهبي طويل على السجادة الحمراء",
+      src: media("angham-burgundy"),
+      alt: "أنغام بإطلالة عنابية مرصعة وهي تحمل جائزة",
     },
     {
-      src: media("profile_red_carpet_black"),
-      alt: "إطلالة بفستان أسود طويل في حفل جوائز",
+      src: media("angham-blue"),
+      alt: "أنغام بفستان أزرق ملكي مطرز في مشهد من المرايا",
     },
     {
-      src: media("editorial_burgundy_look"),
-      alt: "إطلالة بفستان خمري على درج أحمر",
+      src: media("angham-silver"),
+      alt: "أنغام بفستان سماوي فضي مطرز",
+    },
+    {
+      src: media("angham-gold"),
+      alt: "أنغام بفستان ذهبي مطرز على خلفية داكنة",
     },
   ],
   inspiration: [

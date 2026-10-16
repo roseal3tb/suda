@@ -126,3 +126,40 @@ export const designers: Designer[] = [
     sourceLabel: "Arab News — 2023",
   },
 ];
+
+/** Short Arabic translations of verified, attributed interview excerpts.
+ * Translated from English; the linked source contains the original words. */
+export const designerQuotes = [
+  {
+    id: "arwa-quote",
+    name: "أروى البنّاوي",
+    brand: "ARWÁ",
+    quote: "نحتاج إلى مزيد من النساء اللواتي يعبّرن عمّا يردن. أعتقد أنني واحدة منهن، وأريد أن أُلهم المزيد من الفتيات معي.",
+    source: "https://www.thenationalnews.com/lifestyle/fashion/streetwear-for-the-savvy-arab-girl-arwa-al-banawi-on-her-collaboration-with-adidas-1.629817",
+    sourceLabel: "The National · 2017",
+  },
+  {
+    id: "honayda-quote",
+    name: "هنيدة صيرفي",
+    brand: "HONAYDA",
+    quote: "العالم مليء بالفرص، وهناك مكان للجميع. أنصح المصممين الصاعدين بأن يركزوا على أهدافهم ويواصلوا دفع أنفسهم إلى الأمام.",
+    source: "https://www.arabnews.com/fashion/saudi-fashion-designer-honayda-serafi-on-harrods-career-breakthrough-2144696",
+    sourceLabel: "Arab News · 2022",
+  },
+  {
+    id: "mashael-quote",
+    name: "مشاعل الراجحي",
+    brand: "MASHAEL ALRAJHI",
+    quote: "اسعوا إلى تحقيق أهدافكم. لا تتوقفوا عند أول عائق. إذا استطعتم تصوّر ما تريدون، فمن المرجّح أن تستطيعوا تحقيقه.",
+    source: "https://sanahsharma.wordpress.com/2016/05/19/interview-with-mashael-alrajhi/",
+    sourceLabel: "Sanah Sharma · 2016",
+  },
+  {
+    id: "tima-quote",
+    name: "تيما عابد",
+    brand: "TIMA ABID",
+    quote: "الشغف هو ما يدفعك إلى الاستمرار، ومن دونه لن تستطيع المضي قدمًا.",
+    source: "https://www.harpersbazaararabia.com/fashion/tima-abid-on-her-biggest-passion-saudi-heritage-and-being-a-fashion-inspiration-today",
+    sourceLabel: "Harper’s Bazaar Arabia · 2022",
+  },
+] as const;
