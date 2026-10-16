@@ -133,6 +133,25 @@ function Home() {
         </div>
         <AtelierFilm />
       </section>
+      <section className="couture-voices section-wrap" aria-labelledby="couture-voices-title">
+        <Reveal className="couture-voices-heading">
+          <span className="eyebrow"><span className="tiny-line" /> كلمات من عالم الأزياء</span>
+          <h2 id="couture-voices-title">من وحي المصممات</h2>
+          <p>كلمات ملهمة من مصممات سعوديات عن الشغف والطموح وابتكار الطريق الخاص بك</p>
+        </Reveal>
+        <div className="couture-voices-grid">
+          {voices.map((voice, index) => (
+            <Reveal as="article" className={`couture-voice-card couture-voice-card-${index}`} delay={index * 0.1} key={voice.english}>
+              <span className="couture-voice-mark" aria-hidden="true">”</span>
+              <blockquote dir="rtl">{voice.quote}</blockquote>
+              <div className="couture-voice-author">
+                <div><strong>{voice.name}</strong><span lang="en">{voice.english}</span></div>
+                <small>{voice.source}</small>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
       <section
         id="suda-journey"
         className="suda-journey section-wrap"
@@ -271,25 +290,6 @@ function Home() {
           </Reveal>
         </section>
         <div className="thread-journey-breath" aria-hidden="true" />
-        <section className="couture-voices section-wrap" aria-labelledby="couture-voices-title">
-          <Reveal className="couture-voices-heading">
-            <span className="eyebrow"><span className="tiny-line" /> كلمات من عالم الأزياء</span>
-            <h2 id="couture-voices-title">من وحي المصممات</h2>
-            <p>كلمات ملهمة من مصممات سعوديات عن الشغف والطموح وابتكار الطريق الخاص بك</p>
-          </Reveal>
-          <div className="couture-voices-grid">
-            {voices.map((voice, index) => (
-              <Reveal as="article" className={`couture-voice-card couture-voice-card-${index}`} delay={index * 0.1} key={voice.english}>
-                <span className="couture-voice-mark" aria-hidden="true">”</span>
-                <blockquote dir="rtl">{voice.quote}</blockquote>
-                <div className="couture-voice-author">
-                  <div><strong>{voice.name}</strong><span lang="en">{voice.english}</span></div>
-                  <small>{voice.source}</small>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </section>
         <section className="inspiration-teaser section-wrap">
           <Reveal className="inspiration-teaser-copy">
             <span className="eyebrow">
