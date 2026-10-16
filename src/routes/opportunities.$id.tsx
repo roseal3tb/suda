@@ -22,7 +22,7 @@ export const Route = createFileRoute("/opportunities/$id")({
   head: () =>
     pageHead(
       "تفاصيل الفرصة",
-      "تعرّفي على تفاصيل فرصة الأزياء ومتطلباتها ومواعيدها أو التحقي بدورة مجانية.",
+      "تعرّفي على تفاصيل فرصة الأزياء ومتطلباتها ومواعيدها أو التحقي بدورة مجانية",
     ),
   component: Details,
 });
@@ -35,7 +35,7 @@ function Details() {
       <div className="content-wrap">
         <EmptyState
           title="هذه الفرصة غير متاحة"
-          description="قد تكون حُذفت من القائمة التجريبية."
+          description="قد تكون حُذفت من القائمة التجريبية"
           action={
             <Button asChild>
               <Link to="/opportunities">العودة إلى الفرص</Link>
@@ -87,7 +87,7 @@ function Details() {
                 <h3>الالتحاق بالدورة</h3>
                 <p>
                   دورة مجانية · في حال توفّر اجتماع رسمي عبر Zoom، يظهر رابطه
-                  بعد الالتحاق. لا تُستضاف فيديوهات داخل سُدى.
+                  بعد الالتحاق. لا تُستضاف فيديوهات داخل سُدى
                 </p>
                 {enrolled ? (
                   <>
@@ -107,7 +107,7 @@ function Details() {
                           فتح اجتماع Zoom الرسمي <ArrowUpLeft size={15} />
                         </a>
                       ) : (
-                        <p>لم تُرفق الجهة المنظمة رابط Zoom موثّقًا بعد.</p>
+                        <p>لم تُرفق الجهة المنظمة رابط Zoom موثّقًا بعد</p>
                       )}
                     </div>
                     <Button asChild variant="outline">
@@ -135,8 +135,8 @@ function Details() {
                 <p>
                   لا تُقدَّم الطلبات داخل سُدى.{" "}
                   {item.externalUrl
-                    ? "انتقلي إلى الرابط الرسمي لدى الجهة المنظمة."
-                    : "لم يُرفق رابط رسمي لهذه الفرصة الخيالية."}
+                    ? "انتقلي إلى الرابط الرسمي لدى الجهة المنظمة"
+                    : "لم يُرفق رابط رسمي لهذه الفرصة الخيالية"}
                 </p>
                 {item.externalUrl && item.externalUrl.startsWith("https://") ? (
                   <Button asChild>

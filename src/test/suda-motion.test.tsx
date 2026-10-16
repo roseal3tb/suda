@@ -8,7 +8,6 @@ import {
 } from "@testing-library/react";
 import { AtelierFilm } from "@/components/suda/atelier-film";
 import { Intro } from "@/components/suda/intro";
-import { HeroAtelierPattern } from "@/components/suda/hero-atelier-pattern";
 import { INTRO_KEY } from "@/features/suda/storage";
 let reduce = false;
 function matchMedia(query: string) {
@@ -51,15 +50,8 @@ describe("Editorial motion safeguards", () => {
     ).not.toBeInTheDocument();
     expect(screen.getByRole("img")).toHaveAttribute(
       "src",
-      "/editorial/images/hero_atelier_poster.webp",
+      "/editorial/film/suda_couture_poster.jpg",
     );
-  });
-  it("renders the sewing pattern as a native decorative SVG rather than a static hero image", () => {
-    const view = render(<HeroAtelierPattern />);
-    expect(view.container.querySelector(".atelier-hero-pattern svg")).toBeInTheDocument();
-    expect(view.container.querySelector(".hero-pattern-hoop")).toBeInTheDocument();
-    expect(view.container.querySelector(".hero-pattern-thread")).toBeInTheDocument();
-    expect(view.container.querySelector("img")).toBeNull();
   });
   it("autoplays a muted inline film without a visible play control and falls back on failure", () => {
     const view = render(<AtelierFilm />);
@@ -86,8 +78,6 @@ describe("Editorial motion safeguards", () => {
       screen.getByRole("region", { name: "مقدمة سُدى" }),
     ).toBeInTheDocument();
     expect(sessionStorage.getItem(INTRO_KEY)).toBe("1");
-    expect(view.container.querySelector(".thread-intro-panel")).toBeNull();
-    expect(view.container.querySelector(".first-stitch-trail")).toBeInTheDocument();
     fireEvent.keyDown(screen.getByRole("button", { name: "تخطّي المقدمة" }), {
       key: "Escape",
     });

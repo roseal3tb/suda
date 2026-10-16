@@ -32,7 +32,7 @@ export const Route = createFileRoute("/admin")({
   head: () =>
     pageHead(
       "إدارة الفرص",
-      "واجهة تجريبية للمشرفة لإضافة فرص الأزياء وتعديلها وحذفها، دون حماية أمنية حقيقية.",
+      "واجهة تجريبية للمشرفة لإضافة فرص الأزياء وتعديلها وحذفها، دون حماية أمنية حقيقية",
     ),
   component: () => (
     <MemberGate admin>
@@ -79,12 +79,12 @@ function Admin() {
     e.preventDefault();
     if (!form) return;
     if (!validateOpportunity(form) || !form.location.trim()) {
-      setError("أكملي عنوان الفرصة والجهة والموقع والوصف والمتطلبات.");
+      setError("أكملي عنوان الفرصة والجهة والموقع والوصف والمتطلبات");
       return;
     }
     if (form.externalUrl && !isValidExternalUrl(form.externalUrl)) {
       setError(
-        "رابط الجهة يجب أن يبدأ بـ https://. اتركيه فارغًا إذا لم يوجد رابط موثّق.",
+        "رابط الجهة يجب أن يبدأ بـ https://. اتركيه فارغًا إذا لم يوجد رابط موثّق",
       );
       return;
     }
@@ -94,7 +94,7 @@ function Admin() {
       !isValidZoomUrl(form.zoomUrl)
     ) {
       setError(
-        "استخدمي رابط اجتماع Zoom رسميًا يبدأ بـ https:// وينتمي إلى zoom.us.",
+        "استخدمي رابط اجتماع Zoom رسميًا يبدأ بـ https:// وينتمي إلى zoom.us",
       );
       return;
     }
@@ -115,7 +115,7 @@ function Admin() {
         ...links,
       })
     ) {
-      setError("تعذّر حفظ الفرصة محليًا.");
+      setError("تعذّر حفظ الفرصة محليًا");
       return;
     }
     setForm(null);
@@ -130,13 +130,13 @@ function Admin() {
       <PageIntro
         eyebrow="مساحة الإدارة"
         title="إدارة الفرص"
-        description="إضافة الدورات والمسابقات وفرص التدريب والعمل وتعديلها وحذفها."
+        description="إضافة الدورات والمسابقات وفرص التدريب والعمل وتعديلها وحذفها"
         action={<AddButton onClick={() => start()}>إضافة فرصة</AddButton>}
       />
       {saved && (
         <p role="status" className="success-message">
           <Check size={16} />
-          حُفظت الفرصة في القائمة التجريبية.
+          حُفظت الفرصة في القائمة التجريبية
         </p>
       )}
       <div className="form-grid mb-6">
@@ -242,7 +242,7 @@ function Admin() {
       ) : (
         <EmptyState
           title="لا توجد فرص تطابق البحث"
-          description="عدّلي البحث أو أضيفي فرصة جديدة."
+          description="عدّلي البحث أو أضيفي فرصة جديدة"
         />
       )}
       <DemoNote />
@@ -282,7 +282,7 @@ function Admin() {
               </FormField>
               <FormField
                 label="الجهة المنظمة *"
-                hint="استخدمي اسمًا خياليًا واضحًا في العرض."
+                hint="استخدمي اسمًا خياليًا واضحًا في العرض"
               >
                 <input
                   value={form.organization}
@@ -359,7 +359,7 @@ function Admin() {
             {form.type !== "الدورات" && (
               <FormField
                 label="الرابط الرسمي — اختياري"
-                hint="لا تضيفي رابطًا غير موثّق؛ الطلبات تُقدّم خارج سُدى."
+                hint="لا تضيفي رابطًا غير موثّق؛ الطلبات تُقدّم خارج سُدى"
               >
                 <input
                   dir="ltr"
@@ -376,7 +376,7 @@ function Admin() {
               <>
                 <FormField
                   label="رابط اجتماع Zoom — اختياري"
-                  hint="أضيفي رابطًا رسميًا موثّقًا فقط. لا يظهر للمستخدمة إلا بعد الالتحاق."
+                  hint="أضيفي رابطًا رسميًا موثّقًا فقط. لا يظهر للمستخدمة إلا بعد الالتحاق"
                 >
                   <input
                     dir="ltr"
@@ -390,7 +390,7 @@ function Admin() {
                 </FormField>
                 <p className="demo-note">
                   الدورات مجانية، ولا يُنشأ رابط اجتماع افتراضي إذا لم تُقدّمه
-                  الجهة.
+                  الجهة
                 </p>
               </>
             )}

@@ -20,7 +20,7 @@ export const Route = createFileRoute("/learning")({
   head: () =>
     pageHead(
       "رحلتي التعليمية",
-      "دوراتك المجانية وتقدّمك الذي تحدثينه يدويًا وإنجازاتك التعليمية في سُدى.",
+      "دوراتك المجانية وتقدّمك الذي تحدثينه يدويًا وإنجازاتك التعليمية في سُدى",
     ),
   component: () => (
     <MemberGate>
@@ -41,7 +41,7 @@ function Learning() {
       <PageIntro
         eyebrow="التعلّم"
         title="رحلتي التعليمية"
-        description="تابعي دوراتك، حدّثي تقدّمك بنفسك، وسجّلي ما أنجزتِه."
+        description="تابعي دوراتك، حدّثي تقدّمك بنفسك، وسجّلي ما أنجزتِه"
       />
       {activeEnrollments.length ? (
         activeEnrollments.map((enrollment) => {
@@ -59,7 +59,7 @@ function Learning() {
       ) : (
         <EmptyState
           title="لا توجد دورات ملتحقة بعد"
-          description="التحقي بإحدى الدورات المجانية، وستجدينها هنا مع رابط اللقاء ومتابعة تقدّمك."
+          description="التحقي بإحدى الدورات المجانية، وستجدينها هنا مع رابط اللقاء ومتابعة تقدّمك"
           action={
             <Button asChild>
               <Link to="/opportunities" search={{ category: "الدورات" }}>
@@ -89,11 +89,11 @@ function LearningRow({
   function submit(e: FormEvent) {
     e.preventDefault();
     if (!achievement.trim()) {
-      setError("اكتبي إنجازك أولًا.");
+      setError("اكتبي إنجازك أولًا");
       return;
     }
     if (!addAchievement(course.id, achievement)) {
-      setError("تعذّر حفظ الإنجاز.");
+      setError("تعذّر حفظ الإنجاز");
       return;
     }
     setAchievement("");
@@ -114,7 +114,7 @@ function LearningRow({
             {course.title}
           </Link>
         </h2>
-        <small>التقدّم يُحدَّث يدويًا بواسطتك، ولا يُرصد تلقائيًا.</small>
+        <small>التقدّم يُحدَّث يدويًا بواسطتك، ولا يُرصد تلقائيًا</small>
         <div className="progress-controls">
           <input
             type="range"
@@ -134,7 +134,7 @@ function LearningRow({
             size="sm"
             onClick={() => {
               if (updateProgress(course.id, progress)) setSaved(true);
-              else setError("تعذّر حفظ التقدم.");
+              else setError("تعذّر حفظ التقدم");
             }}
           >
             <Check />
@@ -144,7 +144,7 @@ function LearningRow({
         {saved && (
           <p className="success-message" role="status">
             حُدّث التقدّم إلى {enrollment.progress.toLocaleString("ar-SA")}٪ في
-            هذا المتصفح.
+            هذا المتصفح
           </p>
         )}
         <form className="achievement-form" onSubmit={submit}>
@@ -188,7 +188,7 @@ function LearningRow({
                 فتح اجتماع Zoom الرسمي <Video size={15} />
               </a>
             ) : (
-              <p>لم تُرفق الجهة المنظمة رابط Zoom موثّقًا بعد.</p>
+              <p>لم تُرفق الجهة المنظمة رابط Zoom موثّقًا بعد</p>
             )}
           </div>
         )}

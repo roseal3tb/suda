@@ -17,7 +17,7 @@ export const Route = createFileRoute("/profile")({
   head: () =>
     pageHead(
       "الملف المهني",
-      "مهاراتك واهتماماتك وتجاربك في تصميم الأزياء، في ملف مهني يشبهك.",
+      "مهاراتك واهتماماتك وتجاربك في تصميم الأزياء، في ملف مهني يشبهك",
     ),
   component: () => (
     <MemberGate>
@@ -58,11 +58,11 @@ function ProfilePage() {
     const skills = split(form.skills);
     const interests = split(form.interests);
     if (form.name.trim().length < 2 || !skills.length || !interests.length) {
-      setError("أكملي الاسم وأضيفي مهارة واهتمامًا على الأقل قبل الحفظ.");
+      setError("أكملي الاسم وأضيفي مهارة واهتمامًا على الأقل قبل الحفظ");
       return;
     }
     if (!saveProfile({ ...form, name: form.name.trim(), skills, interests })) {
-      setError("تعذّر حفظ الملف في المتصفح.");
+      setError("تعذّر حفظ الملف في المتصفح");
       return;
     }
     setEditing(false);
@@ -73,7 +73,7 @@ function ProfilePage() {
       <PageIntro
         eyebrow="الملف المهني"
         title="ملفك المهني"
-        description="أضيفي مهاراتك واهتماماتك وخبراتك المهنية."
+        description="أضيفي مهاراتك واهتماماتك وخبراتك المهنية"
         action={
           profile ? (
             <Button onClick={start}>
@@ -86,7 +86,7 @@ function ProfilePage() {
       {saved && (
         <p className="success-message" role="status">
           <Check size={16} />
-          حُفظ ملفك محليًا في هذا المتصفح.
+          حُفظ ملفك محليًا في هذا المتصفح
         </p>
       )}
       {profile ? (
@@ -95,7 +95,7 @@ function ProfilePage() {
             <div className="profile-avatar">{profile.name.charAt(0)}</div>
             <span className="eyebrow">الملف المهني</span>
             <h2>{profile.name}</h2>
-            <p>{profile.bio || "لم تُضاف نبذة بعد."}</p>
+            <p>{profile.bio || "لم تُضاف نبذة بعد"}</p>
           </Reveal>
           <div>
             <Reveal as="section" className="profile-section" delay={0.15}>
@@ -120,14 +120,14 @@ function ProfilePage() {
             </Reveal>
             <Reveal as="section" className="profile-section" delay={0.45}>
               <h2>الخبرات</h2>
-              <p>{profile.experience || "لم تُضاف خبرات بعد."}</p>
+              <p>{profile.experience || "لم تُضاف خبرات بعد"}</p>
             </Reveal>
           </div>
         </div>
       ) : (
         <EmptyState
           title="ملفك المهني"
-          description="ابدئي باسمك، أضيفي مهاراتك واهتماماتك، وأكملي نبذتك المهنية."
+          description="ابدئي باسمك، أضيفي مهاراتك واهتماماتك، وأكملي نبذتك المهنية"
           action={
             <Button variant="outline" onClick={start}>
               <Plus />
@@ -156,14 +156,14 @@ function ProfilePage() {
               placeholder="عن شغفك وأسلوبك في التصميم"
             />
           </FormField>
-          <FormField label="المهارات *" hint="افصلي بين المهارات بفاصلة.">
+          <FormField label="المهارات *" hint="افصلي بين المهارات بفاصلة">
             <input
               value={form.skills}
               onChange={(e) => setForm({ ...form, skills: e.target.value })}
               placeholder="رسم الأزياء، الباترون، الخياطة"
             />
           </FormField>
-          <FormField label="الاهتمامات *" hint="افصلي بين الاهتمامات بفاصلة.">
+          <FormField label="الاهتمامات *" hint="افصلي بين الاهتمامات بفاصلة">
             <input
               value={form.interests}
               onChange={(e) => setForm({ ...form, interests: e.target.value })}

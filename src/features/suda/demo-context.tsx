@@ -49,7 +49,7 @@ interface DemoState {
 }
 const Context = createContext<DemoState | null>(null);
 const failMessage =
-  "تعذّر حفظ البيانات محليًا. قد تكون مساحة المتصفح ممتلئة؛ جرّبي صورة أصغر أو امسحي بعض بيانات العرض.";
+  "تعذّر حفظ البيانات محليًا. قد تكون مساحة المتصفح ممتلئة؛ جرّبي صورة أصغر أو امسحي بعض بيانات العرض";
 export function DemoProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [opportunities, setOpportunities] =

@@ -20,7 +20,7 @@ export const Route = createFileRoute("/portfolio")({
   head: () =>
     pageHead(
       "معرض الأعمال",
-      "معرض شخصي لإضافة وتعديل وحذف أعمال تصميم الأزياء محليًا.",
+      "معرض شخصي لإضافة وتعديل وحذف أعمال تصميم الأزياء محليًا",
     ),
   component: () => (
     <MemberGate>
@@ -49,7 +49,7 @@ function Portfolio() {
     e.preventDefault();
     if (!form || busy) return;
     if (!form.title.trim() || !form.description.trim()) {
-      setError("أضيفي عنوان العمل ووصفه قبل الحفظ.");
+      setError("أضيفي عنوان العمل ووصفه قبل الحفظ");
       return;
     }
     if (
@@ -60,7 +60,7 @@ function Portfolio() {
       })
     ) {
       setError(
-        "تعذّر حفظ العمل في المتصفح. جرّبي صورة أصغر أو امسحي بيانات قديمة.",
+        "تعذّر حفظ العمل في المتصفح. جرّبي صورة أصغر أو امسحي بيانات قديمة",
       );
       return;
     }
@@ -75,7 +75,7 @@ function Portfolio() {
       const data = await preparePortfolioImage(file);
       setForm((prev) => (prev ? { ...prev, image: data } : prev));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "تعذّر قراءة الصورة.");
+      setError(err instanceof Error ? err.message : "تعذّر قراءة الصورة");
     } finally {
       setBusy(false);
     }
@@ -85,7 +85,7 @@ function Portfolio() {
       <PageIntro
         eyebrow="معرض الأعمال"
         title="معرض أعمالي"
-        description="أضيفي مشروعاتك وصور تصاميمك الحقيقية، واحتفظي بها محليًا في هذا المتصفح."
+        description="أضيفي مشروعاتك وصور تصاميمك الحقيقية، واحتفظي بها محليًا في هذا المتصفح"
         action={
           works.length > 0 ? (
             <AddButton onClick={() => start()}>إضافة عمل</AddButton>
@@ -95,7 +95,7 @@ function Portfolio() {
       {saved && (
         <p role="status" className="success-message">
           <Check size={16} />
-          حُفظ العمل في هذا المتصفح.
+          حُفظ العمل في هذا المتصفح
         </p>
       )}
       {works.length ? (
@@ -150,7 +150,7 @@ function Portfolio() {
       ) : (
         <EmptyState
           title="معرضك جاهز لأعمالك"
-          description="لا توجد أعمال بعد. أضيفي تصميمًا أو مشروعًا دراسيًا لتبدئي معرضك."
+          description="لا توجد أعمال بعد. أضيفي تصميمًا أو مشروعًا دراسيًا لتبدئي معرضك"
           action={
             <Button variant="outline" onClick={() => start()}>
               <Plus />
@@ -193,7 +193,7 @@ function Portfolio() {
             </FormField>
             <FormField
               label="صورة عملك — اختيارية"
-              hint="اختاري صورة من جهازك؛ ستُضغط وتُحفظ محليًا في هذا المتصفح فقط. لا تستخدمي صور أعمال الآخرين."
+              hint="اختاري صورة من جهازك؛ ستُضغط وتُحفظ محليًا في هذا المتصفح فقط. لا تستخدمي صور أعمال الآخرين"
             >
               <input
                 className="file-input"

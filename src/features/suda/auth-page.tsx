@@ -22,7 +22,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
 
   function begin(name: string, email: string, role: "user" | "admin") {
     if (!login(name, email, role)) {
-      setError("تعذّر حفظ الجلسة التجريبية في المتصفح.");
+      setError("تعذّر حفظ الجلسة التجريبية في المتصفح");
       return;
     }
     setPassword("");
@@ -34,19 +34,19 @@ export function AuthPage({ register = false }: { register?: boolean }) {
     event.preventDefault();
     setError("");
     if (register && name.trim().length < 2) {
-      setError("اكتبي اسمًا من حرفين على الأقل.");
+      setError("اكتبي اسمًا من حرفين على الأقل");
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setError("أدخلي بريدًا إلكترونيًا بصيغة صحيحة.");
+      setError("أدخلي بريدًا إلكترونيًا بصيغة صحيحة");
       return;
     }
     if (password.length < 6) {
-      setError("كلمة المرور التجريبية يجب أن تتكوّن من ٦ أحرف على الأقل.");
+      setError("كلمة المرور التجريبية يجب أن تتكوّن من ٦ أحرف على الأقل");
       return;
     }
     if (register && password !== confirm) {
-      setError("كلمتا المرور غير متطابقتين.");
+      setError("كلمتا المرور غير متطابقتين");
       return;
     }
     setBusy(true);
@@ -72,14 +72,14 @@ export function AuthPage({ register = false }: { register?: boolean }) {
         <h1>{register ? "إنشاء ملفك في سُدى" : "الدخول إلى سُدى"}</h1>
         <p>
           {register
-            ? "أنشئي جلسة تجريبية لعرض الملف المهني ومعرض الأعمال."
-            : "ادخلي إلى ملفك المهني والفرص التي التحقتِ بها."}
+            ? "أنشئي جلسة تجريبية لعرض الملف المهني ومعرض الأعمال"
+            : "ادخلي إلى ملفك المهني والفرص التي التحقتِ بها"}
         </p>
         {success || session ? (
           <div className="form-stack">
             <p className="success-message" role="status">
               تم الدخول التجريبي بنجاح. لم يُنشأ حساب حقيقي ولم تُرسل بياناتك
-              إلى أي خدمة.
+              إلى أي خدمة
             </p>
             <Button
               onClick={() =>
@@ -127,7 +127,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
             </FormField>
             <FormField
               label="كلمة المرور التجريبية"
-              hint="استخدمي بيانات خيالية، وليس كلمة مرورك الحقيقية."
+              hint="استخدمي بيانات خيالية، وليس كلمة مرورك الحقيقية"
             >
               <div className="password-control">
                 <input
@@ -193,7 +193,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
               <Info size={14} />
               <span>
                 عرض واجهات فقط. أي بريد صحيح وكلمة مرور تجريبية من ٦ أحرف تعمل؛
-                لا توجد مصادقة أو حماية فعلية للأدوار.
+                لا توجد مصادقة أو حماية فعلية للأدوار
               </span>
             </p>
             {!register && (
@@ -239,8 +239,8 @@ export function AuthPage({ register = false }: { register?: boolean }) {
         />
         <div>
           <span className="eyebrow">من الفكرة إلى التفاصيل</span>
-          <h2>مساحة لبدايتك المهنية.</h2>
-          <p>ملف يجمع مهاراتك، ومعرض يحكي قصتك مع التصميم.</p>
+          <h2>مساحة لبدايتك المهنية</h2>
+          <p>ملف يجمع مهاراتك، ومعرض يحكي قصتك مع التصميم</p>
         </div>
       </Reveal>
     </section>

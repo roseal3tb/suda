@@ -24,7 +24,7 @@ function NotFoundComponent() {
           الصفحة غير موجودة
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          لم نعثر على الصفحة المطلوبة.
+          لم نعثر على الصفحة المطلوبة
         </p>
         <div className="mt-6">
           <Link
@@ -53,7 +53,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
           تعذّر تحميل الصفحة
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          حدث خطأ غير متوقع. يمكنك المحاولة مجددًا أو العودة للرئيسية.
+          حدث خطأ غير متوقع. يمكنك المحاولة مجددًا أو العودة للرئيسية
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
@@ -87,14 +87,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         {
           name: "description",
           content:
-            "مساحة عربية لفرص تصميم الأزياء والتعلّم وبناء الملف المهني.",
+            "مساحة عربية لفرص تصميم الأزياء والتعلّم وبناء الملف المهني",
         },
 
         { property: "og:title", content: "سُدى | فرص تصميم الأزياء" },
         {
           property: "og:description",
           content:
-            "مساحة عربية لفرص تصميم الأزياء والتعلّم وبناء الملف المهني.",
+            "مساحة عربية لفرص تصميم الأزياء والتعلّم وبناء الملف المهني",
         },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
@@ -129,7 +129,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <noscript>
           <style>{`[style*="opacity:0"], [style*="opacity: 0"] { opacity: 1 !important; transform: none !important; }`}</style>
           <p className="demo-note">
-            فعّلي JavaScript لاستخدام نماذج العرض التجريبي والبحث.
+            فعّلي JavaScript لاستخدام نماذج العرض التجريبي والبحث
           </p>
         </noscript>
         <Scripts />

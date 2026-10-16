@@ -5,7 +5,7 @@ export const Route = createFileRoute("/register")({
   head: () =>
     pageHead(
       "إنشاء حساب تجريبي",
-      "أنشئي جلسة عرض تجريبية لاكتشاف ملفك المهني ومعرض أعمالك في سُدى.",
+      "أنشئي جلسة عرض تجريبية لاكتشاف ملفك المهني ومعرض أعمالك في سُدى",
     ),
   component: () => <AuthPage register />,
 });

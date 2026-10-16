@@ -188,7 +188,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       )}
       {resetDone && (
         <div role="status" className="global-alert is-success">
-          <span>أُعيدت البيانات التجريبية إلى حالتها الأصلية.</span>
+          <span>أُعيدت البيانات التجريبية إلى حالتها الأصلية</span>
         </div>
       )}
       <main
@@ -228,7 +228,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
                 <p>
                   مواد بصرية مقدّمة للمشروع لتوضيح حرفة تصميم الأزياء. لا تمثّل
                   أعمال المستخدمات أو الجهات التجريبية، ولا تعني شراكة مع
-                  المصممات.
+                  المصممات
                 </p>
               </div>
             </details>
@@ -247,7 +247,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
         open={resetting}
         onClose={() => setResetting(false)}
         title="إعادة ضبط البيانات التجريبية"
-        description="ستُستعاد الفرص الأصلية، ويُمسح الملف المهني ومعرض الأعمال والالتحاقات والتقدّم المحفوظ محليًا."
+        description="ستُستعاد الفرص الأصلية، ويُمسح الملف المهني ومعرض الأعمال والالتحاقات والتقدّم المحفوظ محليًا"
       >
         <div className="form-actions">
           <Button

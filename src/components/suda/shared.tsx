@@ -77,7 +77,7 @@ export function DemoNote() {
       <Info size={14} />
       <span>
         نسخة تجريبية · جميع الفرص والجهات خيالية، والتغييرات محفوظة محليًا في
-        المتصفح نفسه حتى إعادة ضبط البيانات.
+        المتصفح نفسه حتى إعادة ضبط البيانات
       </span>
     </Reveal>
   );
@@ -171,13 +171,13 @@ export function MemberGate({
           title={admin ? "الدخول المخصص للإدارة" : "يلزم تسجيل الدخول"}
           description={
             admin
-              ? "هذه الصفحة متاحة لوضع المشرفة التجريبي فقط. هذا تقييد للعرض، وليس حماية أمنية."
-              : "سجّلي الدخول التجريبي لتكملي ملفك وتحتفظي بأعمالك ودوراتك في هذا المتصفح."
+              ? "هذه الصفحة متاحة لوضع المشرفة التجريبي فقط. هذا تقييد للعرض، وليس حماية أمنية"
+              : "سجّلي الدخول التجريبي لتكملي ملفك وتحتفظي بأعمالك ودوراتك في هذا المتصفح"
           }
         />
         <EmptyState
           title={admin ? "يلزم وضع المشرفة التجريبي" : "سجّلي الدخول للمتابعة"}
-          description="لا تُنشأ حسابات حقيقية في هذه النسخة."
+          description="لا تُنشأ حسابات حقيقية في هذه النسخة"
           action={
             <Button asChild>
               <Link to="/login">
@@ -231,7 +231,7 @@ export function Modal({
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>
           {description ||
-            "التغييرات تجريبية ومحفوظة محليًا في هذا المتصفح فقط."}
+            "التغييرات تجريبية ومحفوظة محليًا في هذا المتصفح فقط"}
         </DialogDescription>
         {children}
       </DialogContent>
@@ -254,7 +254,7 @@ export function ConfirmDelete({
       open={open}
       onClose={onClose}
       title="تأكيد الحذف"
-      description={`هل تريدين حذف «${name}»؟ لا يمكن التراجع عن هذه الخطوة بعد الحفظ.`}
+      description={`هل تريدين حذف «${name}»؟ لا يمكن التراجع عن هذه الخطوة بعد الحفظ`}
     >
       <div className="form-actions">
         <Button variant="destructive" onClick={onConfirm}>

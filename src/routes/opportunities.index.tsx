@@ -27,7 +27,7 @@ export const Route = createFileRoute("/opportunities/")({
   head: () =>
     pageHead(
       "الفرص",
-      "استكشفي دورات ومسابقات وفرص تدريب وفرص وظيفية في تصميم الأزياء.",
+      "استكشفي دورات ومسابقات وفرص تدريب وفرص وظيفية في تصميم الأزياء",
     ),
   component: Opportunities,
 });
@@ -57,7 +57,7 @@ function Opportunities() {
       <PageIntro
         eyebrow="الفرص"
         title="استكشاف الفرص"
-        description="ابحثي في الدورات والمسابقات والتدريب والفرص الوظيفية، واستخدمي الفلاتر لتحديد ما يناسبك."
+        description="ابحثي في الدورات والمسابقات والتدريب والفرص الوظيفية، واستخدمي الفلاتر لتحديد ما يناسبك"
       />
       <section className="discovery-controls" aria-label="البحث عن الفرص وتصفيتها">
         <div className="discovery-controls-heading">
@@ -186,7 +186,7 @@ function Opportunities() {
         <div id="opportunity-results">
           <EmptyState
             title="لا توجد نتائج"
-            description="لا توجد فرص تطابق بحثك. جرّبي كلمة أخرى أو امسحي الفلاتر."
+            description="لا توجد فرص تطابق بحثك. جرّبي كلمة أخرى أو امسحي الفلاتر"
             action={
               <Button
                 variant="outline"
