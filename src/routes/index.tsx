@@ -18,6 +18,7 @@ import {
 } from "@/components/suda/shared";
 import { fashionMedia, categories, pageHead } from "@/features/suda/mock-data";
 import { AtelierFilm } from "@/components/suda/atelier-film";
+import { HeroAtelierPattern } from "@/components/suda/hero-atelier-pattern";
 import { ThreadJourney } from "@/components/suda/thread-interlude";
 import { Reveal, WordsReveal } from "@/components/suda/reveal";
 import { useDemo } from "@/features/suda/demo-context";
@@ -66,6 +67,7 @@ function Home() {
   return (
     <>
       <section className="atelier-hero" aria-labelledby="atelier-title">
+        <HeroAtelierPattern />
         <div className="atelier-hero-copy">
           <span className="eyebrow">
             <span className="tiny-line" />
