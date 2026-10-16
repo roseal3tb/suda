@@ -12,16 +12,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  OpportunityCard,
   categoryIcons,
-  DemoNote,
 } from "@/components/suda/shared";
 import { fashionMedia, categories, pageHead } from "@/features/suda/mock-data";
 import { AtelierFilm } from "@/components/suda/atelier-film";
 import { HeroAtelierPattern } from "@/components/suda/hero-atelier-pattern";
 import { ThreadJourney } from "@/components/suda/thread-interlude";
 import { Reveal, WordsReveal } from "@/components/suda/reveal";
-import { useDemo } from "@/features/suda/demo-context";
 export const Route = createFileRoute("/")({
   head: () =>
     pageHead(
@@ -85,7 +82,6 @@ const subtitles = [
   "مسارات عمل",
 ];
 function Home() {
-  const { opportunities } = useDemo();
   return (
     <>
       <section className="atelier-hero" aria-labelledby="atelier-title">
@@ -137,11 +133,11 @@ function Home() {
         </Reveal>
         <div className="couture-voices-grid">
           {voices.map((voice, index) => (
-            <Reveal as="article" className={`couture-voice-card couture-voice-card-${index}`} delay={index * 0.1} key={voice.english}>
+            <Reveal as="article" className={`couture-voice-card couture-voice-card-${index}`} delay={index * 0.1} key={voice.name}>
               <span className="couture-voice-mark" aria-hidden="true">”</span>
               <blockquote dir="rtl">{voice.quote}</blockquote>
               <div className="couture-voice-author">
-                <div><strong>{voice.name}</strong><span lang="en">{voice.english}</span></div>
+                <div><strong>{voice.name}</strong></div>
                 <small>{voice.source}</small>
               </div>
             </Reveal>
@@ -192,21 +188,6 @@ function Home() {
           ))}
         </div>
       </section>
-      <nav className="category-ribbon" aria-label="أنواع الفرص">
-        {categories.map((type, i) => {
-          const Icon = categoryIcons[type];
-          return (
-            <Link key={type} to="/opportunities" search={{ category: type }}>
-              <Icon className="ribbon-icon" size={27} strokeWidth={1} />
-              <div>
-                <h3>{type}</h3>
-                <small>{subtitles[i]}</small>
-              </div>
-              <ArrowUpLeft className="ribbon-arrow" size={17} />
-            </Link>
-          );
-        })}
-      </nav>
       <section
         id="suda-opportunities"
         className="section-wrap home-opportunities"
@@ -226,12 +207,21 @@ function Home() {
             عرض جميع الفرص <ArrowLeft size={15} />
           </Link>
         </Reveal>
-        <div className="opportunity-grid home-opportunity-grid">
-          {opportunities.slice(0, 4).map((item, i) => (
-            <OpportunityCard key={item.id} item={item} delay={i * 0.15} />
-          ))}
-        </div>
-        <DemoNote />
+        <nav className="category-ribbon" aria-label="أنواع الفرص">
+          {categories.map((type, i) => {
+            const Icon = categoryIcons[type];
+            return (
+              <Link key={type} to="/opportunities" search={{ category: type }}>
+                <Icon className="ribbon-icon" size={27} strokeWidth={1} />
+                <div>
+                  <h3>{type}</h3>
+                  <small>{subtitles[i]}</small>
+                </div>
+                <ArrowUpLeft className="ribbon-arrow" size={17} />
+              </Link>
+            );
+          })}
+        </nav>
       </section>
       <ThreadJourney>
         <section className="editorial-band">
