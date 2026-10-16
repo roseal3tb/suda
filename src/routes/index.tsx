@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useRef } from "react";
+import { useInView, useReducedMotion } from "framer-motion";
 import {
   ArrowLeft,
   ArrowUpLeft,
@@ -82,6 +84,13 @@ const subtitles = [
   "مسارات عمل",
 ];
 function Home() {
+  const ribbonRef = useRef<HTMLElement>(null);
+  const isRibbonInView = useInView(ribbonRef, {
+    once: true,
+    margin: "0px 0px -12% 0px",
+  });
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <>
       <section className="atelier-hero" aria-labelledby="atelier-title">
@@ -207,7 +216,11 @@ function Home() {
             عرض جميع الفرص <ArrowLeft size={15} />
           </Link>
         </Reveal>
-        <nav className="category-ribbon" aria-label="أنواع الفرص">
+        <nav
+          ref={ribbonRef}
+          className={`category-ribbon home-category-ribbon ${isRibbonInView || prefersReducedMotion ? "is-visible" : ""}`}
+          aria-label="أنواع الفرص"
+        >
           {categories.map((type, i) => {
             const Icon = categoryIcons[type];
             return (

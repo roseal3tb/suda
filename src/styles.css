@@ -1483,3 +1483,51 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
   max-width: none;
   margin: 8px 0 0;
 }
+
+
+/* Home opportunity categories — luxury staggered reveal on scroll.
+   Keep the existing four accessible Link elements and their visual styling.
+   The rose bar arrives first; the four choices follow in RTL DOM order. */
+@media (prefers-reduced-motion: no-preference) {
+  .home-opportunities > .home-category-ribbon {
+    opacity: 0;
+    transform: translateY(32px) scale(.987);
+    transition:
+      opacity .78s cubic-bezier(.22, 1, .36, 1),
+      transform .94s cubic-bezier(.22, 1, .36, 1);
+  }
+  .home-opportunities > .home-category-ribbon.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  .home-opportunities > .home-category-ribbon > a {
+    opacity: 0;
+    transform: translateY(22px);
+    transition:
+      background .3s ease,
+      color .3s ease,
+      opacity .58s cubic-bezier(.22, 1, .36, 1),
+      transform .75s cubic-bezier(.22, 1, .36, 1);
+  }
+  .home-opportunities > .home-category-ribbon.is-visible > a {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .home-opportunities > .home-category-ribbon.is-visible > a:nth-child(1) { transition-delay: 0s, 0s, .15s, .15s; }
+  .home-opportunities > .home-category-ribbon.is-visible > a:nth-child(2) { transition-delay: 0s, 0s, .28s, .28s; }
+  .home-opportunities > .home-category-ribbon.is-visible > a:nth-child(3) { transition-delay: 0s, 0s, .41s, .41s; }
+  .home-opportunities > .home-category-ribbon.is-visible > a:nth-child(4) { transition-delay: 0s, 0s, .54s, .54s; }
+  .home-opportunities > .home-category-ribbon.is-visible > a:hover,
+  .home-opportunities > .home-category-ribbon.is-visible > a:focus-visible {
+    transform: translateY(-2px);
+    transition-delay: 0s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-opportunities > .home-category-ribbon,
+  .home-opportunities > .home-category-ribbon > a {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
