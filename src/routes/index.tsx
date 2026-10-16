@@ -76,9 +76,9 @@ const voices = [
     source: "Sanah Sharma · 2016",
   },
   {
-    name: "تيما عابد",
-    english: "Tima Abid",
-    quote: "الشغف هو ما يدفعك إلى الاستمرار، ومن دونه لا يمكنك المضي قدمًا",
+    name: "ريم الكنهل ",
+    english: "Reem Alkanhal",
+    quote: "المصمّمة الحقيقية هي التي تترك مساحة للمرأة تكمل قصتها",
     source: "مقتبس من النص المقدّم للمشروع",
   },
 ] as const;
