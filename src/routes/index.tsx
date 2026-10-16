@@ -75,7 +75,7 @@ const voices = [
   {
     name: "ريم الكنهل ",
     quote: "المصمّمة الحقيقية هي التي تترك مساحة للمرأة تكمل قصتها",
-    source: "مقتبس من النص المقدّم للمشروع",
+    source: "مجلة ZiiMag",
   },
 ] as const;
 const subtitles = [
