@@ -14,6 +14,7 @@ export interface Designer {
 export const designers: Designer[] = [
   {
     id: "waad-aloqaili",
+    image: "/editorial/people/designer_waad.webp",
     name: "وعد العقيلي",
     brand: "Waad Aloqaili Couture",
     focus: "الأزياء الراقية والتصميم الحرفي",
@@ -24,6 +25,7 @@ export const designers: Designer[] = [
   },
   {
     id: "iman-alajlan",
+    image: "/editorial/people/designer_iman.webp",
     name: "إيمان العجلان",
     brand: "Eman AlAjlan",
     focus: "أزياء السهرة والتصميم الفاخر",
@@ -34,6 +36,7 @@ export const designers: Designer[] = [
   },
   {
     id: "rahaf-aziz",
+    image: "/editorial/people/designer_rahaf.webp",
     name: "رهف عزيز",
     brand: "Rahaf Aziz",
     focus: "الأزياء النسائية المعاصرة",
