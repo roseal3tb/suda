@@ -4,7 +4,7 @@ export const STORE_KEYS = {
   session: "session",
   opportunities: "admin:opportunities",
 } as const;
-export const INTRO_KEY = "suda:intro-seen";
+export const INTRO_KEY = "suda:intro-seen:first-stitch-v2";
 export type UserStorePart = "profile" | "portfolio" | "enrollments";
 export function userStoreKey(email: string, part: UserStorePart): string {
   // The key is scoped to a fictional demo email, not a security boundary.
