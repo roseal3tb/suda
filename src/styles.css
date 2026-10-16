@@ -888,3 +888,231 @@ img, svg { max-width: 100%; }
  .suda-photo-sources[open] { flex-basis: 100%; }
  .suda-photo-sources-content { position: static; width: 100%; max-width: 100%; margin-top: 10px; }
 }
+
+
+/* ===============================================================
+   SUDA | Fashion editorial refinement — 16 Oct 2026
+   Uses ONLY the approved SUDA palette and existing brand assets.
+   The layout, visual hierarchy and focus states improve without
+   changing demo workflows, roles, or data storage.
+   =============================================================== */
+:root {
+  --suda-linen: #FAF6F1;
+  --suda-rose: #E8D7E1;
+  --suda-taupe: #C5B1BC;
+  --suda-mauve: #A195A2;
+  --suda-plum: #564E58;
+  --suda-ink-secondary: #655B66;
+  --suda-hairline: color-mix(in srgb, var(--suda-taupe) 55%, var(--suda-linen));
+  --suda-ease: cubic-bezier(.22,1,.36,1);
+}
+
+/* Navigation: readable, anchored, and calm at all scroll positions. */
+.site-header {
+  background: rgb(250 246 241 / .95);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-bottom-color: var(--suda-hairline);
+  transition: box-shadow .25s ease, background-color .25s ease;
+}
+.site-header.is-scrolled { box-shadow: 0 8px 30px rgb(86 78 88 / .07); }
+.main-nav a[data-status="active"] { color: var(--suda-plum); font-weight: 700; }
+.main-nav a:hover, .main-nav a:focus-visible { color: var(--suda-plum); }
+.brand-link:focus-visible { outline: 3px solid var(--suda-plum); outline-offset: -4px; border-radius: 12px; }
+
+/* Magazine-like typographic rhythm, without introducing new fonts. */
+.page-intro, .section-heading { position: relative; }
+.page-intro h1 { font-size: clamp(34px, 4.8vw, 58px); line-height: 1.35; }
+.page-intro p, .section-heading p { line-height: 1.95; }
+.section-heading h2 { line-height: 1.43; }
+.page-intro:after { content: ""; width: 66px; height: 2px; background: var(--suda-mauve); position: absolute; bottom: -2px; inset-inline-start: 0; }
+.eyebrow { color: var(--suda-ink-secondary); }
+.tiny-line { background: var(--suda-mauve); }
+.content-wrap { padding-block: clamp(42px, 5.3vw, 82px) 86px; }
+
+/* Hero photography remains first-party supplied; the logo is untouched. */
+.atelier-hero { gap: clamp(30px, 4vw, 76px); }
+.atelier-hero-copy { isolation: isolate; }
+.atelier-hero-copy:before { content: ""; position: absolute; width: 160px; height: 160px; border: 1px solid rgb(197 177 188 / .38); border-radius: 50%; top: 9%; inset-inline-end: 0; z-index: -1; pointer-events: none; }
+.atelier-hero-description { color: var(--suda-plum); }
+.atelier-hero-body { color: var(--suda-ink-secondary); }
+.atelier-hero-actions [data-slot="button"] { min-height: 50px; padding-inline: 23px; }
+.atelier-film-frame { border-radius: 0 0 0 72px; box-shadow: -18px 26px 55px rgb(86 78 88 / .075); }
+.atelier-film figcaption { border-top: 1px solid var(--suda-hairline); padding-top: 11px; }
+
+/* Category navigation feels like a purposeful editorial index. */
+.category-ribbon { background: var(--suda-rose); }
+.category-ribbon a { position: relative; transition: background .3s ease, color .3s ease; }
+.category-ribbon a:hover, .category-ribbon a:focus-visible { background: color-mix(in srgb, var(--suda-rose) 65%, var(--suda-linen)); }
+.category-ribbon a:focus-visible { outline: 3px solid var(--suda-plum); outline-offset: -3px; }
+.category-ribbon h3 { font-weight: 650; }
+.category-ribbon small { color: var(--suda-ink-secondary); }
+.category-ribbon .ribbon-arrow { opacity: .55; transition: opacity .25s, transform .25s; }
+.category-ribbon a:hover .ribbon-arrow { opacity: 1; transform: translate(-4px,-4px); }
+
+/* Opportunity listing: consistent cards, legible tags and obvious interactions. */
+.opportunity-grid { gap: clamp(16px, 2vw, 26px); align-items: stretch; }
+.suda-opportunity-reveal { min-width: 0; height: 100%; }
+.opportunity-card { border-radius: 18px !important; border: 1px solid var(--suda-hairline); box-shadow: 0 12px 35px rgb(86 78 88 / .035); }
+.opportunity-card:focus-visible { outline: 3px solid var(--suda-plum); outline-offset: 4px; }
+.opportunity-card:hover { border-color: var(--suda-taupe); transform: translateY(-4px); }
+.opportunity-card .card-image { border-radius: 17px 17px 0 0 !important; }
+.opportunity-card .card-image img { border-radius: 17px 17px 0 0 !important; }
+.category-tag { border: 1px solid rgb(197 177 188 / .45); background: rgb(250 246 241 / .96); color: var(--suda-plum); padding: 6px 11px; font-weight: 650; }
+.image-arrow { width: 36px; height: 36px; color: var(--suda-plum); background: var(--suda-linen); transition: background .25s, transform .25s; }
+.opportunity-card:hover .image-arrow { background: var(--suda-rose); transform: translate(-3px,-3px); }
+.card-body { padding: 20px 20px 0; }
+.card-body h3 { line-height: 1.48; min-height: unset; font-size: clamp(21px, 2.1vw, 26px); margin-bottom: 16px; }
+.card-org { font-size: 11px; font-weight: 600; color: var(--suda-ink-secondary); }
+.card-meta { flex-wrap: wrap; gap: 8px 16px; color: var(--suda-ink-secondary); }
+.card-bottom { padding-block: 15px; margin-top: 22px; gap: 12px; }
+.card-bottom > span:last-child { color: var(--suda-plum); font-weight: 700; }
+
+/* Search/filter surface. Filter chips let users remove a selection directly. */
+.discovery-controls { background: color-mix(in srgb, var(--suda-rose) 40%, var(--suda-linen)); border: 1px solid var(--suda-hairline); padding: clamp(18px, 3vw, 32px); border-radius: 22px; }
+.discovery-controls-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
+.discovery-controls-heading > div { display: flex; align-items: center; gap: 11px; font-size: 14px; font-weight: 700; }
+.discovery-controls-heading svg { color: var(--suda-plum); }
+.discovery-count { font-size: 11px; color: var(--suda-ink-secondary); }
+.discovery-controls .category-tabs { gap: 9px; }
+.discovery-controls .category-tabs [data-slot="button"] { padding-inline: 17px; min-height: 42px; }
+.discovery-controls .category-tabs button[aria-pressed="true"] { box-shadow: none; }
+.discovery-controls .filter-bar { border-top: 1px solid var(--suda-hairline); border-bottom: 0; margin: 21px 0 0; padding: 23px 0 0; gap: 13px; }
+.discovery-controls .filter-bar label { font-size: 12px; color: var(--suda-plum); font-weight: 600; }
+.discovery-controls :is(input,select) { background: var(--suda-linen) !important; border-color: var(--suda-taupe) !important; min-height: 48px !important; margin-top: 9px; }
+.discovery-controls :is(input,select):focus-visible { border-color: var(--suda-plum) !important; outline: 2px solid var(--suda-plum); outline-offset: 2px; }
+.discovery-controls .search-input svg { top: calc(50% + 4px); color: var(--suda-plum); }
+.result-line { padding-top: 3px; gap: 15px; font-weight: 600; font-size: 13px; }
+.result-line .reset { font-size: 12px; min-height: 44px; }
+.active-filter-list { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; margin: -5px 0 26px; }
+.active-filter-caption { color: var(--suda-ink-secondary); font-size: 11px; margin-inline-end: 5px; }
+.active-filter-chip { display: inline-flex; align-items: center; gap: 9px; min-height: 37px; padding: 7px 12px; border-radius: 999px; background: var(--suda-rose); border: 1px solid var(--suda-taupe); color: var(--suda-plum); font-size: 11px; transition: background .2s, border-color .2s; }
+.active-filter-chip:hover, .active-filter-chip:focus-visible { background: var(--suda-linen); border-color: var(--suda-plum); }
+.active-filter-chip svg { flex-shrink: 0; }
+.empty-state { background: color-mix(in srgb, var(--suda-rose) 40%, var(--suda-linen)); border: 1px dashed var(--suda-taupe); border-radius: 22px; }
+
+/* Opportunity detail: reinforce content and action hierarchy. */
+.detail-grid { align-items: start; }
+.detail-copy h1 { line-height: 1.35; }
+.detail-copy h2 { font-size: clamp(24px, 2.3vw, 30px); }
+.detail-copy > p, .detail-copy .org { line-height: 2; }
+.detail-copy .detail-tags { gap: 12px 22px; color: var(--suda-plum); }
+.detail-visual > img { border-radius: 28px 90px 28px 28px; }
+.enrollment-box { background: color-mix(in srgb, var(--suda-rose) 40%, var(--suda-linen)); border: 1px solid var(--suda-hairline); border-radius: 17px; padding: 24px; margin-top: 28px; }
+.zoom-demo { border-radius: 11px; }
+
+/* Professional workspace: polished yet straightforward editing. */
+.profile-layout { gap: clamp(24px, 5vw, 64px); align-items: start; }
+.profile-person { padding: clamp(24px, 3vw, 38px); background: var(--suda-rose); border: 1px solid var(--suda-hairline); border-radius: 22px; }
+.profile-avatar { border: 2px solid var(--suda-linen); background: var(--suda-linen); color: var(--suda-plum); }
+.profile-person h2 { overflow-wrap: anywhere; line-height: 1.4; }
+.profile-person p { color: var(--suda-ink-secondary); white-space: pre-wrap; }
+.profile-section { background: var(--suda-linen); border: 1px solid var(--suda-hairline); border-radius: 16px; padding: 24px clamp(22px, 3vw, 32px); margin-bottom: 17px; }
+.profile-section h2 { font-size: 25px; margin-bottom: 13px; }
+.profile-section p { line-height: 1.95; }
+.chip { border: 1px solid var(--suda-taupe); padding: 6px 15px; color: var(--suda-plum); font-size: 12px; }
+
+/* Portfolio projects use intentional proportions without obscuring tools. */
+.work-grid { gap: 32px 24px; }
+.work-card { padding: 0 0 13px; border-bottom-color: var(--suda-hairline); }
+.work-image { border-radius: 18px !important; background: var(--suda-rose); }
+.work-image img { border-radius: 18px !important; object-position: center 35%; transition: transform .65s var(--suda-ease); }
+.work-image:hover img { transform: scale(1.045); }
+.work-image:focus-visible { outline: 3px solid var(--suda-plum); outline-offset: 4px; }
+.work-image:after { inset-inline-start: 15px; inset-inline-end: auto; bottom: 15px; background: var(--suda-linen); border: 1px solid var(--suda-hairline); }
+.work-title-row { gap: 14px; align-items: flex-start; }
+.work-title-row h2 { font-size: clamp(23px, 2.1vw, 29px); line-height: 1.5; overflow-wrap: anywhere; }
+.work-title-row > div { flex-shrink: 0; }
+.work-card p { line-height: 1.9; color: var(--suda-ink-secondary); }
+
+/* Learning: make manual status, controls and accomplishments scannable. */
+.learning-row { background: var(--suda-linen); border: 1px solid var(--suda-hairline); border-radius: 21px; padding: 25px; gap: clamp(20px, 3vw, 36px); margin-bottom: 20px; }
+.learning-row > img { border-radius: 13px !important; object-fit: cover; }
+.learning-row h2 { font-size: clamp(25px, 2.6vw, 33px); line-height: 1.5; }
+.learning-row h2 a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.learning-row .progress-controls { flex-wrap: wrap; gap: 12px; }
+.learning-row .progress-controls input[type="range"] { min-height: 44px; }
+.learning-row .progress-controls output { color: var(--suda-plum); font-weight: 800; }
+.achievement-list span { background: var(--suda-rose); color: var(--suda-plum); padding: 6px 12px; border-radius: 999px; }
+.achievement-form input { min-width: 0; }
+
+/* Admin stays data-first; hover/focus states clarify table and card controls. */
+.admin-banner { border-radius: 13px; }
+.admin-table-wrap { border: 1px solid var(--suda-hairline); box-shadow: 0 12px 32px rgb(86 78 88 / .035); }
+.admin-table :is(th,td) { vertical-align: middle; }
+.admin-table tbody tr:hover { background: color-mix(in srgb, var(--suda-rose) 40%, var(--suda-linen)); }
+.admin-mobile-card { border-radius: 17px; gap: 10px; }
+.admin-mobile-card .admin-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Inputs and modal actions: keyboard, contrast, touch. */
+.form-field > span { font-size: 13px; font-weight: 650; }
+.form-field small { color: var(--suda-ink-secondary); font-size: 11px; line-height: 1.75; }
+input:not([type="range"]):not([type="file"]):not([type="checkbox"]):not([type="radio"]), select, textarea { font-size: 14px; border-color: var(--suda-taupe); background: var(--suda-linen); }
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid var(--suda-plum); outline-offset: 3px; }
+.form-actions [data-slot="button"] { min-height: 44px; }
+.suda-modal { border: 1px solid var(--suda-taupe); }
+.auth-form-wrap { background: var(--suda-linen); }
+.auth-form-wrap h1 { line-height: 1.38; }
+
+/* Mobile editorial: no tiny columns, overflowing chips, or edge-to-edge cards. */
+@media (max-width: 980px) {
+  .discovery-controls .filter-bar { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .discovery-controls .query-filter { grid-column: 1 / -1; }
+  .profile-layout { gap: 22px; }
+  .profile-person { padding: 24px; }
+  .profile-section { padding: 22px; }
+}
+@media (max-width: 760px) {
+  .site-header { background: rgb(250 246 241 / .98); }
+  .atelier-hero-copy:before { display: none; }
+  .atelier-film-frame { border-radius: 22px; box-shadow: none; }
+  .section-heading h2 { font-size: clamp(31px, 8vw, 43px); }
+  .content-wrap { padding-block: 40px 62px; }
+  .category-ribbon .ribbon-arrow { margin-inline-start: auto; }
+  .discovery-controls { padding: 20px 17px; border-radius: 17px; }
+  .discovery-controls-heading { flex-wrap: wrap; margin-bottom: 18px; }
+  .discovery-controls .filter-bar { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .discovery-controls .query-filter { grid-column: 1 / -1; }
+  .active-filter-list { margin-top: 0; }
+  .opportunity-card { border-radius: 16px !important; }
+  .opportunity-card .card-image, .opportunity-card .card-image img { border-radius: 15px 15px 0 0 !important; }
+  .detail-grid { gap: 25px; }
+  .detail-visual > img { border-radius: 18px 50px 18px 18px; }
+  .enrollment-box { padding: 20px; }
+  .profile-person { border-radius: 18px; }
+  .work-grid { gap: 24px; }
+  .work-image, .work-image img { border-radius: 16px !important; }
+  .learning-row { padding: 19px; }
+}
+@media (max-width: 600px) {
+  .discovery-controls .filter-bar { grid-template-columns: minmax(0,1fr) !important; }
+  .discovery-controls .query-filter { grid-column: auto; }
+  .category-tabs { gap: 7px; }
+  .category-tabs [data-slot="button"] { font-size: 11px; min-height: 44px; padding-inline: 13px; }
+  .active-filter-caption { flex-basis: 100%; }
+  .result-line { flex-wrap: wrap; }
+  .work-card:nth-child(n) { margin-top: 0; }
+  .work-image img { aspect-ratio: 1.08 !important; }
+  .profile-section { padding: 21px 19px; }
+  .learning-row .progress-controls input[type="range"] { flex-basis: 100%; }
+  .learning-row .achievement-form { flex-wrap: wrap; }
+  .learning-row .achievement-form [data-slot="button"] { min-height: 44px; }
+  .admin-mobile-card { padding: 18px; }
+}
+@media (max-width: 370px) {
+  .discovery-controls { padding: 15px 12px; }
+  .category-tabs [data-slot="button"] { padding-inline: 10px; }
+  .category-ribbon a { padding-inline: 8px; }
+  .category-ribbon .ribbon-arrow { width: 13px; }
+  .work-title-row h2 { font-size: 23px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .opportunity-card, .opportunity-card img, .work-image img, .category-ribbon a,
+  .category-ribbon .ribbon-arrow, .image-arrow, .site-header, .active-filter-chip {
+    transition: none !important; animation: none !important;
+  }
+  .opportunity-card:hover, .work-image:hover img,
+  .opportunity-card:hover .image-arrow, .category-ribbon a:hover .ribbon-arrow {
+    transform: none !important;
+  }
+}

@@ -67,7 +67,7 @@ export function AtelierFilm() {
             disableRemotePlayback
             controlsList="nodownload nofullscreen noremoteplayback"
             tabIndex={-1}
-            preload="auto"
+            preload="metadata"
             poster={editorialMedia.poster}
             aria-hidden="true"
             onPlaying={() => {

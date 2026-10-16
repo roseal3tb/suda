@@ -253,6 +253,16 @@ describe("Sprint 1 frontend user journeys (real provider and localStorage)", () 
     change("البحث عن الفرص", "الباترون");
     change("طريقة المشاركة", "عن بُعد");
     expect(screen.getByText("١ نتائج تجريبية")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "إزالة فلتر نوع الفرصة: الدورات" }),
+    ).toBeInTheDocument();
+    submit("إزالة فلتر طريقة المشاركة: عن بُعد");
+    expect(
+      screen.queryByRole("button", {
+        name: "إزالة فلتر طريقة المشاركة: عن بُعد",
+      }),
+    ).not.toBeInTheDocument();
+    change("طريقة المشاركة", "عن بُعد");
     change("الموقع", "الرياض");
     expect(
       screen.getByRole("heading", { name: "لا توجد نتائج" }),
