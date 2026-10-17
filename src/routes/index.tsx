@@ -96,28 +96,35 @@ function Home() {
       <section className="atelier-hero" aria-labelledby="atelier-title">
         <div className="atelier-hero-copy">
           <HeroAtelierPattern />
-          <h1 id="atelier-title" className="atelier-hero-brand-name">سُدى</h1>
-          <p className="atelier-hero-kicker">مساحتك في عالم تصميم الأزياء</p>
-          <p className="atelier-hero-body">
-            اكتشفي دورات ومسابقات وفرص تدريب وعمل في تصميم الأزياء، واجمعي
-            مهاراتك وأعمالك في مساحة تُعبّر عنك
-          </p>
-          <div className="atelier-hero-actions">
-            <Button asChild size="lg">
-              <Link to="/opportunities">
-                اكتشفي الفرص <ArrowLeft />
-              </Link>
-            </Button>
-            <Link to="/portfolio" className="text-link">
-              ابني معرض أعمالك <ArrowUpLeft size={17} />
-            </Link>
+          <div className="atelier-hero-identity">
+            <h1 id="atelier-title" className="atelier-hero-brand-name">سُـــدى</h1>
+            <p className="atelier-hero-tagline">رُؤى تُنسَج</p>
           </div>
-          <div className="atelier-hero-foot">
-            <span>صُمّمت لبدايتك، ولما بعدها</span>
-            <a href="#suda-journey" aria-label="اكتشفي رحلتك في سُدى">
-              <ArrowDown size={16} />
-              اكتشفي سُدى
-            </a>
+          <div className="atelier-hero-introduction">
+            <p className="atelier-hero-kicker">مساحتك في عالم تصميم الأزياء</p>
+            <p className="atelier-hero-body">
+              اكتشفي دورات ومسابقات وفرص تدريب وعمل في تصميم الأزياء، واجمعي
+              مهاراتك وأعمالك في مساحة تُعبّر عنك
+            </p>
+          </div>
+          <div className="atelier-hero-bottom">
+            <div className="atelier-hero-foot">
+              <span>صُمّمت لبدايتك، ولما بعدها</span>
+              <a href="#suda-journey" aria-label="اكتشفي رحلتك في سُدى">
+                <ArrowDown size={16} />
+                اكتشفي سُدى
+              </a>
+            </div>
+            <div className="atelier-hero-actions">
+              <Button asChild size="lg">
+                <Link to="/opportunities">
+                  اكتشفي الفرص <ArrowLeft />
+                </Link>
+              </Button>
+              <Link to="/portfolio" className="text-link">
+                ابني معرض أعمالك <ArrowUpLeft size={17} />
+              </Link>
+            </div>
           </div>
         </div>
         <AtelierFilm />

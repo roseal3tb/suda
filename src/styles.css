@@ -1725,3 +1725,164 @@ h1, h2, h3, h4, h5, h6, .section-heading h2, .designer-tile-body strong,
 @media (max-width: 760px) {
   .site-header .brand-link .wordmark { width: 107px; height: 58px; }
 }
+
+
+/* Hero composition refinement: one controlled typographic hierarchy.
+   Scoped to the homepage hero, leaving all site-wide styles untouched. */
+.atelier-hero .atelier-hero-copy {
+  text-align: center;
+  align-items: center;
+  min-width: 0;
+}
+.atelier-hero .atelier-hero-copy > .atelier-hero-identity,
+.atelier-hero .atelier-hero-copy > .atelier-hero-introduction,
+.atelier-hero .atelier-hero-copy > .atelier-hero-bottom {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-width: 0;
+  max-width: 565px;
+  margin-inline: auto;
+}
+.atelier-hero .atelier-hero-identity {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  align-self: center;
+  justify-content: center;
+  gap: 3px;
+}
+.atelier-hero .atelier-hero-identity .atelier-hero-brand-name {
+  margin: 0;
+  padding: 0;
+  font-family: var(--suda-font-headings);
+  font-size: clamp(71px, 6.8vw, 103px);
+  font-weight: 750;
+  letter-spacing: 0;
+  line-height: 1.35;
+  color: #564E58;
+  white-space: nowrap;
+}
+.atelier-hero .atelier-hero-tagline {
+  margin: -2px 0 0;
+  color: #806E7D;
+  font-family: var(--suda-font-headings);
+  font-size: clamp(22px, 2.35vw, 29px);
+  font-weight: 550;
+  line-height: 1.6;
+}
+.atelier-hero .atelier-hero-introduction {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+}
+.atelier-hero .atelier-hero-introduction .atelier-hero-kicker {
+  margin: 0;
+  color: #564E58;
+  font-size: clamp(19px, 1.95vw, 25px);
+  line-height: 1.75;
+  font-weight: 650;
+  font-family: var(--suda-font-headings);
+}
+.atelier-hero .atelier-hero-introduction .atelier-hero-body {
+  width: 100%;
+  max-width: 520px;
+  margin: 0;
+  color: #6A5F6B;
+  font-size: clamp(16px, 1.38vw, 18.5px);
+  line-height: 1.95;
+  text-wrap: pretty;
+}
+.atelier-hero .atelier-hero-bottom { align-self: end; }
+.atelier-hero .atelier-hero-bottom .atelier-hero-foot {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding-top: 14px;
+  border-top: 1px solid rgb(161 149 162 / .40);
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: start;
+}
+.atelier-hero .atelier-hero-bottom .atelier-hero-actions {
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: clamp(14px, 2vw, 25px);
+  margin-top: 18px;
+}
+.atelier-hero .atelier-hero-bottom .atelier-hero-actions [data-slot="button"] {
+  min-height: 57px;
+  padding-inline: clamp(25px, 2.9vw, 42px);
+  font-size: clamp(16px, 1.3vw, 19px);
+  border-radius: 20px;
+}
+.atelier-hero .atelier-hero-bottom .atelier-hero-actions > .text-link {
+  min-height: 54px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: clamp(15px, 1.22vw, 17px);
+}
+@media (min-width: 701px) {
+  .atelier-hero .atelier-hero-copy {
+    align-self: stretch;
+    display: grid;
+    grid-template-rows: minmax(195px, 1.35fr) auto minmax(130px, .8fr);
+    justify-items: center;
+    align-items: center;
+    padding: clamp(28px, 3vw, 48px) clamp(26px, 4vw, 78px) clamp(27px, 3.3vw, 53px);
+    min-height: clamp(590px, calc(100svh - 195px), 750px);
+  }
+  .atelier-hero .atelier-hero-identity { align-self: center; transform: translateY(-13px); }
+  .atelier-hero .atelier-hero-introduction { align-self: center; }
+  .atelier-hero .atelier-hero-bottom { align-self: end; }
+}
+@media (min-width: 701px) and (max-width: 1020px) {
+  .atelier-hero .atelier-hero-copy { padding-inline: clamp(21px, 3vw, 40px); }
+  .atelier-hero .atelier-hero-identity .atelier-hero-brand-name { font-size: clamp(59px, 7vw, 74px); }
+  .atelier-hero .atelier-hero-introduction .atelier-hero-kicker { font-size: 19px; }
+  .atelier-hero .atelier-hero-introduction .atelier-hero-body { font-size: 15px; }
+  .atelier-hero .atelier-hero-bottom .atelier-hero-foot { font-size: 10px; }
+  .atelier-hero .atelier-hero-bottom .atelier-hero-actions [data-slot="button"] { min-height: 50px; font-size: 15px; }
+  .atelier-hero .atelier-hero-bottom .atelier-hero-actions > .text-link { font-size: 14px; }
+}
+@media (max-width: 700px) {
+  .atelier-hero .atelier-hero-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0;
+    padding: clamp(30px, 8vw, 42px) 23px 32px;
+  }
+  .atelier-hero .atelier-hero-identity { transform: translateY(-3px); }
+  .atelier-hero .atelier-hero-identity .atelier-hero-brand-name {
+    font-size: clamp(59px, 13vw, 79px);
+  }
+  .atelier-hero .atelier-hero-tagline { font-size: clamp(20px, 5vw, 25px); }
+  .atelier-hero .atelier-hero-introduction { margin-top: 38px; gap: 8px; }
+  .atelier-hero .atelier-hero-introduction .atelier-hero-kicker {
+    font-size: clamp(19px, 5vw, 23px);
+  }
+  .atelier-hero .atelier-hero-introduction .atelier-hero-body {
+    font-size: clamp(15.5px, 4vw, 17px);
+    line-height: 1.95;
+  }
+  .atelier-hero .atelier-hero-bottom { margin-top: 42px; }
+  .atelier-hero .atelier-hero-bottom .atelier-hero-foot { font-size: 11px; }
+  .atelier-hero .atelier-hero-bottom .atelier-hero-actions {
+    margin-top: 18px;
+    gap: 12px;
+  }
+  .atelier-hero .atelier-hero-bottom .atelier-hero-actions [data-slot="button"] {
+    min-height: 54px;
+    font-size: 17px;
+    border-radius: 17px;
+  }
+  .atelier-hero .atelier-hero-bottom .atelier-hero-actions > .text-link { font-size: 15px; }
+}
+@media (max-width: 360px) {
+  .atelier-hero .atelier-hero-bottom .atelier-hero-actions { flex-direction: column; }
+}
