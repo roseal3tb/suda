@@ -1690,12 +1690,12 @@ h1, h2, h3, h4, h5, h6, .section-heading h2, .designer-tile-body strong,
 }
 .atelier-hero-copy > .atelier-hero-brand-name {
   order: 2; font-size: clamp(48px, 5vw, 75px);
-  line-height: 1.15; margin: 0 0 22px; font-weight: 700; color: #564E58;
+  line-height: 1.15; margin: 0 0 46px; font-weight: 700; color: #564E58;
 }
 .atelier-hero-copy > .atelier-hero-kicker {
   order: 3; font-family: var(--suda-font-headings); color: #564E58;
   font-size: clamp(17px, 1.7vw, 23px); line-height: 1.65; font-weight: 500;
-  margin: 0 0 15px;
+  margin: 0 0 7px;
 }
 .atelier-hero-copy > .atelier-hero-body { order: 4; }
 .atelier-hero-copy > .atelier-hero-actions { order: 5; }
@@ -1706,7 +1706,7 @@ h1, h2, h3, h4, h5, h6, .section-heading h2, .designer-tile-body strong,
 }
 @media (max-width: 760px) {
   .atelier-hero-copy > .atelier-hero-logo { width: clamp(178px, 52vw, 250px); max-height: 190px; }
-  .atelier-hero-copy > .atelier-hero-brand-name { font-size: clamp(46px, 11vw, 62px); }
+  .atelier-hero-copy > .atelier-hero-brand-name { font-size: clamp(46px, 11vw, 62px); margin-bottom: 36px; }
   .atelier-hero-copy > .atelier-hero-kicker { font-size: clamp(18px, 4.8vw, 23px); }
 }
 
