@@ -68,7 +68,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
             aria-label="سُدى، الصفحة الرئيسية"
             onClick={() => setOpen(false)}
           >
-            <span className="suda-header-name" lang="ar">سُدى</span>
+            <Wordmark />
           </Link>
           <nav
             id="suda-primary-navigation"

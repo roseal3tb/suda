@@ -1709,3 +1709,19 @@ h1, h2, h3, h4, h5, h6, .section-heading h2, .designer-tile-body strong,
   .atelier-hero-copy > .atelier-hero-brand-name { font-size: clamp(40px, 10vw, 55px); }
   .atelier-hero-copy > .atelier-hero-kicker { font-size: clamp(18px, 4.8vw, 23px); }
 }
+
+/* Brand placement correction: artwork belongs in header, not hero. */
+.site-header .brand-link .wordmark {
+  display: inline-flex;
+  width: clamp(100px, 10vw, 144px);
+  height: 68px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.site-header .brand-link .wordmark img {
+  width: 100%; height: 100%; object-fit: contain;
+}
+@media (max-width: 760px) {
+  .site-header .brand-link .wordmark { width: 107px; height: 58px; }
+}

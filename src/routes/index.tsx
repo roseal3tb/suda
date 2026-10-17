@@ -96,13 +96,6 @@ function Home() {
       <section className="atelier-hero" aria-labelledby="atelier-title">
         <div className="atelier-hero-copy">
           <HeroAtelierPattern />
-          <img
-            className="atelier-hero-logo"
-            src="/suda-logo-transparent.png"
-            alt="شعار سُدى الأصلي"
-            width={1582}
-            height={1128}
-          />
           <h1 id="atelier-title" className="atelier-hero-brand-name">سُدى</h1>
           <p className="atelier-hero-kicker">مساحتك في عالم تصميم الأزياء</p>
           <p className="atelier-hero-body">
