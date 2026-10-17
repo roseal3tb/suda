@@ -88,10 +88,6 @@ export function AtelierFilm() {
           <small>حرفة · تفاصيل · إطلالات</small>
         </div>
       </div>
-      <figcaption>
-        <span>حرفةٌ تصنع الفارق</span>
-        <span>من الأتيليه إلى الإطلالة</span>
-      </figcaption>
     </figure>
   );
 }

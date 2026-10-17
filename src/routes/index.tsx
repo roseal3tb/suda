@@ -168,10 +168,6 @@ function Home() {
               <WordsReveal text="خطواتك في عالم الأزياء" />
             </h2>
           </div>
-          <p>
-            من اكتشاف الفرصة المناسبة إلى بناء معرض أعمالك، كل خطوة تجد مكانها
-            في سُدى
-          </p>
         </Reveal>
         <div className="suda-journey-grid">
           {journeySteps.map(({ number, title, body, to, action, Icon }, i) => (
