@@ -1578,3 +1578,72 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
   .atelier-film-frame { aspect-ratio: 1.05; max-height: 465px; }
   .atelier-hero + .couture-voices { padding-top: 45px; }
 }
+
+/* Full-bleed left hero film: requested straight-edged half-screen composition.
+   The video reaches the viewport's left/top/bottom hero edges; no card framing.
+   Keep the original video montage and the right-side branding untouched. */
+@media (min-width: 701px) {
+  .atelier-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr);
+    align-items: stretch;
+    gap: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    min-height: clamp(590px, calc(100svh - 195px), 750px);
+  }
+  .atelier-hero-copy {
+    align-self: center;
+    min-width: 0;
+    padding: 35px clamp(28px, 5.8vw, 110px);
+  }
+  .atelier-hero > .atelier-film {
+    align-self: stretch;
+    justify-self: stretch;
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+  }
+  .atelier-hero .atelier-film-frame {
+    width: 100%;
+    height: 100%;
+    min-height: clamp(590px, calc(100svh - 195px), 750px);
+    max-height: none;
+    aspect-ratio: auto;
+    border-radius: 0 !important;
+    box-shadow: none;
+  }
+}
+@media (max-width: 700px) {
+  .atelier-hero {
+    gap: 0;
+    padding: 0;
+  }
+  .atelier-hero-copy {
+    padding: 32px 22px 38px;
+  }
+  .atelier-hero > .atelier-film {
+    display: block;
+    align-self: stretch;
+    justify-self: stretch;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+  .atelier-hero .atelier-film-frame {
+    width: 100%;
+    height: clamp(390px, 100vw, 570px);
+    min-height: 0;
+    max-height: none;
+    aspect-ratio: auto;
+    border-radius: 0 !important;
+    box-shadow: none;
+  }
+}
