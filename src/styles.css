@@ -1647,3 +1647,11 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
     box-shadow: none;
   }
 }
+
+/* Keep the TOP of every hero-film shot in view; any cover-crop happens below.
+   Applies to the playing video and its still poster on desktop and mobile. */
+.atelier-hero .atelier-film-frame > .atelier-film-video,
+.atelier-hero .atelier-film-frame > .atelier-film-poster {
+  object-fit: cover;
+  object-position: center top;
+}
