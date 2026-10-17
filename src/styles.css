@@ -1690,7 +1690,7 @@ h1, h2, h3, h4, h5, h6, .section-heading h2, .designer-tile-body strong,
 }
 .atelier-hero-copy > .atelier-hero-brand-name {
   order: 2; font-size: clamp(42px, 4.4vw, 65px);
-  line-height: 1.15; margin: 0 0 4px; font-weight: 700; color: #564E58;
+  line-height: 1.15; margin: 0 0 22px; font-weight: 700; color: #564E58;
 }
 .atelier-hero-copy > .atelier-hero-kicker {
   order: 3; font-family: var(--suda-font-headings); color: #564E58;
