@@ -1689,7 +1689,7 @@ h1, h2, h3, h4, h5, h6, .section-heading h2, .designer-tile-body strong,
   height: auto; max-height: 204px; object-fit: contain; object-position: right center;
 }
 .atelier-hero-copy > .atelier-hero-brand-name {
-  order: 2; font-size: clamp(42px, 4.4vw, 65px);
+  order: 2; font-size: clamp(48px, 5vw, 75px);
   line-height: 1.15; margin: 0 0 22px; font-weight: 700; color: #564E58;
 }
 .atelier-hero-copy > .atelier-hero-kicker {
@@ -1702,11 +1702,11 @@ h1, h2, h3, h4, h5, h6, .section-heading h2, .designer-tile-body strong,
 .atelier-hero-copy > .atelier-hero-foot { order: 6; width: 100%; }
 @media (max-width: 980px) {
   .atelier-hero-copy > .atelier-hero-logo { width: clamp(190px, 31vw, 255px); }
-  .atelier-hero-copy > .atelier-hero-brand-name { font-size: clamp(40px, 5vw, 55px); }
+  .atelier-hero-copy > .atelier-hero-brand-name { font-size: clamp(44px, 5.5vw, 62px); }
 }
 @media (max-width: 760px) {
   .atelier-hero-copy > .atelier-hero-logo { width: clamp(178px, 52vw, 250px); max-height: 190px; }
-  .atelier-hero-copy > .atelier-hero-brand-name { font-size: clamp(40px, 10vw, 55px); }
+  .atelier-hero-copy > .atelier-hero-brand-name { font-size: clamp(46px, 11vw, 62px); }
   .atelier-hero-copy > .atelier-hero-kicker { font-size: clamp(18px, 4.8vw, 23px); }
 }
 
