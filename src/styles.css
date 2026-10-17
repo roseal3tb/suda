@@ -1655,3 +1655,57 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
   object-fit: cover;
   object-position: center top;
 }
+
+/* The font paths below are for approved, securely bundled project assets ONLY.
+   Do not host or redistribute standalone Thmanyah font files. */
+
+/* SUDA typography system — Thmanyah. Files intentionally NOT redistributed.
+   Obtain authorized web-font integration from the copyright owner before deployment.
+   See SUDA_THMANYAH_SETUP.md. All fonts fall back safely until provided. */
+:root {
+  --suda-font-ui: 'Thmanyah Sans', 'IBM Plex Sans Arabic', 'Tajawal', sans-serif;
+  --suda-font-headings: 'Thmanyah Serif Display', 'IBM Plex Sans Arabic', 'Tajawal', sans-serif;
+  --font-editorial: var(--suda-font-headings);
+}
+body, button, input, textarea, select, option, label, small, p, a, li, td, th,
+[role='button'], [data-slot], .brand-link .suda-header-name,
+.footer-tagline, .teaser-designer, .designer-photo-unavailable span {
+  font-family: var(--suda-font-ui) !important;
+}
+h1, h2, h3, h4, h5, h6, .section-heading h2, .designer-tile-body strong,
+.card-body h3, .inspiration-teaser-copy h2, .suda-journey-intro h2,
+.couture-voice-card blockquote {
+  font-family: var(--suda-font-headings) !important;
+  letter-spacing: 0;
+}
+/* Keep Western source names, dates and decorative numbered indexes legible. */
+.designer-brand, .designer-index { font-family: Georgia, serif !important; }
+
+/* The original logo is artwork, not a text font; keep it above the name. */
+.atelier-hero-copy { display: flex; flex-direction: column; align-items: flex-start; }
+.atelier-hero-copy > :not(.atelier-hero-pattern) { max-width: 100%; }
+.atelier-hero-copy > .atelier-hero-logo {
+  order: 1; margin: 4px 0 0; width: clamp(205px, 20vw, 288px);
+  height: auto; max-height: 204px; object-fit: contain; object-position: right center;
+}
+.atelier-hero-copy > .atelier-hero-brand-name {
+  order: 2; font-size: clamp(42px, 4.4vw, 65px);
+  line-height: 1.15; margin: 0 0 4px; font-weight: 700; color: #564E58;
+}
+.atelier-hero-copy > .atelier-hero-kicker {
+  order: 3; font-family: var(--suda-font-headings); color: #564E58;
+  font-size: clamp(17px, 1.7vw, 23px); line-height: 1.65; font-weight: 500;
+  margin: 0 0 15px;
+}
+.atelier-hero-copy > .atelier-hero-body { order: 4; }
+.atelier-hero-copy > .atelier-hero-actions { order: 5; }
+.atelier-hero-copy > .atelier-hero-foot { order: 6; width: 100%; }
+@media (max-width: 980px) {
+  .atelier-hero-copy > .atelier-hero-logo { width: clamp(190px, 31vw, 255px); }
+  .atelier-hero-copy > .atelier-hero-brand-name { font-size: clamp(40px, 5vw, 55px); }
+}
+@media (max-width: 760px) {
+  .atelier-hero-copy > .atelier-hero-logo { width: clamp(178px, 52vw, 250px); max-height: 190px; }
+  .atelier-hero-copy > .atelier-hero-brand-name { font-size: clamp(40px, 10vw, 55px); }
+  .atelier-hero-copy > .atelier-hero-kicker { font-size: clamp(18px, 4.8vw, 23px); }
+}

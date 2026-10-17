@@ -96,20 +96,15 @@ function Home() {
       <section className="atelier-hero" aria-labelledby="atelier-title">
         <div className="atelier-hero-copy">
           <HeroAtelierPattern />
-          <span className="eyebrow">
-            <span className="tiny-line" />
-            مساحتك في عالم تصميم الأزياء
-          </span>
           <img
             className="atelier-hero-logo"
             src="/suda-logo-transparent.png"
-            alt="سُدى"
+            alt="شعار سُدى الأصلي"
             width={1582}
             height={1128}
           />
-          <h1 id="atelier-title">
-            رُؤى <span>تُنسَج</span>
-          </h1>
+          <h1 id="atelier-title" className="atelier-hero-brand-name">سُدى</h1>
+          <p className="atelier-hero-kicker">مساحتك في عالم تصميم الأزياء</p>
           <p className="atelier-hero-body">
             اكتشفي دورات ومسابقات وفرص تدريب وعمل في تصميم الأزياء، واجمعي
             مهاراتك وأعمالك في مساحة تُعبّر عنك
