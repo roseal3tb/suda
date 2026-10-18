@@ -20,7 +20,7 @@ export const Route = createFileRoute("/portfolio")({
   head: () =>
     pageHead(
       "معرض الأعمال",
-      "معرض شخصي لإضافة وتعديل وحذف أعمال تصميم الأزياء محليًا",
+      "معرض شخصي لحفظ أعمال تصميم الأزياء في حسابك، مع صور مؤقتة",
     ),
   component: () => (
     <MemberGate>
@@ -29,13 +29,14 @@ export const Route = createFileRoute("/portfolio")({
   ),
 });
 function Portfolio() {
-  const { works, saveWork, deleteWork } = useDemo();
+  const { works, worksLoading, saveWork, deleteWork } = useDemo();
   const [form, setForm] = useState<Work | null>(null);
   const [view, setView] = useState<Work | null>(null);
   const [deleting, setDeleting] = useState<Work | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [dragging, setDragging] = useState(false);
   function start(work?: Work) {
     setError("");
     setSaved(false);
@@ -45,27 +46,29 @@ function Portfolio() {
         : { id: `work-${Date.now()}`, title: "", description: "", image: "" },
     );
   }
-  function submit(e: FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
     if (!form || busy) return;
     if (!form.title.trim() || !form.description.trim()) {
       setError("أضيفي عنوان العمل ووصفه قبل الحفظ");
       return;
     }
-    if (
-      !saveWork({
+    setBusy(true);
+    try {
+      const ok = await saveWork({
         ...form,
         title: form.title.trim(),
         description: form.description.trim(),
-      })
-    ) {
-      setError(
-        "تعذّر حفظ العمل في المتصفح. جرّبي صورة أصغر أو امسحي بيانات قديمة",
-      );
-      return;
+      });
+      if (!ok) {
+        setError("تعذّر حفظ العمل. تحققي من الاتصال وحاولي مجددًا.");
+        return;
+      }
+      setForm(null);
+      setSaved(true);
+    } finally {
+      setBusy(false);
     }
-    setForm(null);
-    setSaved(true);
   }
   async function chooseImage(file?: File) {
     if (!file) return;
@@ -85,7 +88,7 @@ function Portfolio() {
       <PageIntro
         eyebrow="معرض الأعمال"
         title="معرض أعمالي"
-        description="أضيفي مشروعاتك وصور تصاميمك الحقيقية، واحتفظي بها محليًا في هذا المتصفح"
+        description="تُحفظ عناوين أعمالك وأوصافها في حسابك؛ الصور مؤقتة وتختفي بعد إغلاق الموقع أو تسجيل الخروج"
         action={
           works.length > 0 ? (
             <AddButton onClick={() => start()}>إضافة عمل</AddButton>
@@ -95,10 +98,12 @@ function Portfolio() {
       {saved && (
         <p role="status" className="success-message">
           <Check size={16} />
-          حُفظ العمل في هذا المتصفح
+          حُفظ عنوان العمل ووصفه في حسابك. الصورة مؤقتة
         </p>
       )}
-      {works.length ? (
+      {worksLoading ? (
+        <p role="status">جارٍ تحميل معرض الأعمال…</p>
+      ) : works.length ? (
         <div className="work-grid">
           {works.map((work, i) => (
             <Reveal
@@ -193,18 +198,51 @@ function Portfolio() {
             </FormField>
             <FormField
               label="صورة عملك — اختيارية"
-              hint="اختاري صورة من جهازك؛ ستُضغط وتُحفظ محليًا في هذا المتصفح فقط. لا تستخدمي صور أعمال الآخرين"
+          
+                 hint="يمكنك حفظ العمل بدون صورة وإضافتها لاحقًا، الصورة مؤقتة خلال هذه الزيارة فقط."
+
             >
-              <input
-                className="file-input"
-                type="file"
-                accept="image/jpeg,image/png,image/webp,image/avif"
-                disabled={busy}
-                onChange={(e) => {
-                  void chooseImage(e.target.files?.[0]);
-                  e.target.value = "";
+              <div
+                className={`rounded-xl border-2 border-dashed p-5 text-center transition-colors ${
+                  dragging ? "border-primary bg-primary/10" : "border-border"
+                }`}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  if (!busy) setDragging(true);
                 }}
-              />
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  setDragging(false);
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDragging(false);
+                  if (!busy) void chooseImage(e.dataTransfer.files[0]);
+                }}
+              >
+                <input
+                  id="suda-portfolio-image"
+                  className="sr-only"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/avif"
+                  disabled={busy}
+                  onChange={(e) => {
+                    void chooseImage(e.target.files?.[0]);
+                    e.target.value = "";
+                  }}
+                />
+                <label
+                  htmlFor="suda-portfolio-image"
+                  className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm hover:bg-accent hover:text-accent-foreground ${
+                    busy ? "pointer-events-none opacity-50" : ""
+                  }`}
+                >
+                  <ImagePlus size={18} />
+                  اختاري أو افلتي صورة من الجهاز
+                </label>
+                <p className="mt-3 text-sm text-muted-foreground">
+                </p>
+              </div>
             </FormField>
             {form.image ? (
               <div className="portfolio-preview">
@@ -221,12 +259,7 @@ function Portfolio() {
                   إزالة الصورة
                 </Button>
               </div>
-            ) : (
-              <div className="upload-placeholder">
-                <ImagePlus size={25} />
-                يمكنك حفظ العمل بدون صورة وإضافتها لاحقًا.
-              </div>
-            )}
+            ) : null}
             {error && (
               <p className="form-error" role="alert">
                 {error}
@@ -234,7 +267,7 @@ function Portfolio() {
             )}
             <div className="form-actions">
               <Button type="submit" disabled={busy}>
-                {busy ? "جارٍ تجهيز الصورة…" : "حفظ العمل"} <Check />
+                {busy ? "جارٍ الحفظ أو تجهيز الصورة…" : "حفظ العمل"} <Check />
               </Button>
               <Button
                 type="button"
@@ -272,10 +305,16 @@ function Portfolio() {
         onClose={() => setDeleting(null)}
         name={deleting?.title || ""}
         onConfirm={() => {
-          if (deleting && deleteWork(deleting.id)) {
-            setDeleting(null);
-            setSaved(false);
-          }
+          if (!deleting) return;
+          void (async () => {
+            const ok = await deleteWork(deleting.id);
+            if (ok) {
+              setDeleting(null);
+              setSaved(false);
+            } else {
+              setError("تعذّر حذف العمل. تحققي من الاتصال وحاولي مجددًا.");
+            }
+          })();
         }}
       />
     </div>

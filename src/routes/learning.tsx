@@ -16,6 +16,7 @@ import {
   type Opportunity,
 } from "@/features/suda/mock-data";
 import { useDemo } from "@/features/suda/demo-context";
+
 export const Route = createFileRoute("/learning")({
   head: () =>
     pageHead(
@@ -28,14 +29,16 @@ export const Route = createFileRoute("/learning")({
     </MemberGate>
   ),
 });
+
 function Learning() {
-  const { enrollments, opportunities } = useDemo();
+  const { enrollments, enrollmentsLoading, opportunities } = useDemo();
   const activeEnrollments = enrollments.filter((enrollment) =>
     opportunities.some(
       (course) =>
         course.id === enrollment.courseId && course.type === "الدورات",
     ),
   );
+
   return (
     <div className="content-wrap">
       <PageIntro
@@ -43,7 +46,9 @@ function Learning() {
         title="رحلتي التعليمية"
         description="تابعي دوراتك، حدّثي تقدّمك بنفسك، وسجّلي ما أنجزتِه"
       />
-      {activeEnrollments.length ? (
+      {enrollmentsLoading ? (
+        <p role="status">جارٍ تحميل دوراتك...</p>
+      ) : activeEnrollments.length ? (
         activeEnrollments.map((enrollment) => {
           const course = opportunities.find(
             (o) => o.id === enrollment.courseId,
@@ -73,6 +78,7 @@ function Learning() {
     </div>
   );
 }
+
 function LearningRow({
   course,
   enrollment,
@@ -86,19 +92,43 @@ function LearningRow({
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
   const [zoom, setZoom] = useState(false);
-  function submit(e: FormEvent) {
+  const [busy, setBusy] = useState(false);
+
+  async function submit(e: FormEvent) {
     e.preventDefault();
+    if (busy) return;
     if (!achievement.trim()) {
       setError("اكتبي إنجازك أولًا");
       return;
     }
-    if (!addAchievement(course.id, achievement)) {
-      setError("تعذّر حفظ الإنجاز");
-      return;
-    }
-    setAchievement("");
+    setBusy(true);
     setError("");
+    try {
+      const ok = await addAchievement(course.id, achievement);
+      if (!ok) {
+        setError("تعذّر حفظ الإنجاز");
+        return;
+      }
+      setAchievement("");
+    } finally {
+      setBusy(false);
+    }
   }
+
+  async function saveProgress() {
+    if (busy) return;
+    setBusy(true);
+    setSaved(false);
+    setError("");
+    try {
+      const ok = await updateProgress(course.id, progress);
+      if (ok) setSaved(true);
+      else setError("تعذّر حفظ التقدم");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <Reveal as="article" className="learning-row">
       <img
@@ -121,6 +151,7 @@ function LearningRow({
             min="0"
             max="100"
             step="1"
+            disabled={busy}
             aria-label={`تقدم ${course.title}`}
             value={progress}
             onChange={(e) => {
@@ -132,29 +163,27 @@ function LearningRow({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => {
-              if (updateProgress(course.id, progress)) setSaved(true);
-              else setError("تعذّر حفظ التقدم");
-            }}
+            disabled={busy}
+            onClick={() => void saveProgress()}
           >
             <Check />
-            حفظ التقدّم
+            {busy ? "جارٍ الحفظ..." : "حفظ التقدّم"}
           </Button>
         </div>
         {saved && (
           <p className="success-message" role="status">
-            حُدّث التقدّم إلى {enrollment.progress.toLocaleString("ar-SA")}٪ في
-            هذا المتصفح
+            حُدّث التقدّم إلى {enrollment.progress.toLocaleString("ar-SA")}٪ وحُفظ في حسابك
           </p>
         )}
-        <form className="achievement-form" onSubmit={submit}>
+        <form className="achievement-form" onSubmit={(e) => void submit(e)}>
           <input
             aria-label={`إنجاز جديد في ${course.title}`}
             value={achievement}
+            disabled={busy}
             onChange={(e) => setAchievement(e.target.value)}
             placeholder="إنجازك، مثل: أتممت رسم الباترون الأول"
           />
-          <Button type="submit" variant="outline">
+          <Button type="submit" variant="outline" disabled={busy}>
             <Plus />
             إضافة إنجاز
           </Button>

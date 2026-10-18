@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   MapPin,
   CalendarDays,
   ArrowLeft,
   ArrowUpLeft,
   Check,
-  Video,
   BookOpen,
 } from "lucide-react";
 import { Reveal } from "@/components/suda/reveal";
@@ -18,6 +18,7 @@ import {
   isValidZoomUrl,
 } from "@/features/suda/mock-data";
 import { useDemo } from "@/features/suda/demo-context";
+
 export const Route = createFileRoute("/opportunities/$id")({
   head: () =>
     pageHead(
@@ -26,10 +27,29 @@ export const Route = createFileRoute("/opportunities/$id")({
     ),
   component: Details,
 });
+
 function Details() {
   const { id } = Route.useParams();
-  const { opportunities, session, enroll, enrollments } = useDemo();
+  const { opportunities, session, enroll, enrollments, enrollmentsLoading } = useDemo();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
   const item = opportunities.find((o) => o.id === id);
+
+  async function handleEnroll() {
+    if (!item || busy || enrollmentsLoading) return;
+    setBusy(true);
+    setError("");
+    try {
+      const ok = await enroll(item);
+      if (!ok) setError("تعذّر الالتحاق بالدورة. تحققي من الاتصال وحاولي مجددًا.");
+    } catch (cause) {
+      console.error("Failed to enroll:", cause);
+      setError("تعذّر الالتحاق بالدورة. حاولي مجددًا.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   if (!item)
     return (
       <div className="content-wrap">
@@ -44,8 +64,10 @@ function Details() {
         />
       </div>
     );
+
   const Icon = categoryIcons[item.type];
   const enrolled = canAccessZoom(enrollments, id);
+
   return (
     <div className="content-wrap">
       <Reveal className="breadcrumb">
@@ -89,11 +111,13 @@ function Details() {
                   دورة مجانية · في حال توفّر اجتماع رسمي عبر Zoom، يظهر رابطه
                   بعد الالتحاق. لا تُستضاف فيديوهات داخل سُدى
                 </p>
-                {enrolled ? (
+                {session && enrollmentsLoading ? (
+                  <p role="status">جارٍ التحقق من تسجيلك في الدورة...</p>
+                ) : enrolled ? (
                   <>
                     <span className="success-message">
                       <Check size={17} />
-                      أنتِ ملتحقة بهذه الدورة في حسابك التجريبي
+                      أنتِ ملتحقة بهذه الدورة في حسابك
                     </span>
                     <div className="zoom-demo">
                       <strong>رابط اللقاء عبر زووم</strong>
@@ -117,9 +141,9 @@ function Details() {
                     </Button>
                   </>
                 ) : session ? (
-                  <Button onClick={() => enroll(item)}>
+                  <Button disabled={busy} onClick={() => void handleEnroll()}>
                     <BookOpen />
-                    الالتحاق مجانًا
+                    {busy ? "جارٍ الالتحاق..." : "الالتحاق مجانًا"}
                   </Button>
                 ) : (
                   <Button asChild>
@@ -127,6 +151,9 @@ function Details() {
                       سجّلي الدخول للالتحاق <ArrowLeft />
                     </Link>
                   </Button>
+                )}
+                {error && (
+                  <p className="form-error" role="alert">{error}</p>
                 )}
               </>
             ) : (

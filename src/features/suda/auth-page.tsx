@@ -1,4 +1,3 @@
-
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Eye, EyeOff, Info } from "lucide-react";
@@ -7,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { FormField, Wordmark } from "@/components/suda/shared";
 import { fashionMedia } from "./mock-data";
 import { useDemo } from "./demo-context";
-
 function getAuthErrorMessage(error: unknown): string {
   const code =
     typeof error === "object" &&
@@ -15,36 +13,27 @@ function getAuthErrorMessage(error: unknown): string {
     "code" in error
       ? String(error.code)
       : "";
-
   switch (code) {
     case "auth/email-already-in-use":
       return "هذا البريد الإلكتروني مسجّل بالفعل. جرّبي تسجيل الدخول.";
-
     case "auth/invalid-email":
       return "البريد الإلكتروني غير صحيح.";
-
     case "auth/weak-password":
       return "كلمة المرور ضعيفة. اختاري كلمة مرور أقوى.";
-
     case "auth/invalid-credential":
     case "auth/wrong-password":
     case "auth/user-not-found":
       return "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
-
     case "auth/too-many-requests":
       return "محاولات كثيرة لتسجيل الدخول. انتظري قليلًا ثم حاولي مرة أخرى.";
-
     case "auth/network-request-failed":
       return "تعذّر الاتصال بالشبكة. تحققي من الإنترنت وحاولي مجددًا.";
-
     case "auth/operation-not-allowed":
       return "طريقة تسجيل الدخول غير مفعّلة في Firebase.";
-
     default:
       return "حدث خطأ غير متوقع. حاولي مرة أخرى.";
   }
 }
-
 export function AuthPage({
   register = false,
 }: {
@@ -52,7 +41,6 @@ export function AuthPage({
 }) {
   const { signIn, signUp, session } = useDemo();
   const navigate = useNavigate();
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -61,41 +49,33 @@ export function AuthPage({
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [busy, setBusy] = useState(false);
-
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
     setSuccess(false);
-
     if (register && name.trim().length < 2) {
       setError("اكتبي اسمًا من حرفين على الأقل.");
       return;
     }
-
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setError("أدخلي بريدًا إلكترونيًا بصيغة صحيحة.");
       return;
     }
-
     if (password.length < 6) {
       setError("كلمة المرور يجب أن تتكوّن من ٦ أحرف على الأقل.");
       return;
     }
-
     if (register && password !== confirm) {
       setError("كلمتا المرور غير متطابقتين.");
       return;
     }
-
     setBusy(true);
-
     try {
       if (register) {
         await signUp(name.trim(), email.trim(), password);
       } else {
         await signIn(email.trim(), password);
       }
-
       setPassword("");
       setConfirm("");
       setError("");
@@ -106,26 +86,21 @@ export function AuthPage({
       setBusy(false);
     }
   }
-
   return (
     <section className="auth-layout">
       <Reveal className="auth-form-wrap">
         <Wordmark />
-
         <span className="eyebrow">
           {register ? "إنشاء حساب" : "تسجيل الدخول"}
         </span>
-
         <h1>
           {register ? "إنشاء ملفك في سُدى" : "الدخول إلى سُدى"}
         </h1>
-
         <p>
           {register
             ? "أنشئي حسابك لبدء بناء ملفك المهني ومعرض أعمالك"
             : "ادخلي إلى ملفك المهني والفرص التي التحقتِ بها"}
         </p>
-
         {success || session ? (
           <div className="form-stack">
             <p className="success-message" role="status">
@@ -133,22 +108,8 @@ export function AuthPage({
                 ? "تم إنشاء حسابك بنجاح."
                 : "تم تسجيل الدخول بنجاح."}
             </p>
-
-            <Button
-              onClick={() =>
-                navigate({
-                  to:
-                    session?.role === "admin"
-                      ? "/admin"
-                      : "/profile",
-                })
-              }
-            >
-              الانتقال إلى{" "}
-              {session?.role === "admin"
-                ? "إدارة الفرص"
-                : "ملفي المهني"}{" "}
-              <ArrowLeft />
+            <Button onClick={() => navigate({ to: "/" })}>
+              الانتقال إلى الرئيسية <ArrowLeft />
             </Button>
           </div>
         ) : (
@@ -171,7 +132,6 @@ export function AuthPage({
                 />
               </FormField>
             )}
-
             <FormField label="البريد الإلكتروني">
               <input
                 required
@@ -184,7 +144,6 @@ export function AuthPage({
                 autoComplete="email"
               />
             </FormField>
-
             <FormField label="كلمة المرور">
               <div className="password-control">
                 <input
@@ -200,7 +159,6 @@ export function AuthPage({
                       : "current-password"
                   }
                 />
-
                 <button
                   type="button"
                   aria-label={
@@ -219,7 +177,6 @@ export function AuthPage({
                 </button>
               </div>
             </FormField>
-
             {register && (
               <FormField label="تأكيد كلمة المرور">
                 <input
@@ -233,13 +190,11 @@ export function AuthPage({
                 />
               </FormField>
             )}
-
             {error && (
               <p role="alert" className="form-error">
                 {error}
               </p>
             )}
-
             <Button type="submit" disabled={busy}>
               {busy
                 ? "جارٍ المعالجة…"
@@ -248,7 +203,6 @@ export function AuthPage({
                   : "تسجيل الدخول"}
               <ArrowLeft />
             </Button>
-
             <p className="demo-note">
               <Info size={14} />
               <span>
@@ -256,7 +210,6 @@ export function AuthPage({
                 لا تشاركي كلمة مرورك مع أي شخص.
               </span>
             </p>
-
             <p className="text-sm">
               {register
                 ? "لديك حساب بالفعل؟"
@@ -273,23 +226,21 @@ export function AuthPage({
           </form>
         )}
       </Reveal>
-
       <Reveal className="auth-visual" delay={0.18}>
         <img
           src={
-            register
+register
               ? fashionMedia.register.src
               : fashionMedia.login.src
           }
           alt={
-            register
+register
               ? fashionMedia.register.alt
               : fashionMedia.login.alt
           }
           width={1000}
           height={1250}
         />
-
         <div>
           <span className="eyebrow">
             من الفكرة إلى التفاصيل

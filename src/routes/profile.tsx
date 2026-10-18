@@ -11,7 +11,7 @@ import {
   Modal,
   PageIntro,
 } from "@/components/suda/shared";
-import { pageHead, type Profile } from "@/features/suda/mock-data";
+import { pageHead } from "@/features/suda/mock-data";
 import { useDemo } from "@/features/suda/demo-context";
 export const Route = createFileRoute("/profile")({
   head: () =>
@@ -26,10 +26,11 @@ export const Route = createFileRoute("/profile")({
   ),
 });
 function ProfilePage() {
-  const { profile, saveProfile, session } = useDemo();
+  const { profile, profileLoading, saveProfile, session } = useDemo();
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
     name: "",
     bio: "",
@@ -46,9 +47,10 @@ function ProfilePage() {
       experience: profile?.experience || "",
     });
     setError("");
+    setSaved(false);
     setEditing(true);
   }
-  function submit(e: FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
     const split = (text: string) =>
       text
@@ -61,12 +63,28 @@ function ProfilePage() {
       setError("أكملي الاسم وأضيفي مهارة واهتمامًا على الأقل قبل الحفظ");
       return;
     }
-    if (!saveProfile({ ...form, name: form.name.trim(), skills, interests })) {
-      setError("تعذّر حفظ الملف في المتصفح");
-      return;
+    if (saving) return;
+    setSaving(true);
+    setError("");
+    try {
+      const ok = await saveProfile({
+        ...form,
+        name: form.name.trim(),
+        skills,
+        interests,
+      });
+      if (!ok) {
+        setError("تعذّر حفظ الملف المهني في Firebase. تحققي من اتصال الإنترنت وحاولي مجددًا.");
+        return;
+      }
+      setEditing(false);
+      setSaved(true);
+    } catch (error) {
+      console.error("Profile save failed:", error);
+      setError("حدث خطأ أثناء حفظ الملف المهني. حاولي مجددًا.");
+    } finally {
+      setSaving(false);
     }
-    setEditing(false);
-    setSaved(true);
   }
   return (
     <div className="content-wrap">
@@ -86,10 +104,12 @@ function ProfilePage() {
       {saved && (
         <p className="success-message" role="status">
           <Check size={16} />
-          حُفظ ملفك محليًا في هذا المتصفح
+          تم حفظ ملفك المهني في Firebase بنجاح
         </p>
       )}
-      {profile ? (
+      {profileLoading ? (
+        <p role="status">جارٍ تحميل الملف المهني من Firebase…</p>
+      ) : profile ? (
         <div className="profile-layout">
           <Reveal className="profile-person">
             <div className="profile-avatar">{profile.name.charAt(0)}</div>
@@ -127,7 +147,7 @@ function ProfilePage() {
       ) : (
         <EmptyState
           title="ملفك المهني"
-          description="ابدئي باسمك، أضيفي مهاراتك واهتماماتك، وأكملي نبذتك المهنية"
+          description="ابدئي باسمك، أضيفي مهاراتك واهتماماتك، وأكملي نبذتكالمهنية"
           action={
             <Button variant="outline" onClick={start}>
               <Plus />
@@ -139,10 +159,10 @@ function ProfilePage() {
       <DemoNote />
       <Modal
         open={editing}
-        onClose={() => setEditing(false)}
+        onClose={() => { if (!saving) setEditing(false); }}
         title={profile ? "تعديل الملف المهني" : "إنشاء الملف المهني"}
       >
-        <form className="form-stack" onSubmit={submit} noValidate>
+        <form className="form-stack" onSubmit={submit} noValidate aria-busy={saving}>
           <FormField label="الاسم *">
             <input
               value={form.name}
@@ -183,12 +203,13 @@ function ProfilePage() {
             </p>
           )}
           <div className="form-actions">
-            <Button type="submit">
-              حفظ الملف <Check />
+            <Button type="submit" disabled={saving}>
+              {saving ? "جارٍ الحفظ…" : "حفظ الملف"} <Check />
             </Button>
             <Button
               type="button"
               variant="outline"
+              disabled={saving}
               onClick={() => setEditing(false)}
             >
               إلغاء
