@@ -7,7 +7,6 @@ import { Intro } from "./intro";
 import { PageThread } from "./page-motion";
 import { ScrollProgress } from "./scroll-progress";
 import { useDemo } from "@/features/suda/demo-context";
-
 const nav = [
   { to: "/", label: "الرئيسية" },
   { to: "/opportunities", label: "الفرص" },
@@ -17,7 +16,7 @@ const nav = [
   { to: "/inspiration", label: "إلهام سعودي" },
 ] as const;
 export function Shell({ children }: { children: React.ReactNode }) {
-  const { session, logout, resetDemo, storageError, clearStorageError } =
+  const { session, signOutUser, resetDemo, storageError, clearStorageError } =
     useDemo();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -27,6 +26,24 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const [resetting, setResetting] = useState(false);
   const [resetDone, setResetDone] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState("");
+
+  async function handleSignOut() {
+    if (signingOut) return;
+    setSigningOut(true);
+    setSignOutError("");
+    try {
+      await signOutUser();
+      setOpen(false);
+      await navigate({ to: "/login", replace: true });
+    } catch (error) {
+      console.error("Firebase sign-out failed:", error);
+      setSignOutError("تعذّر تسجيل الخروج. تحققي من الاتصال وحاولي مجددًا.");
+    } finally {
+      setSigningOut(false);
+    }
+  }
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 40);
     on();
@@ -106,11 +123,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
                   <button
                     type="button"
                     className="mobile-logout"
-                    onClick={() => {
-                      logout();
-                      setOpen(false);
-                      void navigate({ to: "/login", replace: true });
-                    }}
+                    onClick={() => void handleSignOut()}
+                    disabled={signingOut}
                   >
                     <LogOut size={18} />
                     تسجيل الخروج
@@ -123,7 +137,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
                     تسجيل الدخول
                   </Link>
                   <Link to="/register" onClick={() => setOpen(false)}>
-                    إنشاء حساب تجريبي
+                    إنشاء حساب
                   </Link>
                 </>
               )}
@@ -146,11 +160,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
                   className="desktop-account-button"
                   title="تسجيل الخروج"
                   aria-label="تسجيل الخروج"
-                  onClick={() => {
-                    logout();
-                    setOpen(false);
-                    void navigate({ to: "/login", replace: true });
-                  }}
+                  onClick={() => void handleSignOut()}
+                    disabled={signingOut}
                 >
                   <LogOut />
                 </Button>
@@ -178,6 +189,14 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </header>
+      {signOutError && (
+        <div role="alert" className="global-alert">
+          <span>{signOutError}</span>
+          <button onClick={() => setSignOutError("")} aria-label="إغلاق التنبيه">
+            <X size={15} />
+          </button>
+        </div>
+      )}
       {storageError && (
         <div role="alert" className="global-alert">
           <span>{storageError}</span>
@@ -219,7 +238,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <div className="suda-footer-utility">
           <p>© ٢٠٢٦ سُدى · جميع الحقوق محفوظة</p>
           <span className="suda-footer-project">
-            مشروع جامعي تجريبي · لا توجد حسابات أو فرص حقيقية في هذه النسخة
+            مشروع جامعي قيد التطوير · الحسابات عبر Firebase والفرص المعروضة تجريبية
           </span>
           <div className="suda-footer-utilities">
             <details className="suda-photo-sources">

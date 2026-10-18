@@ -1,0 +1,25 @@
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.output/
+
+# System files
+.DS_Store
+
+# Logs
+*.log
+
+# Local development files
+.wrangler/
+
+# Backup files
+*.backup.tsx
+*.backup.txt
