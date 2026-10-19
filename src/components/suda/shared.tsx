@@ -243,24 +243,29 @@ export function ConfirmDelete({
   onClose,
   onConfirm,
   name,
+  error,
+  busy = false,
 }: {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
   name: string;
+  error?: string;
+  busy?: boolean;
 }) {
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={() => { if (!busy) onClose(); }}
       title="تأكيد الحذف"
       description={`هل تريدين حذف «${name}»؟ لا يمكن التراجع عن هذه الخطوة بعد الحفظ`}
     >
-      <div className="form-actions">
-        <Button variant="destructive" onClick={onConfirm}>
-          حذف نهائي
+      {error && <p className="form-error" role="alert">{error}</p>}
+      <div className="form-actions" aria-busy={busy}>
+        <Button variant="destructive" onClick={onConfirm} disabled={busy}>
+          {busy ? "جارٍ الحذف…" : "حذف نهائي"}
         </Button>
-        <Button variant="outline" onClick={onClose}>
+        <Button variant="outline" onClick={onClose} disabled={busy}>
           إلغاء
         </Button>
       </div>

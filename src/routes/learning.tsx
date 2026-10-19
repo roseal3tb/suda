@@ -89,7 +89,8 @@ function LearningRow({
   const { updateProgress, addAchievement } = useDemo();
   const [progress, setProgress] = useState(enrollment.progress);
   const [achievement, setAchievement] = useState("");
-  const [saved, setSaved] = useState(false);
+  const [savedProgress, setSavedProgress] = useState<number | null>(null);
+  const [achievementSaved, setAchievementSaved] = useState(false);
   const [error, setError] = useState("");
   const [zoom, setZoom] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -103,6 +104,7 @@ function LearningRow({
     }
     setBusy(true);
     setError("");
+    setAchievementSaved(false);
     try {
       const ok = await addAchievement(course.id, achievement);
       if (!ok) {
@@ -110,6 +112,10 @@ function LearningRow({
         return;
       }
       setAchievement("");
+      setAchievementSaved(true);
+    } catch (cause) {
+      console.error("Failed to save achievement:", cause);
+      setError("حدث خطأ أثناء حفظ الإنجاز. حاولي مجددًا.");
     } finally {
       setBusy(false);
     }
@@ -118,12 +124,15 @@ function LearningRow({
   async function saveProgress() {
     if (busy) return;
     setBusy(true);
-    setSaved(false);
+    setSavedProgress(null);
     setError("");
     try {
       const ok = await updateProgress(course.id, progress);
-      if (ok) setSaved(true);
-      else setError("تعذّر حفظ التقدم");
+      if (ok) setSavedProgress(progress);
+      else setError("تعذّر حفظ التقدّم. تحققي من الاتصال وحاولي مجددًا.");
+    } catch (cause) {
+      console.error("Failed to save progress:", cause);
+      setError("حدث خطأ أثناء حفظ التقدّم. حاولي مجددًا.");
     } finally {
       setBusy(false);
     }
@@ -156,7 +165,7 @@ function LearningRow({
             value={progress}
             onChange={(e) => {
               setProgress(Number(e.target.value));
-              setSaved(false);
+              setSavedProgress(null);
             }}
           />
           <output>{progress.toLocaleString("ar-SA")}٪</output>
@@ -170,9 +179,9 @@ function LearningRow({
             {busy ? "جارٍ الحفظ..." : "حفظ التقدّم"}
           </Button>
         </div>
-        {saved && (
+        {savedProgress !== null && (
           <p className="success-message" role="status">
-            حُدّث التقدّم إلى {enrollment.progress.toLocaleString("ar-SA")}٪ وحُفظ في حسابك
+            حُدّث التقدّم إلى {savedProgress.toLocaleString("ar-SA")}٪ وحُفظ في حسابك
           </p>
         )}
         <form className="achievement-form" onSubmit={(e) => void submit(e)}>
@@ -180,7 +189,10 @@ function LearningRow({
             aria-label={`إنجاز جديد في ${course.title}`}
             value={achievement}
             disabled={busy}
-            onChange={(e) => setAchievement(e.target.value)}
+            onChange={(e) => {
+              setAchievement(e.target.value);
+              setAchievementSaved(false);
+            }}
             placeholder="إنجازك، مثل: أتممت رسم الباترون الأول"
           />
           <Button type="submit" variant="outline" disabled={busy}>
@@ -188,6 +200,9 @@ function LearningRow({
             إضافة إنجاز
           </Button>
         </form>
+        {achievementSaved && (
+          <p className="success-message" role="status">تم حفظ الإنجاز في حسابك بنجاح</p>
+        )}
         {error && (
           <p className="form-error" role="alert">
             {error}

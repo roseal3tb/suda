@@ -33,6 +33,8 @@ function Portfolio() {
   const [form, setForm] = useState<Work | null>(null);
   const [view, setView] = useState<Work | null>(null);
   const [deleting, setDeleting] = useState<Work | null>(null);
+  const [deleteError, setDeleteError] = useState("");
+  const [deletingBusy, setDeletingBusy] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -66,6 +68,9 @@ function Portfolio() {
       }
       setForm(null);
       setSaved(true);
+    } catch (err) {
+      console.error("Portfolio save failed:", err);
+      setError("حدث خطأ أثناء حفظ العمل. حاولي مجددًا.");
     } finally {
       setBusy(false);
     }
@@ -142,7 +147,10 @@ function Portfolio() {
                     size="icon"
                     variant="ghost"
                     aria-label={`حذف ${work.title}`}
-                    onClick={() => setDeleting(work)}
+                    onClick={() => {
+                      setDeleteError("");
+                      setDeleting(work);
+                    }}
                   >
                     <Trash2 />
                   </Button>
@@ -302,17 +310,32 @@ function Portfolio() {
       </Modal>
       <ConfirmDelete
         open={Boolean(deleting)}
-        onClose={() => setDeleting(null)}
+        onClose={() => {
+          if (deletingBusy) return;
+          setDeleting(null);
+          setDeleteError("");
+        }}
         name={deleting?.title || ""}
+        error={deleteError}
+        busy={deletingBusy}
         onConfirm={() => {
-          if (!deleting) return;
+          if (!deleting || deletingBusy) return;
+          setDeleteError("");
+          setDeletingBusy(true);
           void (async () => {
-            const ok = await deleteWork(deleting.id);
-            if (ok) {
-              setDeleting(null);
-              setSaved(false);
-            } else {
-              setError("تعذّر حذف العمل. تحققي من الاتصال وحاولي مجددًا.");
+            try {
+              const ok = await deleteWork(deleting.id);
+              if (ok) {
+                setDeleting(null);
+                setSaved(false);
+              } else {
+                setDeleteError("تعذّر حذف العمل. تحققي من الاتصال وحاولي مجددًا.");
+              }
+            } catch (err) {
+              console.error("Portfolio delete failed:", err);
+              setDeleteError("حدث خطأ أثناء حذف العمل. حاولي مجددًا.");
+            } finally {
+              setDeletingBusy(false);
             }
           })();
         }}
