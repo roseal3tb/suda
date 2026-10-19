@@ -16,7 +16,8 @@
     "verify": "npm run typecheck && npm run test && npm run lint && npm run build"
   },
   "overrides": {
-    "rolldown": "1.2.1"
+    "rolldown": "1.2.1",
+    "@grpc/grpc-js": "1.14.6"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -95,6 +96,7 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
     "vite": "8.1.5",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "wrangler": "^4.151.1"
   }
 }
