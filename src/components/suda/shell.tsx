@@ -52,6 +52,14 @@ export function Shell({ children }: { children: React.ReactNode }) {
   }, []);
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
+    if (!open || !window.matchMedia("(max-width: 980px)").matches) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+  useEffect(() => {
     if (!open) return;
     navigation.current?.querySelector<HTMLAnchorElement>("a")?.focus();
     const escape = (event: KeyboardEvent) => {
@@ -75,6 +83,17 @@ export function Shell({ children }: { children: React.ReactNode }) {
       <a href="#main-content" className="skip-link">
         تخطّي إلى المحتوى
       </a>
+      <button
+        type="button"
+        className={`mobile-nav-backdrop ${open ? "is-visible" : ""}`}
+        aria-label="إغلاق قائمة التنقل"
+        aria-hidden={!open}
+        tabIndex={open ? 0 : -1}
+        onClick={() => {
+          setOpen(false);
+          menuToggle.current?.focus();
+        }}
+      />
       <header
         className={`site-header ${scrolled ? "is-scrolled" : ""} ${pathname === "/" ? "is-home" : ""}`}
       >

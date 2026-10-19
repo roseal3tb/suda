@@ -1,9 +1,10 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Eye, EyeOff, Info } from "lucide-react";
 import { Reveal } from "@/components/suda/reveal";
 import { Button } from "@/components/ui/button";
 import { FormField, Wordmark } from "@/components/suda/shared";
+import { toast } from "sonner";
 import { fashionMedia } from "./mock-data";
 import { useDemo } from "./demo-context";
 function getAuthErrorMessage(error: unknown): string {
@@ -47,12 +48,17 @@ export function AuthPage({
   const [confirm, setConfirm] = useState("");
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (session && !busy) {
+      void navigate({ to: "/", replace: true });
+    }
+  }, [session, busy, navigate]);
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
-    setSuccess(false);
     if (register && name.trim().length < 2) {
       setError("اكتبي اسمًا من حرفين على الأقل.");
       return;
@@ -79,7 +85,11 @@ export function AuthPage({
       setPassword("");
       setConfirm("");
       setError("");
-      setSuccess(true);
+      toast.success(register ? "تم إنشاء حسابك بنجاح" : "تم تسجيل الدخول بنجاح", {
+        duration: 3000,
+        style: { background: "#166534", color: "#ffffff", border: "1px solid #15803d" },
+      });
+      await navigate({ to: "/", replace: true });
     } catch (err) {
       setError(getAuthErrorMessage(err));
     } finally {
@@ -101,19 +111,7 @@ export function AuthPage({
             ? "أنشئي حسابك لبدء بناء ملفك المهني ومعرض أعمالك"
             : "ادخلي إلى ملفك المهني والفرص التي التحقتِ بها"}
         </p>
-        {success || session ? (
-          <div className="form-stack">
-            <p className="success-message" role="status">
-              {register
-                ? "تم إنشاء حسابك بنجاح."
-                : "تم تسجيل الدخول بنجاح."}
-            </p>
-            <Button onClick={() => navigate({ to: "/" })}>
-              الانتقال إلى الرئيسية <ArrowLeft />
-            </Button>
-          </div>
-        ) : (
-          <form
+        <form
             className="auth-form"
             noValidate
             onSubmit={submit}
@@ -224,7 +222,6 @@ export function AuthPage({
               </Link>
             </p>
           </form>
-        )}
       </Reveal>
       <Reveal className="auth-visual" delay={0.18}>
         <img

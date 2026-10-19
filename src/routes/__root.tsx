@@ -13,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { DemoProvider } from "@/features/suda/demo-context";
 import { Shell } from "@/components/suda/shell";
+import { Toaster } from "@/components/ui/sonner";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -148,6 +149,7 @@ function RootComponent() {
         <Shell>
           <Outlet />
         </Shell>
+        <Toaster position="top-center" richColors duration={3000} />
       </DemoProvider>
     </QueryClientProvider>
   );
