@@ -2010,39 +2010,22 @@ h1, h2, h3, h4, h5, h6, .section-heading h2, .designer-tile-body strong,
   }
 }
 
-/* SUDA — Saudi Inspiration gradient cards */
-.inspiration-page .designer-tile {
-  background: linear-gradient(
-    155deg,
-    #FFFDFC 0%,
-    #F6EEF2 52%,
-    #E8D7E1 100%
-  ) !important;
+
+/* SUDA — Saudi Inspiration solid card colors */
+/* Same four-color sequence as the homepage quote cards */
+
+.inspiration-page .designer-tile:nth-child(4n+1) {
+  background: #FAF6F1 !important;
 }
 
 .inspiration-page .designer-tile:nth-child(4n+2) {
-  background: linear-gradient(
-    155deg,
-    #F8F0F4 0%,
-    #E8D7E1 55%,
-    #D6BFCC 100%
-  ) !important;
+  background: #F3E8EE !important;
 }
 
 .inspiration-page .designer-tile:nth-child(4n+3) {
-  background: linear-gradient(
-    155deg,
-    #FFF9FC 0%,
-    #EEE2E9 55%,
-    #DBC8D4 100%
-  ) !important;
+  background: #E8D7E1 !important;
 }
 
 .inspiration-page .designer-tile:nth-child(4n+4) {
-  background: linear-gradient(
-    155deg,
-    #EEE2E9 0%,
-    #D8C4D0 55%,
-    #C5B1BC 100%
-  ) !important;
+  background: #C5B1BC !important;
 }
