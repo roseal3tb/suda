@@ -1,4 +1,3 @@
-
 // @lovable.dev/vite-tanstack-config manages the Vite and Nitro plugins.
 // Do not add these plugins manually.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";

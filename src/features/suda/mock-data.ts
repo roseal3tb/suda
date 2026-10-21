@@ -21,10 +21,16 @@ export const fashionMedia = {
     alt: "مودلز بفساتين سهرة مطرزة بألوان هادئة",
   },
   profile: [
-    {src: "/editorial/people/angham_1.webp", alt: "أنغام بإطلالة ذهبية مزخرفة"},
-    {src: "/editorial/people/angham_2.webp", alt: "أنغام بإطلالة زرقاء خلال مناسبة"},
-    {src: "/editorial/people/angham_3.webp", alt: "أنغام بفستان خمري في حفل"},
-    {src: "/editorial/people/angham_4.webp", alt: "أنغام بفستان فضي مطرز"},
+    {
+      src: "/editorial/people/angham_1.webp",
+      alt: "أنغام بإطلالة ذهبية مزخرفة",
+    },
+    {
+      src: "/editorial/people/angham_2.webp",
+      alt: "أنغام بإطلالة زرقاء خلال مناسبة",
+    },
+    { src: "/editorial/people/angham_3.webp", alt: "أنغام بفستان خمري في حفل" },
+    { src: "/editorial/people/angham_4.webp", alt: "أنغام بفستان فضي مطرز" },
   ],
   inspiration: [
     {
@@ -185,8 +191,7 @@ export const initialOpportunities: Opportunity[] = [
     level: "جميع المستويات",
     description:
       "مسابقة تجريبية لتصميم قطعة تستكشف التباين بين الخامات وتوظّف الملمس كعنصر تعبيري",
-    requirements:
-      "رسم تصميم أصلي، صور الخامات المقترحة ووصف مختصر لفكرة العمل",
+    requirements: "رسم تصميم أصلي، صور الخامات المقترحة ووصف مختصر لفكرة العمل",
     deadline: "2027-01-25",
     image: media("competition_pink_couture"),
   },

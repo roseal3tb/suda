@@ -127,6 +127,8 @@ The Admin Dashboard contains interfaces for:
 
 Admin Opportunity Management is demonstration-based in Sprint 1.
 
+Open **الإدارة التجريبية** in the shared navigation, then choose **فتح لوحة الإدارة التجريبية**. This explicit demonstration mode only edits browser-local Opportunity records. It does not create an authenticated Admin account, change the Firebase user's role, or grant access to private Firestore records. Choose **إنهاء العرض التجريبي** to close it; reloading the page also closes the demonstration mode.
+
 Secure server-side Admin authorization has not yet been implemented. Client-side role checks must not be considered a security boundary.
 
 ### Portfolio Images
@@ -177,18 +179,18 @@ Further development is also required for:
 
 ## 5. Website Routes
 
-| Route | Description |
-|---|---|
-| `/` | Home page and platform introduction |
-| `/opportunities` | Opportunity browsing, search, and filtering |
-| `/opportunities/$id` | Individual Opportunity Details |
-| `/register` | User registration through Firebase Authentication |
-| `/login` | User login through Firebase Authentication |
-| `/profile` | Professional Profile management |
-| `/portfolio` | Portfolio management |
-| `/learning` | Course Enrollments, Learning Progress, and achievements |
-| `/admin` | Demonstration-based Admin Opportunity Management |
-| `/inspiration` | Saudi Inspiration content and designer information |
+| Route                | Description                                             |
+| -------------------- | ------------------------------------------------------- |
+| `/`                  | Home page and platform introduction                     |
+| `/opportunities`     | Opportunity browsing, search, and filtering             |
+| `/opportunities/$id` | Individual Opportunity Details                          |
+| `/register`          | User registration through Firebase Authentication       |
+| `/login`             | User login through Firebase Authentication              |
+| `/profile`           | Professional Profile management                         |
+| `/portfolio`         | Portfolio management                                    |
+| `/learning`          | Course Enrollments, Learning Progress, and achievements |
+| `/admin`             | Demonstration-based Admin Opportunity Management        |
+| `/inspiration`       | Saudi Inspiration content and designer information      |
 
 The application also provides shared navigation, confirmation dialogs, responsive page layouts, and appropriate empty states.
 
@@ -261,15 +263,15 @@ npm run dev -- --host 127.0.0.1 --port 5173
 
 The project provides the following scripts:
 
-| Command | Purpose |
-|---|---|
-| `npm run dev` | Start the development server |
-| `npm run typecheck` | Check TypeScript types |
-| `npm run test` | Run automated tests |
-| `npm run lint` | Run ESLint |
-| `npm run build` | Create a production build |
-| `npm run preview` | Preview the production build locally |
-| `npm run verify` | Run type checking, tests, linting, and build sequentially |
+| Command             | Purpose                                                   |
+| ------------------- | --------------------------------------------------------- |
+| `npm run dev`       | Start the development server                              |
+| `npm run typecheck` | Check TypeScript types                                    |
+| `npm run test`      | Run automated tests                                       |
+| `npm run lint`      | Run ESLint                                                |
+| `npm run build`     | Create a production build                                 |
+| `npm run preview`   | Preview the production build locally                      |
+| `npm run verify`    | Run type checking, tests, linting, and build sequentially |
 
 To run all four verification stages:
 
@@ -339,13 +341,13 @@ Suda uses a soft editorial visual identity suitable for a fashion-oriented platf
 
 The main color palette includes:
 
-| Color | Hex Code |
-|---|---|
-| Linen | `#FAF6F1` |
-| Dusty Rose | `#E8D7E1` |
+| Color          | Hex Code  |
+| -------------- | --------- |
+| Linen          | `#FAF6F1` |
+| Dusty Rose     | `#E8D7E1` |
 | Lavender Taupe | `#C5B1BC` |
-| Mauve-Gray | `#A195A2` |
-| Moody Plum | `#564E58` |
+| Mauve-Gray     | `#A195A2` |
+| Moody Plum     | `#564E58` |
 
 The application uses IBM Plex Sans Arabic and Tajawal with fallback fonts.
 

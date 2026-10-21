@@ -9,9 +9,7 @@ import { fashionMedia } from "./mock-data";
 import { useDemo } from "./demo-context";
 function getAuthErrorMessage(error: unknown): string {
   const code =
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error
+    typeof error === "object" && error !== null && "code" in error
       ? String(error.code)
       : "";
   switch (code) {
@@ -35,11 +33,7 @@ function getAuthErrorMessage(error: unknown): string {
       return "حدث خطأ غير متوقع. حاولي مرة أخرى.";
   }
 }
-export function AuthPage({
-  register = false,
-}: {
-  register?: boolean;
-}) {
+export function AuthPage({ register = false }: { register?: boolean }) {
   const { signIn, signUp, session } = useDemo();
   const navigate = useNavigate();
   const [name, setName] = useState("");
@@ -85,10 +79,17 @@ export function AuthPage({
       setPassword("");
       setConfirm("");
       setError("");
-      toast.success(register ? "تم إنشاء حسابك بنجاح" : "تم تسجيل الدخول بنجاح", {
-        duration: 3000,
-        style: { background: "#166534", color: "#ffffff", border: "1px solid #15803d" },
-      });
+      toast.success(
+        register ? "تم إنشاء حسابك بنجاح" : "تم تسجيل الدخول بنجاح",
+        {
+          duration: 3000,
+          style: {
+            background: "#166534",
+            color: "#ffffff",
+            border: "1px solid #15803d",
+          },
+        },
+      );
       await navigate({ to: "/", replace: true });
     } catch (err) {
       setError(getAuthErrorMessage(err));
@@ -103,149 +104,116 @@ export function AuthPage({
         <span className="eyebrow">
           {register ? "إنشاء حساب" : "تسجيل الدخول"}
         </span>
-        <h1>
-          {register ? "إنشاء ملفك في سُدى" : "الدخول إلى سُدى"}
-        </h1>
+        <h1>{register ? "إنشاء ملفك في سُدى" : "الدخول إلى سُدى"}</h1>
         <p>
           {register
             ? "أنشئي حسابك لبدء بناء ملفك المهني ومعرض أعمالك"
             : "ادخلي إلى ملفك المهني والفرص التي التحقتِ بها"}
         </p>
         <form
-            className="auth-form"
-            noValidate
-            onSubmit={submit}
-            aria-busy={busy}
-          >
-            {register && (
-              <FormField label="الاسم">
-                <input
-                  required
-                  aria-required="true"
-                  value={name}
-                  maxLength={100}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="اسمك كما تحبين أن يظهر"
-                  autoComplete="name"
-                />
-              </FormField>
-            )}
-            <FormField label="البريد الإلكتروني">
+          className="auth-form"
+          noValidate
+          onSubmit={submit}
+          aria-busy={busy}
+        >
+          {register && (
+            <FormField label="الاسم">
               <input
                 required
                 aria-required="true"
-                dir="ltr"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="designer@example.com"
-                autoComplete="email"
+                value={name}
+                maxLength={100}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="اسمك كما تحبين أن يظهر"
+                autoComplete="name"
               />
             </FormField>
-            <FormField label="كلمة المرور">
-              <div className="password-control">
-                <input
-                  required
-                  aria-required="true"
-                  type={visible ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="٦ أحرف على الأقل"
-                  autoComplete={
-                    register
-                      ? "new-password"
-                      : "current-password"
-                  }
-                />
-                <button
-                  type="button"
-                  aria-label={
-                    visible
-                      ? "إخفاء كلمة المرور"
-                      : "إظهار كلمة المرور"
-                  }
-                  aria-pressed={visible}
-                  onClick={() => setVisible(!visible)}
-                >
-                  {visible ? (
-                    <EyeOff size={18} />
-                  ) : (
-                    <Eye size={18} />
-                  )}
-                </button>
-              </div>
-            </FormField>
-            {register && (
-              <FormField label="تأكيد كلمة المرور">
-                <input
-                  required
-                  aria-required="true"
-                  type={visible ? "text" : "password"}
-                  value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
-                  placeholder="أعيدي كتابة كلمة المرور"
-                  autoComplete="new-password"
-                />
-              </FormField>
-            )}
-            {error && (
-              <p role="alert" className="form-error">
-                {error}
-              </p>
-            )}
-            <Button type="submit" disabled={busy}>
-              {busy
-                ? "جارٍ المعالجة…"
-                : register
-                  ? "إنشاء الحساب"
-                  : "تسجيل الدخول"}
-              <ArrowLeft />
-            </Button>
-            <p className="demo-note">
-              <Info size={14} />
-              <span>
-                حسابك محمي باستخدام Firebase Authentication.
-                لا تشاركي كلمة مرورك مع أي شخص.
-              </span>
-            </p>
-            <p className="text-sm">
-              {register
-                ? "لديك حساب بالفعل؟"
-                : "خطوتك الأولى هنا؟"}{" "}
-              <Link
-                className="text-link"
-                to={register ? "/login" : "/register"}
+          )}
+          <FormField label="البريد الإلكتروني">
+            <input
+              required
+              aria-required="true"
+              dir="ltr"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="designer@example.com"
+              autoComplete="email"
+            />
+          </FormField>
+          <FormField label="كلمة المرور">
+            <div className="password-control">
+              <input
+                required
+                aria-required="true"
+                type={visible ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="٦ أحرف على الأقل"
+                autoComplete={register ? "new-password" : "current-password"}
+              />
+              <button
+                type="button"
+                aria-label={visible ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
+                aria-pressed={visible}
+                onClick={() => setVisible(!visible)}
               >
-                {register
-                  ? "تسجيل الدخول"
-                  : "إنشاء حساب"}
-              </Link>
+                {visible ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </FormField>
+          {register && (
+            <FormField label="تأكيد كلمة المرور">
+              <input
+                required
+                aria-required="true"
+                type={visible ? "text" : "password"}
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                placeholder="أعيدي كتابة كلمة المرور"
+                autoComplete="new-password"
+              />
+            </FormField>
+          )}
+          {error && (
+            <p role="alert" className="form-error">
+              {error}
             </p>
-          </form>
+          )}
+          <Button type="submit" disabled={busy}>
+            {busy
+              ? "جارٍ المعالجة…"
+              : register
+                ? "إنشاء الحساب"
+                : "تسجيل الدخول"}
+            <ArrowLeft />
+          </Button>
+          <p className="demo-note">
+            <Info size={14} />
+            <span>
+              حسابك محمي باستخدام Firebase Authentication. لا تشاركي كلمة مرورك
+              مع أي شخص.
+            </span>
+          </p>
+          <p className="text-sm">
+            {register ? "لديك حساب بالفعل؟" : "خطوتك الأولى هنا؟"}{" "}
+            <Link className="text-link" to={register ? "/login" : "/register"}>
+              {register ? "تسجيل الدخول" : "إنشاء حساب"}
+            </Link>
+          </p>
+        </form>
       </Reveal>
       <Reveal className="auth-visual" delay={0.18}>
         <img
-          src={
-register
-              ? fashionMedia.register.src
-              : fashionMedia.login.src
-          }
-          alt={
-register
-              ? fashionMedia.register.alt
-              : fashionMedia.login.alt
-          }
+          src={register ? fashionMedia.register.src : fashionMedia.login.src}
+          alt={register ? fashionMedia.register.alt : fashionMedia.login.alt}
           width={1000}
           height={1250}
         />
         <div>
-          <span className="eyebrow">
-            من الفكرة إلى التفاصيل
-          </span>
+          <span className="eyebrow">من الفكرة إلى التفاصيل</span>
           <h2>مساحة لبدايتك المهنية</h2>
-          <p>
-            ملف يجمع مهاراتك، ومعرض يحكي قصتك مع التصميم
-          </p>
+          <p>ملف يجمع مهاراتك، ومعرض يحكي قصتك مع التصميم</p>
         </div>
       </Reveal>
     </section>

@@ -59,7 +59,10 @@ function Opportunities() {
         title="استكشاف الفرص"
         description="ابحثي في الدورات والمسابقات والتدريب والفرص الوظيفية، واستخدمي الفلاتر لتحديد ما يناسبك"
       />
-      <section className="discovery-controls" aria-label="البحث عن الفرص وتصفيتها">
+      <section
+        className="discovery-controls"
+        aria-label="البحث عن الفرص وتصفيتها"
+      >
         <div className="discovery-controls-heading">
           <div>
             <SlidersHorizontal size={17} aria-hidden="true" />
@@ -170,7 +173,9 @@ function Opportunities() {
               onClick={() => change(key, "")}
               aria-label={`إزالة فلتر ${label}: ${value}`}
             >
-              <span>{label}: <strong>{value}</strong></span>
+              <span>
+                {label}: <strong>{value}</strong>
+              </span>
               <X size={14} aria-hidden="true" />
             </button>
           ))}

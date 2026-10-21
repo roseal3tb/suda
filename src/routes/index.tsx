@@ -13,9 +13,7 @@ import {
   BriefcaseBusiness,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  categoryIcons,
-} from "@/components/suda/shared";
+import { categoryIcons } from "@/components/suda/shared";
 import { fashionMedia, categories, pageHead } from "@/features/suda/mock-data";
 import { AtelierFilm } from "@/components/suda/atelier-film";
 import { HeroAtelierPattern } from "@/components/suda/hero-atelier-pattern";
@@ -58,17 +56,20 @@ const journeySteps = [
 const voices = [
   {
     name: "أروى البنوي",
-    quote: "نحتاج إلى مزيد من النساء اللواتي يعبّرن عمّا يردن. أعتقد أنني واحدة منهن، وأريد أن ألهم المزيد من الفتيات معي",
+    quote:
+      "نحتاج إلى مزيد من النساء اللواتي يعبّرن عمّا يردن. أعتقد أنني واحدة منهن، وأريد أن ألهم المزيد من الفتيات معي",
     source: "The National · 2017",
   },
   {
     name: "هنيدة صيرفي",
-    quote: "العالم مليء بالفرص، وهناك مكان للجميع. أنصح المصممين الصاعدين بالتركيز على أهدافهم، والاستمرار في دفع أنفسهم نحو الأفضل",
+    quote:
+      "العالم مليء بالفرص، وهناك مكان للجميع. أنصح المصممين الصاعدين بالتركيز على أهدافهم، والاستمرار في دفع أنفسهم نحو الأفضل",
     source: "Arab News · 2022",
   },
   {
     name: "مشاعل الراجحي",
-    quote: "اسعوا لتحقيق أهدافكم. لا تتوقفوا عند أول عقبة. إذا استطعتم تخيّل ما تريدون تحقيقه، فغالبًا تستطيعون تحقيقه",
+    quote:
+      "اسعوا لتحقيق أهدافكم. لا تتوقفوا عند أول عقبة. إذا استطعتم تخيّل ما تريدون تحقيقه، فغالبًا تستطيعون تحقيقه",
     source: "Sanah Sharma · 2016",
   },
   {
@@ -97,7 +98,9 @@ function Home() {
         <div className="atelier-hero-copy">
           <HeroAtelierPattern />
           <div className="atelier-hero-identity">
-            <h1 id="atelier-title" className="atelier-hero-brand-name">سُـــدى</h1>
+            <h1 id="atelier-title" className="atelier-hero-brand-name">
+              سُـــدى
+            </h1>
             <p className="atelier-hero-tagline">رُؤى تُنسَج</p>
           </div>
           <div className="atelier-hero-introduction">
@@ -129,19 +132,36 @@ function Home() {
         </div>
         <AtelierFilm />
       </section>
-      <section className="couture-voices section-wrap" aria-labelledby="couture-voices-title">
+      <section
+        className="couture-voices section-wrap"
+        aria-labelledby="couture-voices-title"
+      >
         <Reveal className="couture-voices-heading">
-          <span className="eyebrow"><span className="tiny-line" /> كلمات من عالم الأزياء</span>
+          <span className="eyebrow">
+            <span className="tiny-line" /> كلمات من عالم الأزياء
+          </span>
           <h2 id="couture-voices-title">من وحي المصممات</h2>
-          <p>كلمات ملهمة من مصممات سعوديات عن الشغف والطموح وابتكار الطريق الخاص بك</p>
+          <p>
+            كلمات ملهمة من مصممات سعوديات عن الشغف والطموح وابتكار الطريق الخاص
+            بك
+          </p>
         </Reveal>
         <div className="couture-voices-grid">
           {voices.map((voice, index) => (
-            <Reveal as="article" className={`couture-voice-card couture-voice-card-${index}`} delay={index * 0.1} key={voice.name}>
-              <span className="couture-voice-mark" aria-hidden="true">”</span>
+            <Reveal
+              as="article"
+              className={`couture-voice-card couture-voice-card-${index}`}
+              delay={index * 0.1}
+              key={voice.name}
+            >
+              <span className="couture-voice-mark" aria-hidden="true">
+                ”
+              </span>
               <blockquote dir="rtl">{voice.quote}</blockquote>
               <div className="couture-voice-author">
-                <div><strong>{voice.name}</strong></div>
+                <div>
+                  <strong>{voice.name}</strong>
+                </div>
                 <small>{voice.source}</small>
               </div>
             </Reveal>

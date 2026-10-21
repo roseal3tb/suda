@@ -122,11 +122,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
                 {n.label}
               </Link>
             ))}
-            {session?.role === "admin" && (
-              <Link to="/admin" onClick={() => setOpen(false)}>
-                إدارة الفرص
-              </Link>
-            )}
+            <Link to="/admin" onClick={() => setOpen(false)}>
+              الإدارة التجريبية
+            </Link>
             <div className="mobile-nav-account">
               {session ? (
                 <>
@@ -180,7 +178,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
                   title="تسجيل الخروج"
                   aria-label="تسجيل الخروج"
                   onClick={() => void handleSignOut()}
-                    disabled={signingOut}
+                  disabled={signingOut}
                 >
                   <LogOut />
                 </Button>
@@ -211,7 +209,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
       {signOutError && (
         <div role="alert" className="global-alert">
           <span>{signOutError}</span>
-          <button onClick={() => setSignOutError("")} aria-label="إغلاق التنبيه">
+          <button
+            onClick={() => setSignOutError("")}
+            aria-label="إغلاق التنبيه"
+          >
             <X size={15} />
           </button>
         </div>
@@ -257,7 +258,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <div className="suda-footer-utility">
           <p>© ٢٠٢٦ سُدى · جميع الحقوق محفوظة</p>
           <span className="suda-footer-project">
-            مشروع جامعي قيد التطوير · الحسابات عبر Firebase والفرص المعروضة تجريبية
+            مشروع جامعي قيد التطوير · الحسابات عبر Firebase والفرص المعروضة
+            تجريبية
           </span>
           <div className="suda-footer-utilities">
             <details className="suda-photo-sources">

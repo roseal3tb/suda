@@ -181,7 +181,8 @@ function LearningRow({
         </div>
         {savedProgress !== null && (
           <p className="success-message" role="status">
-            حُدّث التقدّم إلى {savedProgress.toLocaleString("ar-SA")}٪ وحُفظ في حسابك
+            حُدّث التقدّم إلى {savedProgress.toLocaleString("ar-SA")}٪ وحُفظ في
+            حسابك
           </p>
         )}
         <form className="achievement-form" onSubmit={(e) => void submit(e)}>
@@ -201,7 +202,9 @@ function LearningRow({
           </Button>
         </form>
         {achievementSaved && (
-          <p className="success-message" role="status">تم حفظ الإنجاز في حسابك بنجاح</p>
+          <p className="success-message" role="status">
+            تم حفظ الإنجاز في حسابك بنجاح
+          </p>
         )}
         {error && (
           <p className="form-error" role="alert">

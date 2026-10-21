@@ -14,7 +14,9 @@ export function Intro() {
 
   function finish() {
     if (surface.current?.contains(document.activeElement)) {
-      document.querySelector<HTMLAnchorElement>(".skip-link")?.focus({ preventScroll: true });
+      document
+        .querySelector<HTMLAnchorElement>(".skip-link")
+        ?.focus({ preventScroll: true });
     }
     setShow(false);
   }
@@ -84,13 +86,28 @@ export function Intro() {
         </svg>
       </div>
       <div className="first-stitch-art" aria-hidden="true">
-        <svg className="first-stitch-sweep" viewBox="0 0 1000 350" fill="none" preserveAspectRatio="xMidYMid meet">
-          <path className="first-stitch-trail" pathLength="1" d="M-35 246 C124 250 174 143 292 182 C365 207 380 249 473 177 C521 137 558 207 510 224 C452 243 477 139 597 170 C720 198 772 64 900 129 C953 156 996 145 1030 123" />
-          <g className="first-stitch-needle" transform="translate(904 130) rotate(-28)">
+        <svg
+          className="first-stitch-sweep"
+          viewBox="0 0 1000 350"
+          fill="none"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <path
+            className="first-stitch-trail"
+            pathLength="1"
+            d="M-35 246 C124 250 174 143 292 182 C365 207 380 249 473 177 C521 137 558 207 510 224 C452 243 477 139 597 170 C720 198 772 64 900 129 C953 156 996 145 1030 123"
+          />
+          <g
+            className="first-stitch-needle"
+            transform="translate(904 130) rotate(-28)"
+          >
             <path d="M0 0 H92" />
             <ellipse cx="74" cy="0" rx="10" ry="4.5" />
           </g>
-          <path className="first-stitch-dashes" d="M205 286h95m50 0h25m244-202h145m28 0h19" />
+          <path
+            className="first-stitch-dashes"
+            d="M205 286h95m50 0h25m244-202h145m28 0h19"
+          />
         </svg>
       </div>
       <div className="first-stitch-center">
@@ -106,7 +123,12 @@ export function Intro() {
         <span className="first-stitch-tagline">رُؤى تُنسَج</span>
         <span className="first-stitch-accent" aria-hidden="true" />
       </div>
-      <button type="button" className="first-stitch-skip thread-intro-skip" autoFocus onClick={skip}>
+      <button
+        type="button"
+        className="first-stitch-skip thread-intro-skip"
+        autoFocus
+        onClick={skip}
+      >
         تخطّي المقدمة
       </button>
     </div>

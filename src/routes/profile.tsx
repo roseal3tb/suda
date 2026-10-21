@@ -74,7 +74,9 @@ function ProfilePage() {
         interests,
       });
       if (!ok) {
-        setError("تعذّر حفظ الملف المهني في Firebase. تحققي من اتصال الإنترنت وحاولي مجددًا.");
+        setError(
+          "تعذّر حفظ الملف المهني في Firebase. تحققي من اتصال الإنترنت وحاولي مجددًا.",
+        );
         return;
       }
       setEditing(false);
@@ -159,10 +161,18 @@ function ProfilePage() {
       <DemoNote />
       <Modal
         open={editing}
-        onClose={() => { if (!saving) setEditing(false); }}
+        onClose={() => {
+          if (!saving) setEditing(false);
+        }}
         title={profile ? "تعديل الملف المهني" : "إنشاء الملف المهني"}
+        description="تُحفظ معلومات ملفك المهني في حسابك."
       >
-        <form className="form-stack" onSubmit={submit} noValidate aria-busy={saving}>
+        <form
+          className="form-stack"
+          onSubmit={submit}
+          noValidate
+          aria-busy={saving}
+        >
           <FormField label="الاسم *">
             <input
               value={form.name}

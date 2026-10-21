@@ -1,4 +1,3 @@
-
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -25,10 +24,7 @@ export async function registerUser(
   return credential.user;
 }
 
-export async function loginUser(
-  email: string,
-  password: string,
-) {
+export async function loginUser(email: string, password: string) {
   const credential = await signInWithEmailAndPassword(
     auth,
     email.trim().toLowerCase(),

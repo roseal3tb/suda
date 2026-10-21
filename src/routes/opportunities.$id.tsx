@@ -30,7 +30,8 @@ export const Route = createFileRoute("/opportunities/$id")({
 
 function Details() {
   const { id } = Route.useParams();
-  const { opportunities, session, enroll, enrollments, enrollmentsLoading } = useDemo();
+  const { opportunities, session, enroll, enrollments, enrollmentsLoading } =
+    useDemo();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const item = opportunities.find((o) => o.id === id);
@@ -41,7 +42,8 @@ function Details() {
     setError("");
     try {
       const ok = await enroll(item);
-      if (!ok) setError("تعذّر الالتحاق بالدورة. تحققي من الاتصال وحاولي مجددًا.");
+      if (!ok)
+        setError("تعذّر الالتحاق بالدورة. تحققي من الاتصال وحاولي مجددًا.");
     } catch (cause) {
       console.error("Failed to enroll:", cause);
       setError("تعذّر الالتحاق بالدورة. حاولي مجددًا.");
@@ -153,7 +155,9 @@ function Details() {
                   </Button>
                 )}
                 {error && (
-                  <p className="form-error" role="alert">{error}</p>
+                  <p className="form-error" role="alert">
+                    {error}
+                  </p>
                 )}
               </>
             ) : (

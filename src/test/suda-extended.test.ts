@@ -59,7 +59,7 @@ describe("SUDA Sprint 1 extensions", () => {
     expect(canAccessZoom([], course.id)).toBe(false);
     expect(canAccessZoom(enrollCourse([], course), course.id)).toBe(true);
   });
-  it("uses the current eleven sourced text-only designers without images", () => {
+  it("uses eleven distinct sourced designers with valid local editorial images", () => {
     expect(designers).toHaveLength(11);
     expect(new Set(designers.map((d) => d.id)).size).toBe(11);
     expect(
@@ -67,6 +67,8 @@ describe("SUDA Sprint 1 extensions", () => {
         (d) => d.name && d.bio && d.source?.startsWith("https://"),
       ),
     ).toBe(true);
-    expect(designers.every((d) => !("image" in d))).toBe(true);
+    expect(
+      designers.every((d) => !d.image || d.image.startsWith("/editorial/")),
+    ).toBe(true);
   });
 });

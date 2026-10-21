@@ -41,7 +41,8 @@ export const Route = createFileRoute("/admin")({
   ),
 });
 function Admin() {
-  const { opportunities, saveOpportunity, deleteOpportunity } = useDemo();
+  const { opportunities, saveOpportunity, deleteOpportunity, endAdminDemo } =
+    useDemo();
   const [form, setForm] = useState<Opportunity | null>(null);
   const [deleting, setDeleting] = useState<Opportunity | null>(null);
   const [error, setError] = useState("");
@@ -125,7 +126,10 @@ function Admin() {
     <div className="content-wrap">
       <div className="admin-banner">
         <Shield size={17} />
-        وضع المشرفة التجريبي · تقييد عرض فقط، وليس تحققًا آمنًا من الصلاحيات.
+        وضع المشرفة التجريبي · تعديلات الفرص محلية في هذا المتصفح فقط.
+        <Button variant="ghost" onClick={endAdminDemo}>
+          إنهاء العرض التجريبي
+        </Button>
       </div>
       <PageIntro
         eyebrow="مساحة الإدارة"
@@ -249,6 +253,7 @@ function Admin() {
       <Modal
         open={Boolean(form)}
         onClose={() => setForm(null)}
+        description="تُحفظ تعديلات الفرص التجريبية في هذا المتصفح فقط."
         title={
           form && opportunities.some((o) => o.id === form.id)
             ? "تعديل الفرصة"

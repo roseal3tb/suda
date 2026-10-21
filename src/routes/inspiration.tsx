@@ -50,8 +50,8 @@ function Inspiration() {
             إلهام <em>سعودي</em>
           </h1>
           <p>
-            دليل تحريري لمصممات سعوديات، مع مصادر منشورة حين تتوفر، وصور
-            تعريفية أضافها فريق المشروع من الملفات المرفقة
+            دليل تحريري لمصممات سعوديات، مع مصادر منشورة حين تتوفر، وصور تعريفية
+            أضافها فريق المشروع من الملفات المرفقة
           </p>
           <span className="inspiration-counter">
             {designers.length.toLocaleString("ar-SA")} مصممات وعلامات
@@ -72,9 +72,7 @@ function Inspiration() {
               الدليل التحريري
             </span>
             <h2>المصممات</h2>
-            <p>
-              اختاري اسمًا لعرض التفاصيل. تظهر حالة التوثيق بوضوح لكل مصممة
-            </p>
+            <p>اختاري اسمًا لعرض التفاصيل. تظهر حالة التوثيق بوضوح لكل مصممة</p>
           </div>
           <span className="verified-note">
             <CheckCircle2 size={17} />
@@ -108,13 +106,14 @@ function Inspiration() {
             </Reveal>
           ))}
         </div>
-        {current && <section
-          ref={detailRef}
-          id="designer-details"
-          className="designer-expanded is-open"
-          aria-live="polite"
-          aria-label="تفاصيل المصممة"
-        >
+        {current && (
+          <section
+            ref={detailRef}
+            id="designer-details"
+            className="designer-expanded is-open"
+            aria-live="polite"
+            aria-label="تفاصيل المصممة"
+          >
             <>
               <div className="designer-expanded-copy">
                 <span className="eyebrow">
@@ -151,22 +150,32 @@ function Inspiration() {
               <div className="designer-expanded-media">
                 {current.image ? (
                   <figure className="designer-photo">
-                    <img src={current.image} alt={`صورة مرفقة للمصممة ${current.name}`} loading="lazy" decoding="async" />
+                    <img
+                      src={current.image}
+                      alt={`صورة مرفقة للمصممة ${current.name}`}
+                      loading="lazy"
+                      decoding="async"
+                    />
                     <figcaption>{current.name}</figcaption>
                   </figure>
                 ) : (
-                  <div className="designer-photo-unavailable" role="img" aria-label="لم تُرفق صورة لهذه المصممة">
+                  <div
+                    className="designer-photo-unavailable"
+                    role="img"
+                    aria-label="لم تُرفق صورة لهذه المصممة"
+                  >
                     <span aria-hidden="true">سُدى</span>
                     <p>لم تُرفق صورة لهذه المصممة</p>
                   </div>
                 )}
               </div>
             </>
-        </section>}
+          </section>
+        )}
         <p className="inspiration-disclaimer">
           المحتوى تعريفي مستقل لأغراض مشروع جامعي، ولا يمثل شراكة أو اعتمادًا من
-          المصممات أو العلامات المذكورة، والصور من الملفات المقدمة لفريق المشروع؛
-          ويجب التحقق من حقوق إعادة استخدامها قبل النشر العام
+          المصممات أو العلامات المذكورة، والصور من الملفات المقدمة لفريق
+          المشروع؛ ويجب التحقق من حقوق إعادة استخدامها قبل النشر العام
         </p>
       </section>
     </div>

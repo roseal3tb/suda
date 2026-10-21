@@ -1,7 +1,11 @@
 export function HeroAtelierPattern() {
   return (
     <div className="atelier-hero-pattern" aria-hidden="true">
-      <svg viewBox="0 0 900 900" preserveAspectRatio="xMidYMid slice" role="presentation">
+      <svg
+        viewBox="0 0 900 900"
+        preserveAspectRatio="xMidYMid slice"
+        role="presentation"
+      >
         <defs>
           <linearGradient id="heroThreadGrad" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#E8D7E1" stopOpacity="0.9" />
@@ -42,7 +46,10 @@ export function HeroAtelierPattern() {
         </g>
 
         {/* needle */}
-        <g className="hero-pattern-needle" transform="translate(548 180) rotate(32)">
+        <g
+          className="hero-pattern-needle"
+          transform="translate(548 180) rotate(32)"
+        >
           <path d="M0 0L166 0" />
           <ellipse cx="13" cy="0" rx="10" ry="4.8" />
         </g>

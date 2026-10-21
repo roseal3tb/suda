@@ -76,8 +76,8 @@ export function DemoNote() {
     <Reveal as="p" className="demo-note">
       <Info size={14} />
       <span>
-        نسخة تجريبية · جميع الفرص والجهات خيالية، والتغييرات محفوظة محليًا في
-        المتصفح نفسه حتى إعادة ضبط البيانات
+        الفرص والجهات المعروضة خيالية وتُحفظ تعديلات الفرص في هذا المتصفح. يُحفظ
+        ملفك المهني وبيانات أعمالك ودوراتك في حسابك؛ صور الأعمال مؤقتة.
       </span>
     </Reveal>
   );
@@ -162,26 +162,39 @@ export function MemberGate({
   children: ReactNode;
   admin?: boolean;
 }) {
-  const { session } = useDemo();
-  if (!session || (admin && session.role !== "admin"))
+  const { session, adminDemo, startAdminDemo } = useDemo();
+  if (admin && !adminDemo)
     return (
       <div className="content-wrap">
         <PageIntro
-          eyebrow={admin ? "مساحة الإدارة" : "مساحتك في سُدى"}
-          title={admin ? "الدخول المخصص للإدارة" : "يلزم تسجيل الدخول"}
-          description={
-            admin
-              ? "هذه الصفحة متاحة لوضع المشرفة التجريبي فقط. هذا تقييد للعرض، وليس حماية أمنية"
-              : "سجّلي الدخول التجريبي لتكملي ملفك وتحتفظي بأعمالك ودوراتك في هذا المتصفح"
-          }
+          eyebrow="مساحة الإدارة"
+          title="إدارة الفرص التجريبية"
+          description="يمكنك تجربة إضافة الفرص وتعديلها وحذفها. التغييرات تُحفظ في هذا المتصفح فقط."
         />
         <EmptyState
-          title={admin ? "يلزم وضع المشرفة التجريبي" : "سجّلي الدخول للمتابعة"}
-          description="لا تُنشأ حسابات حقيقية في هذه النسخة"
+          title="عرض لوحة الإدارة"
+          description="هذا وضع للعرض التجريبي، ولا يمنح صلاحيات على حسابات المستخدمين أو بياناتهم."
+          action={
+            <Button onClick={startAdminDemo}>فتح لوحة الإدارة التجريبية</Button>
+          }
+        />
+      </div>
+    );
+  if (!admin && !session)
+    return (
+      <div className="content-wrap">
+        <PageIntro
+          eyebrow="مساحتك في سُدى"
+          title="يلزم تسجيل الدخول"
+          description="سجّلي الدخول للوصول إلى ملفك المهني وأعمالك ودوراتك المحفوظة في حسابك."
+        />
+        <EmptyState
+          title="سجّلي الدخول للمتابعة"
+          description="استخدمي حسابك، أو أنشئي حسابًا جديدًا."
           action={
             <Button asChild>
               <Link to="/login">
-                الدخول التجريبي <ArrowLeft />
+                تسجيل الدخول <ArrowLeft />
               </Link>
             </Button>
           }
@@ -230,8 +243,7 @@ export function Modal({
       <DialogContent dir="rtl" className="suda-modal">
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>
-          {description ||
-            "التغييرات تجريبية ومحفوظة محليًا في هذا المتصفح فقط"}
+          {description || "راجعي البيانات ثم احفظي التغييرات."}
         </DialogDescription>
         {children}
       </DialogContent>
@@ -256,11 +268,17 @@ export function ConfirmDelete({
   return (
     <Modal
       open={open}
-      onClose={() => { if (!busy) onClose(); }}
+      onClose={() => {
+        if (!busy) onClose();
+      }}
       title="تأكيد الحذف"
       description={`هل تريدين حذف «${name}»؟ لا يمكن التراجع عن هذه الخطوة بعد الحفظ`}
     >
-      {error && <p className="form-error" role="alert">{error}</p>}
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
       <div className="form-actions" aria-busy={busy}>
         <Button variant="destructive" onClick={onConfirm} disabled={busy}>
           {busy ? "جارٍ الحذف…" : "حذف نهائي"}

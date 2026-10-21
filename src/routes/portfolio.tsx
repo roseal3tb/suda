@@ -178,6 +178,7 @@ function Portfolio() {
         onClose={() => {
           if (!busy) setForm(null);
         }}
+        description="يُحفظ عنوان العمل ووصفه في حسابك؛ الصورة مؤقتة ولا تُحفظ بعد إعادة تحميل الصفحة."
         title={
           form && works.some((w) => w.id === form.id)
             ? "تعديل العمل"
@@ -206,9 +207,8 @@ function Portfolio() {
             </FormField>
             <FormField
               label="صورة عملك — اختيارية"
-          
-                 hint="يمكنك حفظ العمل بدون صورة وإضافتها لاحقًا، الصورة مؤقتة خلال هذه الزيارة فقط."
 
+              hint="يمكنك حفظ العمل بدون صورة وإضافتها لاحقًا، الصورة مؤقتة خلال هذه الزيارة فقط."
             >
               <div
                 className={`rounded-xl border-2 border-dashed p-5 text-center transition-colors ${
@@ -248,8 +248,7 @@ function Portfolio() {
                   <ImagePlus size={18} />
                   اختاري أو افلتي صورة من الجهاز
                 </label>
-                <p className="mt-3 text-sm text-muted-foreground">
-                </p>
+                <p className="mt-3 text-sm text-muted-foreground"></p>
               </div>
             </FormField>
             {form.image ? (
@@ -329,7 +328,9 @@ function Portfolio() {
                 setDeleting(null);
                 setSaved(false);
               } else {
-                setDeleteError("تعذّر حذف العمل. تحققي من الاتصال وحاولي مجددًا.");
+                setDeleteError(
+                  "تعذّر حذف العمل. تحققي من الاتصال وحاولي مجددًا.",
+                );
               }
             } catch (err) {
               console.error("Portfolio delete failed:", err);

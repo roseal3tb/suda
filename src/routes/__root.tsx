@@ -87,15 +87,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { title: "سُدى | فرص تصميم الأزياء" },
         {
           name: "description",
-          content:
-            "مساحة عربية لفرص تصميم الأزياء والتعلّم وبناء الملف المهني",
+          content: "مساحة عربية لفرص تصميم الأزياء والتعلّم وبناء الملف المهني",
         },
 
         { property: "og:title", content: "سُدى | فرص تصميم الأزياء" },
         {
           property: "og:description",
-          content:
-            "مساحة عربية لفرص تصميم الأزياء والتعلّم وبناء الملف المهني",
+          content: "مساحة عربية لفرص تصميم الأزياء والتعلّم وبناء الملف المهني",
         },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" },
