@@ -2029,3 +2029,59 @@ h1, h2, h3, h4, h5, h6, .section-heading h2, .designer-tile-body strong,
 .inspiration-page .designer-tile:nth-child(4n+4) {
   background: #C5B1BC !important;
 }
+
+/* Shared solid card palette, matching the Saudi designer quote cards. */
+:root {
+  --suda-card-linen: #FAF6F1;
+  --suda-card-blush: #F3E8EE;
+  --suda-card-rose: #E8D7E1;
+  --suda-card-mauve: #C5B1BC;
+}
+
+:is(.opportunity-card, .work-card, .learning-row, .admin-mobile-card,
+    .suda-journey-step, .profile-section, .enrollment-box) {
+  background: var(--suda-card-tone, var(--suda-card-linen)) !important;
+  background-image: none !important;
+}
+
+:is(.suda-opportunity-reveal, .work-card, .learning-row, .admin-mobile-card,
+    .suda-journey-step, .profile-section):nth-child(4n+1) {
+  --suda-card-tone: var(--suda-card-linen);
+}
+:is(.suda-opportunity-reveal, .work-card, .learning-row, .admin-mobile-card,
+    .suda-journey-step, .profile-section):nth-child(4n+2) {
+  --suda-card-tone: var(--suda-card-blush);
+}
+:is(.suda-opportunity-reveal, .work-card, .learning-row, .admin-mobile-card,
+    .suda-journey-step, .profile-section):nth-child(4n+3) {
+  --suda-card-tone: var(--suda-card-rose);
+}
+:is(.suda-opportunity-reveal, .work-card, .learning-row, .admin-mobile-card,
+    .suda-journey-step, .profile-section):nth-child(4n+4) {
+  --suda-card-tone: var(--suda-card-mauve);
+}
+
+/* Native buttons and links rendered by the shared Button component. */
+:is(button, [role="button"], .cursor-pointer.inline-flex,
+    input[type="button"], input[type="submit"], input[type="reset"],
+    .text-link, .suda-journey-link, .editorial-actions a) {
+  transition: background-color .2s ease, color .2s ease,
+    border-color .2s ease, box-shadow .2s ease, filter .2s ease, transform .2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :is(button, [role="button"], .cursor-pointer.inline-flex,
+      input[type="button"], input[type="submit"], input[type="reset"],
+      .text-link, .suda-journey-link, .editorial-actions a):not(:disabled):not([aria-disabled="true"]):hover {
+    filter: brightness(.94);
+    box-shadow: 0 0 0 2px rgb(86 78 88 / .22), 0 5px 14px rgb(86 78 88 / .10);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(button, [role="button"], .cursor-pointer.inline-flex,
+      input[type="button"], input[type="submit"], input[type="reset"],
+      .text-link, .suda-journey-link, .editorial-actions a) {
+    transition: none !important;
+  }
+}
