@@ -2030,6 +2030,11 @@ h1, h2, h3, h4, h5, h6, .section-heading h2, .designer-tile-body strong,
   background: #C5B1BC !important;
 }
 
+/* Opportunity cards keep a soft gradient; other cards use solid designer colors. */
+.opportunity-card {
+  background: linear-gradient(145deg, #FFFDFC 0%, #F3E8EE 55%, #E8D7E1 100%) !important;
+}
+
 /* Shared solid card palette, matching the Saudi designer quote cards. */
 :root {
   --suda-card-linen: #FAF6F1;
@@ -2075,7 +2080,34 @@ h1, h2, h3, h4, h5, h6, .section-heading h2, .designer-tile-body strong,
       input[type="button"], input[type="submit"], input[type="reset"],
       .text-link, .suda-journey-link, .editorial-actions a):not(:disabled):not([aria-disabled="true"]):hover {
     filter: brightness(.94);
-    box-shadow: 0 0 0 2px rgb(86 78 88 / .22), 0 5px 14px rgb(86 78 88 / .10);
+  }
+}
+
+/* Arrow motion gives text actions feedback without drawing a hover box. */
+:is(button, a[href], [role="button"]) svg:is(.lucide-arrow-left, .lucide-arrow-up-left, .lucide-arrow-down, .lucide-arrow-right, .lucide-arrow-up-right) {
+  transition: transform .2s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  :is(button, a[href], [role="button"]):not(:disabled):not([aria-disabled="true"]):hover svg.lucide-arrow-left {
+    transform: translateX(-4px);
+  }
+  :is(button, a[href], [role="button"]):not(:disabled):not([aria-disabled="true"]):hover svg.lucide-arrow-up-left {
+    transform: translate(-4px, -3px);
+  }
+  :is(button, a[href], [role="button"]):not(:disabled):not([aria-disabled="true"]):hover svg.lucide-arrow-down {
+    transform: translateY(4px);
+  }
+  :is(button, a[href], [role="button"]):not(:disabled):not([aria-disabled="true"]):hover svg.lucide-arrow-right {
+    transform: translateX(4px);
+  }
+  :is(button, a[href], [role="button"]):not(:disabled):not([aria-disabled="true"]):hover svg.lucide-arrow-up-right {
+    transform: translate(4px, -3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(button, a[href], [role="button"]) svg:is(.lucide-arrow-left, .lucide-arrow-up-left, .lucide-arrow-down, .lucide-arrow-right, .lucide-arrow-up-right) {
+    transition: none !important;
+    transform: none !important;
   }
 }
 

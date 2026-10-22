@@ -16,6 +16,7 @@ import {
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "./reveal";
+import { editorialText } from "@/lib/editorial-text";
 import {
   Dialog,
   DialogContent,
@@ -64,7 +65,7 @@ export function PageIntro({
           <span className="tiny-line" />
           {eyebrow}
         </span>
-        <h1>{title}</h1>
+        <h1 aria-label={title}>{editorialText(title)}</h1>
         {description && <p>{description}</p>}
       </div>
       {action}

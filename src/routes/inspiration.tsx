@@ -46,8 +46,8 @@ function Inspiration() {
             <span className="tiny-line" />
             أسماء من مشهد الأزياء السعودي
           </span>
-          <h1>
-            إلهام <em>سعودي</em>
+          <h1 aria-label="إلهام سعودي">
+            إلهــام <em>ســعودي</em>
           </h1>
           <p>
             دليل تحريري لمصممات سعوديات، مع مصادر منشورة حين تتوفر، وصور تعريفية
@@ -71,7 +71,7 @@ function Inspiration() {
               <span className="tiny-line" />
               الدليل التحريري
             </span>
-            <h2>المصممات</h2>
+            <h2 aria-label="المصممات">المصممــات</h2>
             <p>اختاري اسمًا لعرض التفاصيل. تظهر حالة التوثيق بوضوح لكل مصممة</p>
           </div>
           <span className="verified-note">

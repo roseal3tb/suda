@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import type { HTMLMotionProps } from "framer-motion";
 import type { ReactNode } from "react";
+import { editorialText } from "@/lib/editorial-text";
 
 /**
  * SUDA — the single scroll-reveal system for the whole site (Framer Motion).
@@ -78,24 +79,27 @@ export function WordsReveal({
   const reduce = useReducedMotion();
   return (
     <span className={className}>
-      {text.split(" ").map((word, i) => (
-        <span key={i} className="suda-word-mask">
-          <motion.span
-            className="suda-word-inner"
-            initial={reduce ? false : { opacity: 0, y: "0.9em" }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px 0px -80px 0px" }}
-            transition={{
-              duration: reduce ? 0 : 0.8,
-              delay: reduce ? 0 : delay + i * 0.08,
-              ease: REVEAL_EASE,
-            }}
-          >
-            {word}
-            {"\u00a0"}
-          </motion.span>
-        </span>
-      ))}
+      <span className="sr-only">{text}</span>
+      {editorialText(text)
+        .split(" ")
+        .map((word, i) => (
+          <span key={i} className="suda-word-mask" aria-hidden="true">
+            <motion.span
+              className="suda-word-inner"
+              initial={reduce ? false : { opacity: 0, y: "0.9em" }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "0px 0px -80px 0px" }}
+              transition={{
+                duration: reduce ? 0 : 0.8,
+                delay: reduce ? 0 : delay + i * 0.08,
+                ease: REVEAL_EASE,
+              }}
+            >
+              {word}
+              {"\u00a0"}
+            </motion.span>
+          </span>
+        ))}
     </span>
   );
 }
