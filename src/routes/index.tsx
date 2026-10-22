@@ -23,33 +23,33 @@ export const Route = createFileRoute("/")({
   head: () =>
     pageHead(
       "الرئيسية",
-      "سُدى: منصة عربية لفرص تصميم الأزياء، الملف المهني، ومعرض الأعمال",
+      "سُـدى: مـنصة عربية لفـرص تـصميم الأزيـاء، المـلف المهـني، ومعـرض الأعمـال",
     ),
   component: Home,
 });
 const journeySteps = [
   {
     number: "01",
-    title: "اكتشفي ما يناسبك",
-    body: "تصفّحي الدورات والمسابقات وفرص التدريب والعمل، واختاري الخطوة المناسبة لاهتماماتك",
+    title: "اكـتشفي ما يـناسبك",
+    body: "تـصفّحي الـدورات والمسـابقات وفـرص التـدريب والعمـل، واختـاري الخطـوة المناسبـة لاهتماماتـك",
     to: "/opportunities" as const,
-    action: "تصفّحي الفرص",
+    action: "تصفّـحي الفـرص",
     Icon: Sparkles,
   },
   {
     number: "02",
-    title: "تابعي تعلّمك",
-    body: "سجّلي التحاقك بالدورات المتاحة في النسخة التجريبية، وتابعي تقدّمك التعليمي بنفسك",
+    title: "تـابعي تعـلّمك",
+    body: "سجّـلي التحـاقك بالـدورات المتـاحة في النـسخة التجـريبية، وتابـعي تقـدّمك التعـليمي بنـفسك",
     to: "/learning" as const,
-    action: "رحلتي التعليمية",
+    action: "رحلـتي التعـليمية",
     Icon: GraduationCap,
   },
   {
     number: "03",
-    title: "اصنعي حضورك المهني",
-    body: "اجمعي مهاراتك وخبراتك وأعمال تصميم الأزياء في ملف مهني ومعرض خاص بك",
+    title: "اصـنعي حضـورك المهـني",
+    body: "اجمـعي مهـاراتك وخبـراتك وأعمـال تصمـيم الأزيـاء في مـلف مهـني ومعـرض خـاص بك",
     to: "/portfolio" as const,
-    action: "معرض الأعمال",
+    action: "معـرض الأعمـال",
     Icon: BriefcaseBusiness,
   },
 ];
@@ -79,10 +79,10 @@ const voices = [
   },
 ] as const;
 const subtitles = [
-  "دورات مجانية",
-  "منافسات تصميم",
-  "تجارب مهنية",
-  "مسارات عمل",
+  "دورات مجـانية",
+  "منـافسات تصمـيم",
+  "تجـارب مهنـية",
+  "مسـارات عمـل",
 ];
 function Home() {
   const ribbonRef = useRef<HTMLElement>(null);
@@ -99,33 +99,33 @@ function Home() {
           <HeroAtelierPattern />
           <div className="atelier-hero-identity">
             <h1 id="atelier-title" className="atelier-hero-brand-name">
-              سُـــدى
+              سُــــدى
             </h1>
-            <p className="atelier-hero-tagline">رُؤى تُنسَج</p>
+            <p className="atelier-hero-tagline">رُؤى تُنــسَج</p>
           </div>
           <div className="atelier-hero-introduction">
-            <p className="atelier-hero-kicker">مساحتك في عالم تصميم الأزياء</p>
+            <p className="atelier-hero-kicker">مسـاحتـك في عـالم تصمـيم الأزيـاء</p>
             <p className="atelier-hero-body">
-              اكتشفي دورات ومسابقات وفرص تدريب وعمل في تصميم الأزياء، واجمعي
-              مهاراتك وأعمالك في مساحة تُعبّر عنك
+              اكتشـفي دورات ومسـابقات وفـرص تـدريب وعمـل في تصمـيم الأزيـاء، واجمعي
+              مهـاراتك وأعمـالك في مسـاحة تُـعبّر عـنك
             </p>
           </div>
           <div className="atelier-hero-bottom">
             <div className="atelier-hero-foot">
-              <span>صُمّمت لبدايتك، ولما بعدها</span>
-              <a href="#suda-journey" aria-label="اكتشفي رحلتك في سُدى">
+              <span>صُمّـمت لبـدايتك، ولـما بعـدها</span>
+              <a href="#suda-journey" aria-label="اكتشـفي رحـلتك في سُـدى">
                 <ArrowDown size={16} />
-                اكتشفي سُدى
+                اكتشـفي سُـدى
               </a>
             </div>
             <div className="atelier-hero-actions">
               <Button asChild size="lg">
                 <Link to="/opportunities">
-                  اكتشفي الفرص <ArrowLeft />
+                  اكتشـفي الفـرص <ArrowLeft />
                 </Link>
               </Button>
               <Link to="/portfolio" className="text-link">
-                ابني معرض أعمالك <ArrowUpLeft size={17} />
+                ابني معرض أعمـالك <ArrowUpLeft size={17} />
               </Link>
             </div>
           </div>
@@ -138,13 +138,13 @@ function Home() {
       >
         <Reveal className="couture-voices-heading">
           <span className="eyebrow">
-            <span className="tiny-line" /> كلمات من عالم الأزياء
+            <span className="tiny-line" /> كلمـات من عـالم الأزيـاء
           </span>
           <h2 id="couture-voices-title" aria-label="من وحي المصممات">
             من وحــي المصممــات
           </h2>
           <p>
-            كلمات ملهمة من مصممات سعوديات عن الشغف والطموح وابتكار الطريق الخاص
+            كلـمات ملـهمة من مصممـات سعوديـات عن الـشغف والطمـوح وابتكـار الطـريق الخـاص
             بك
           </p>
         </Reveal>
@@ -179,10 +179,10 @@ function Home() {
           <div>
             <span className="eyebrow">
               <span className="tiny-line" />
-              01 / رحلتك مع سُدى
+              01 / رحلتـك مع سُـدى
             </span>
             <h2 id="suda-journey-title">
-              <WordsReveal text="خطواتك في عالم الأزياء" />
+              <WordsReveal text="خطـواتك في عـالم الأزيـاء" />
             </h2>
           </div>
         </Reveal>
@@ -218,21 +218,21 @@ function Home() {
           <div>
             <span className="eyebrow">
               <span className="tiny-line" />
-              02 / استكشفي
+              02 / استكشـفي
             </span>
             <h2>
-              <WordsReveal text="فرص تصميم الأزياء" />
+              <WordsReveal text="فـرص تصمـيم الأزيـاء" />
             </h2>
-            <p>دورات ومسابقات وتدريب وفرص وظيفية ضمن تجربة واحدة</p>
+            <p>دورات ومسـابقات وتـدريب وفـرص وظيفيـة ضمـن تجـربة واحـدة</p>
           </div>
           <Link to="/opportunities" className="text-link">
-            عرض جميع الفرص <ArrowLeft size={15} />
+            عـرض جميـع الفـرص <ArrowLeft size={15} />
           </Link>
         </Reveal>
         <nav
           ref={ribbonRef}
           className={`category-ribbon home-category-ribbon ${isRibbonInView || prefersReducedMotion ? "is-visible" : ""}`}
-          aria-label="أنواع الفرص"
+          aria-label="أنـواع الفـرص"
         >
           {categories.map((type, i) => {
             const Icon = categoryIcons[type];
@@ -254,9 +254,9 @@ function Home() {
           <Reveal className="editorial-copy">
             <span className="eyebrow">
               <span className="tiny-line" />
-              03 / ملفك المهني
+              03 / ملفـك المـهني
             </span>
-            <h2 aria-label="مهاراتك وأعمالك في مساحة واحدة">
+            <h2 aria-label="مهاراتـك وأعمـالك في مسـاحة واحـدة">
               مهــاراتك وأعمــالك
               <br />
               في مســاحة واحــدة
@@ -269,13 +269,13 @@ function Home() {
               <Button asChild variant="outline">
                 <Link to="/profile">
                   <UserRound size={16} />
-                  الملف المهني <ArrowLeft />
+                  الملـف المـهني <ArrowLeft />
                 </Link>
               </Button>
               <Button asChild variant="outline">
                 <Link to="/portfolio">
                   <Images size={16} />
-                  معرض الأعمال <ArrowLeft />
+                  معرض الأعمـال <ArrowLeft />
                 </Link>
               </Button>
             </div>
@@ -297,7 +297,7 @@ function Home() {
               </figure>
             ))}
             <span className="profile-fashion-caption">
-              من الفكرة إلى الإطلالة
+              من الفكـرة إلى الإطـلالة
             </span>
           </Reveal>
         </section>
@@ -306,24 +306,24 @@ function Home() {
           <Reveal className="inspiration-teaser-copy">
             <span className="eyebrow">
               <span className="tiny-line" />
-              04 / من مشهد الأزياء المحلي
+              04 / من مشهـد الأزيـاء المـحلي
             </span>
             <h2>
-              <WordsReveal text="إلهام سعودي" />
+              <WordsReveal text="إلهـام سعـودي" />
             </h2>
             <p>
-              إطلالات وتفاصيل تفتح لك آفاقًا جديدة في التصميم. تعرّفي على مصممات
-              سعوديات، واستكشفي قصصهن ومصادر أعمالهن
+              إطـلالات وتفـاصيل تفتح لك آفـاقًا جديـدة في التصمـيم. تعرّفي على مصمـمات
+              سعوديـات، واستكـشفي قصصـهن ومصـادر أعمـالهن
             </p>
             <Button asChild>
               <Link to="/inspiration">
-                اكتشفي المصممات <ArrowLeft />
+                اكتـشفي المصممـات <ArrowLeft />
               </Link>
             </Button>
           </Reveal>
           <Reveal
             className="inspiration-teaser-art inspiration-fashion-collage"
-            aria-label="صور مختارة من تصاميم الأزياء"
+            aria-label="صـور مختـارة من تصـاميم الأزيـاء"
           >
             {fashionMedia.inspiration.map((photo, index) => (
               <figure
@@ -341,7 +341,7 @@ function Home() {
               </figure>
             ))}
             <span className="fashion-collage-caption">
-              تفاصيل تُلهم، وتصاميم تُحكى
+              تفـاصيل تُـلهم، وتصـاميم تُـحكى
             </span>
           </Reveal>
         </section>
