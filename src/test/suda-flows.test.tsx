@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   cleanup,
+  act,
   fireEvent,
   render,
   screen,
@@ -93,6 +94,60 @@ describe("Sprint 1 journeys with the real provider and an isolated Firebase SDK 
     routing.search = {};
   });
   afterEach(cleanup);
+
+  it("replaces private profile, works and learning records when the active UID changes", async () => {
+    for (const uid of ["designer-a", "designer-b"]) {
+      cloud.records.set(`users/${uid}`, {
+        profile: {
+          name: `Profile ${uid}`,
+          bio: "",
+          skills: ["Design"],
+          interests: ["Fashion"],
+          experience: `Experience ${uid}`,
+        },
+      });
+      cloud.records.set(`users/${uid}/works/work-${uid}`, {
+        id: `work-${uid}`,
+        title: `Work ${uid}`,
+        description: `Description ${uid}`,
+      });
+      cloud.records.set(`users/${uid}/enrollments/pattern`, {
+        courseId: "pattern",
+        progress: uid === "designer-a" ? 25 : 75,
+        achievements: [`Achievement ${uid}`],
+      });
+    }
+    signedIn("designer-a");
+    mount(
+      <>
+        <ProfilePage />
+        <PortfolioPage />
+        <LearningPage />
+      </>,
+    );
+    await screen.findByText("Experience designer-a");
+    await screen.findByText("Description designer-a");
+    await screen.findByText("Achievement designer-a");
+    act(() => {
+      signedIn("designer-b");
+      cloud.listeners.forEach((callback) => callback(cloud.auth.currentUser));
+    });
+    await screen.findByText("Experience designer-b");
+    await screen.findByText("Description designer-b");
+    await screen.findByText("Achievement designer-b");
+    expect(screen.queryByText("Experience designer-a")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Description designer-a"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Achievement designer-a"),
+    ).not.toBeInTheDocument();
+    expect(
+      cloud.records.get("users/designer-a/works/work-designer-a"),
+    ).toMatchObject({
+      title: "Work designer-a",
+    });
+  });
 
   it("validates registration, creates an authenticated account and logs out", async () => {
     let view = mount(<AuthPage register />);
@@ -355,5 +410,90 @@ describe("Sprint 1 journeys with the real provider and an isolated Firebase SDK 
     ).toBeInTheDocument();
     submit("مسح الفلاتر");
     expect(screen.getByText("٨ نتائج تجريبية")).toBeInTheDocument();
+  });
+
+  it("opens a saved work without an image and closes the preview", async () => {
+    signedIn();
+    cloud.records.set("users/designer-a/works/preview", {
+      id: "preview",
+      title: "معاينة عمل",
+      description: "وصف المعاينة",
+    });
+    mount(<PortfolioPage />);
+    await screen.findByRole("heading", { name: "معاينة عمل" });
+    submit("عرض معاينة عمل");
+    const dialog = screen.getByRole("dialog");
+    expect(within(dialog).getByText("وصف المعاينة")).toBeInTheDocument();
+    expect(
+      within(dialog).getByText("هذا العمل لا يحتوي على صورة."),
+    ).toBeInTheDocument();
+    fireEvent.click(within(dialog).getByRole("button", { name: "إغلاق" }));
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
+    );
+    expect(cloud.records.has("users/designer-a/works/preview")).toBe(true);
+  });
+
+  it("cancels a new portfolio item without saving unfinished data", async () => {
+    signedIn();
+    mount(<PortfolioPage />);
+    await settled();
+    submit("إضافة أول عمل");
+    change("عنوان العمل", "مسودة غير محفوظة");
+    change("وصف العمل", "وصف المسودة");
+    submit("إلغاء");
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
+    );
+    expect(
+      [...cloud.records.keys()].some((path) => path.includes("/works/")),
+    ).toBe(false);
+    expect(
+      screen.queryByRole("heading", { name: "مسودة غير محفوظة" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("rejects an empty learning achievement without changing the enrollment", async () => {
+    signedIn();
+    const enrollment = {
+      courseId: "pattern",
+      progress: 45,
+      achievements: ["إنجاز سابق"],
+    };
+    cloud.records.set("users/designer-a/enrollments/pattern", enrollment);
+    mount(<LearningPage />);
+    await screen.findByRole("slider");
+    submit("إضافة إنجاز");
+    expect(screen.getByRole("alert")).toHaveTextContent("اكتبي إنجازك أولًا");
+    expect(cloud.records.get("users/designer-a/enrollments/pattern")).toEqual(
+      enrollment,
+    );
+  });
+
+  it("describes local reset accurately and retains account records", async () => {
+    signedIn();
+    const path = "users/designer-a/enrollments/pattern";
+    const enrollment = {
+      courseId: "pattern",
+      progress: 45,
+      achievements: ["إنجاز سابق"],
+    };
+    cloud.records.set(path, enrollment);
+    mount(
+      <Shell>
+        <LearningPage />
+      </Shell>,
+    );
+    await screen.findByRole("slider");
+    submit("إعادة ضبط البيانات");
+    expect(screen.getByRole("dialog")).toHaveTextContent(
+      "لن يتأثر الملف المهني",
+    );
+    submit("تأكيد إعادة الضبط");
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
+    );
+    expect(cloud.records.get(path)).toEqual(enrollment);
+    expect(screen.getByRole("slider")).toHaveValue("45");
   });
 });

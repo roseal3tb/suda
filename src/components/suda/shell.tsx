@@ -287,7 +287,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
         open={resetting}
         onClose={() => setResetting(false)}
         title="إعادة ضبط البيانات التجريبية"
-        description="ستُستعاد الفرص الأصلية، ويُمسح الملف المهني ومعرض الأعمال والالتحاقات والتقدّم المحفوظ محليًا"
+        description="ستُستعاد الفرص التجريبية الأصلية وتُمسح تغييراتها في هذا المتصفح فقط. لن يتأثر الملف المهني أو معرض الأعمال أو الدورات والتقدّم المحفوظة في حسابك."
       >
         <div className="form-actions">
           <Button
