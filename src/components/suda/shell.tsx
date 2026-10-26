@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { ArrowLeft, Menu, X, LogOut, UserRound, RotateCcw } from "lucide-react";
+import { ArrowLeft, Menu, X, LogOut, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Wordmark, Modal } from "./shared";
+import { Wordmark } from "./shared";
 import { Intro } from "./intro";
 import { PageThread } from "./page-motion";
 import { ScrollProgress } from "./scroll-progress";
@@ -16,15 +16,12 @@ const nav = [
   { to: "/inspiration", label: "إلهام سعودي" },
 ] as const;
 export function Shell({ children }: { children: React.ReactNode }) {
-  const { session, signOutUser, resetDemo, storageError, clearStorageError } =
-    useDemo();
+  const { session, signOutUser, storageError, clearStorageError } = useDemo();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
   const menuToggle = useRef<HTMLButtonElement>(null);
   const navigation = useRef<HTMLElement>(null);
-  const [resetting, setResetting] = useState(false);
-  const [resetDone, setResetDone] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState("");
@@ -71,11 +68,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
     window.addEventListener("keydown", escape);
     return () => window.removeEventListener("keydown", escape);
   }, [open]);
-  useEffect(() => {
-    if (!resetDone) return;
-    const t = setTimeout(() => setResetDone(false), 4000);
-    return () => clearTimeout(t);
-  }, [resetDone]);
   return (
     <>
       <Intro />
@@ -122,9 +114,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
                 {n.label}
               </Link>
             ))}
-            <Link to="/admin" onClick={() => setOpen(false)}>
-              الإدارة التجريبية
-            </Link>
+            {session?.role === "admin" && (
+              <Link to="/admin" onClick={() => setOpen(false)}>
+                إدارة الفرص
+              </Link>
+            )}
             <div className="mobile-nav-account">
               {session ? (
                 <>
@@ -225,11 +219,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </button>
         </div>
       )}
-      {resetDone && (
-        <div role="status" className="global-alert is-success">
-          <span>أُعيدت البيانات التجريبية إلى حالتها الأصلية</span>
-        </div>
-      )}
       <main
         id="main-content"
         className={
@@ -272,40 +261,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
                 </p>
               </div>
             </details>
-            <button
-              type="button"
-              className="suda-reset"
-              onClick={() => setResetting(true)}
-            >
-              <RotateCcw size={13} />
-              إعادة ضبط البيانات
-            </button>
           </div>
         </div>
       </footer>
-      <Modal
-        open={resetting}
-        onClose={() => setResetting(false)}
-        title="إعادة ضبط البيانات التجريبية"
-        description="ستُستعاد الفرص التجريبية الأصلية وتُمسح تغييراتها في هذا المتصفح فقط. لن يتأثر الملف المهني أو معرض الأعمال أو الدورات والتقدّم المحفوظة في حسابك."
-      >
-        <div className="form-actions">
-          <Button
-            variant="destructive"
-            onClick={() => {
-              if (resetDemo()) {
-                setResetting(false);
-                setResetDone(true);
-              }
-            }}
-          >
-            تأكيد إعادة الضبط
-          </Button>
-          <Button variant="outline" onClick={() => setResetting(false)}>
-            إلغاء
-          </Button>
-        </div>
-      </Modal>
     </>
   );
 }

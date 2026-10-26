@@ -4,8 +4,8 @@ import { pageHead } from "@/features/suda/mock-data";
 export const Route = createFileRoute("/login")({
   head: () =>
     pageHead(
-      "تسجيل الدخول التجريبي",
-      "دخول تجريبي إلى مساحتك في سُدى، دون مصادقة حقيقية أو إرسال بيانات",
+      "تسجيل الدخول",
+      "سجّلي الدخول إلى حسابك للوصول إلى ملفك المهني وأعمالك ودوراتك",
     ),
   component: () => <AuthPage />,
 });

@@ -19,7 +19,6 @@ import {
   emptyFilters,
   filterOpportunities,
   formatDate,
-  images,
   pageHead,
   validateOpportunity,
   isValidZoomUrl,
@@ -32,7 +31,7 @@ export const Route = createFileRoute("/admin")({
   head: () =>
     pageHead(
       "إدارة الفرص",
-      "واجهة تجريبية للمشرفة لإضافة فرص الأزياء وتعديلها وحذفها، دون حماية أمنية حقيقية",
+      "إدارة فرص الأزياء وإضافتها وتعديلها وحذفها لحساب الإدارة المصرّح له",
     ),
   component: () => (
     <MemberGate admin>
@@ -41,14 +40,24 @@ export const Route = createFileRoute("/admin")({
   ),
 });
 function Admin() {
-  const { opportunities, saveOpportunity, deleteOpportunity, endAdminDemo } =
-    useDemo();
+  const {
+    opportunities,
+    saveOpportunity,
+    deleteOpportunity,
+    importOpportunities,
+    opportunitiesLoading,
+    meetingLinksLoading,
+  } = useDemo();
   const [form, setForm] = useState<Opportunity | null>(null);
   const [deleting, setDeleting] = useState<Opportunity | null>(null);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [type, setType] = useState("");
   const [saved, setSaved] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+  const [importing, setImporting] = useState(false);
+  const [importMessage, setImportMessage] = useState("");
   const items = filterOpportunities(opportunities, {
     ...emptyFilters,
     query,
@@ -56,6 +65,7 @@ function Admin() {
   });
   function start(item?: Opportunity) {
     setError("");
+    setSaved(false);
     setForm(
       item
         ? { ...item }
@@ -76,9 +86,9 @@ function Admin() {
           },
     );
   }
-  function submit(e: FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
-    if (!form) return;
+    if (!form || busy) return;
     if (!validateOpportunity(form) || !form.location.trim()) {
       setError("أكملي عنوان الفرصة والجهة والموقع والوصف والمتطلبات");
       return;
@@ -108,15 +118,16 @@ function Admin() {
         : externalUrl?.trim()
           ? { externalUrl: externalUrl.trim() }
           : {};
-    if (
-      !saveOpportunity({
-        ...fields,
-        title: form.title.trim(),
-        organization: form.organization.trim(),
-        ...links,
-      })
-    ) {
-      setError("تعذّر حفظ الفرصة محليًا");
+    setBusy(true);
+    const ok = await saveOpportunity({
+      ...fields,
+      title: form.title.trim(),
+      organization: form.organization.trim(),
+      ...links,
+    });
+    setBusy(false);
+    if (!ok) {
+      setError("تعذّر حفظ الفرصة. تحققي من الاتصال وصلاحيات الحساب.");
       return;
     }
     setForm(null);
@@ -126,10 +137,7 @@ function Admin() {
     <div className="content-wrap">
       <div className="admin-banner">
         <Shield size={17} />
-        وضع المشرفة التجريبي · تعديلات الفرص محلية في هذا المتصفح فقط.
-        <Button variant="ghost" onClick={endAdminDemo}>
-          إنهاء العرض التجريبي
-        </Button>
+        إدارة الفرص · تُحفظ التغييرات وتظهر لجميع المستخدمين.
       </div>
       <PageIntro
         eyebrow="مساحة الإدارة"
@@ -137,10 +145,32 @@ function Admin() {
         description="إضافة الدورات والمسابقات وفرص التدريب والعمل وتعديلها وحذفها"
         action={<AddButton onClick={() => start()}>إضافة فرصة</AddButton>}
       />
+      <details className="demo-note">
+        <summary>نقل الفرص السابقة إلى الحساب</summary>
+        <p>
+          ينقل الفرص المحلية في هذا المتصفح، أو الفرص النموذجية إذا لم توجد
+          بيانات محلية. لا يستبدل الفرص المحفوظة مسبقًا.
+        </p>
+        <Button
+          disabled={importing || opportunitiesLoading}
+          onClick={async () => {
+            setImporting(true);
+            setImportMessage("");
+            const ok = await importOpportunities();
+            setImportMessage(
+              ok ? "تم نقل الفرص بنجاح" : "تعذّر إكمال النقل. حاولي مجددًا.",
+            );
+            setImporting(false);
+          }}
+        >
+          {importing ? "جارٍ النقل..." : "نقل الفرص السابقة"}
+        </Button>
+        {importMessage && <p role="status">{importMessage}</p>}
+      </details>
       {saved && (
         <p role="status" className="success-message">
           <Check size={16} />
-          حُفظت الفرصة في القائمة التجريبية
+          حُفظت الفرصة بنجاح
         </p>
       )}
       <div className="form-grid mb-6">
@@ -164,7 +194,9 @@ function Admin() {
           ))}
         </select>
       </div>
-      {items.length ? (
+      {opportunitiesLoading ? (
+        <p role="status">جارٍ تحميل الفرص...</p>
+      ) : items.length ? (
         <>
           <div className="admin-table-wrap">
             <table className="admin-table">
@@ -193,6 +225,7 @@ function Admin() {
                           size="icon"
                           title="تعديل الفرصة"
                           aria-label={`تعديل ${item.title}`}
+                          disabled={meetingLinksLoading}
                           onClick={() => start(item)}
                         >
                           <Pencil />
@@ -202,7 +235,10 @@ function Admin() {
                           size="icon"
                           title="حذف الفرصة"
                           aria-label={`حذف ${item.title}`}
-                          onClick={() => setDeleting(item)}
+                          onClick={() => {
+                            setDeleteError("");
+                            setDeleting(item);
+                          }}
                         >
                           <Trash2 />
                         </Button>
@@ -225,6 +261,7 @@ function Admin() {
                   <Button
                     variant="outline"
                     size="sm"
+                    disabled={meetingLinksLoading}
                     onClick={() => start(item)}
                   >
                     <Pencil size={15} />
@@ -233,7 +270,10 @@ function Admin() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setDeleting(item)}
+                    onClick={() => {
+                      setDeleteError("");
+                      setDeleting(item);
+                    }}
                   >
                     <Trash2 size={15} />
                     حذف
@@ -252,8 +292,10 @@ function Admin() {
       <DemoNote />
       <Modal
         open={Boolean(form)}
-        onClose={() => setForm(null)}
-        description="تُحفظ تعديلات الفرص التجريبية في هذا المتصفح فقط."
+        onClose={() => {
+          if (!busy) setForm(null);
+        }}
+        description="تظهر الفرصة المحفوظة لجميع المستخدمين، ويقتصر رابط الدورة على الملتحقين بها."
         title={
           form && opportunities.some((o) => o.id === form.id)
             ? "تعديل الفرصة"
@@ -405,12 +447,13 @@ function Admin() {
               </p>
             )}
             <div className="form-actions">
-              <Button type="submit">
-                حفظ الفرصة <Check />
+              <Button type="submit" disabled={busy}>
+                {busy ? "جارٍ الحفظ..." : "حفظ الفرصة"} <Check />
               </Button>
               <Button
                 type="button"
                 variant="outline"
+                disabled={busy}
                 onClick={() => setForm(null)}
               >
                 إلغاء
@@ -423,8 +466,15 @@ function Admin() {
         open={Boolean(deleting)}
         onClose={() => setDeleting(null)}
         name={deleting?.title || ""}
-        onConfirm={() => {
-          if (deleting && deleteOpportunity(deleting.id)) setDeleting(null);
+        busy={busy}
+        error={deleteError}
+        onConfirm={async () => {
+          if (!deleting || busy) return;
+          setBusy(true);
+          setDeleteError("");
+          if (await deleteOpportunity(deleting.id)) setDeleting(null);
+          else setDeleteError("تعذّر حذف الفرصة. حاولي مجددًا.");
+          setBusy(false);
         }}
       />
     </div>

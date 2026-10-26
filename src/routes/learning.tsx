@@ -31,7 +31,12 @@ export const Route = createFileRoute("/learning")({
 });
 
 function Learning() {
-  const { enrollments, enrollmentsLoading, opportunities } = useDemo();
+  const {
+    enrollments,
+    enrollmentsLoading,
+    opportunities,
+    opportunitiesLoading,
+  } = useDemo();
   const activeEnrollments = enrollments.filter((enrollment) =>
     opportunities.some(
       (course) =>
@@ -46,7 +51,7 @@ function Learning() {
         title="رحلتي التعليمية"
         description="تابعي دوراتك، حدّثي تقدّمك بنفسك، وسجّلي ما أنجزتِه"
       />
-      {enrollmentsLoading ? (
+      {enrollmentsLoading || opportunitiesLoading ? (
         <p role="status">جارٍ تحميل دوراتك...</p>
       ) : activeEnrollments.length ? (
         activeEnrollments.map((enrollment) => {

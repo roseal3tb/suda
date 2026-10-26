@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from "react";
 
-import { onAuthStateChanged } from "firebase/auth";
+import { onIdTokenChanged, getIdTokenResult } from "firebase/auth";
 
 import {
   collection,
@@ -16,6 +16,8 @@ import {
   getDocs,
   runTransaction,
   setDoc,
+  onSnapshot,
+  writeBatch,
 } from "firebase/firestore";
 
 import { auth, db } from "@/lib/firebase";
@@ -25,21 +27,20 @@ import { loginUser, logoutUser, registerUser } from "@/lib/auth";
 import {
   initialOpportunities,
   clampProgress,
+  categories,
+  validateOpportunity,
+  isValidZoomUrl,
+  isValidExternalUrl,
   type Opportunity,
   type Profile,
   type Work,
   type Enrollment,
 } from "./mock-data";
 
-import {
-  readStore,
-  writeStore,
-  clearStore,
-  STORE_KEYS,
-  userStoreKey,
-} from "./storage";
+import { readStore, STORE_KEYS, userStoreKey } from "./storage";
 
 export interface Session {
+  uid: string;
   name: string;
 
   email: string;
@@ -48,9 +49,10 @@ export interface Session {
 }
 
 interface DemoState {
-  adminDemo: boolean;
-  startAdminDemo: () => void;
-  endAdminDemo: () => void;
+  authLoading: boolean;
+  opportunitiesLoading: boolean;
+  meetingLinksLoading: boolean;
+  importOpportunities: () => Promise<boolean>;
 
   session: Session | null;
 
@@ -70,9 +72,9 @@ interface DemoState {
 
   opportunities: Opportunity[];
 
-  saveOpportunity: (item: Opportunity) => boolean;
+  saveOpportunity: (item: Opportunity) => Promise<boolean>;
 
-  deleteOpportunity: (id: string) => boolean;
+  deleteOpportunity: (id: string) => Promise<boolean>;
 
   profile: Profile | null;
 
@@ -98,8 +100,6 @@ interface DemoState {
 
   addAchievement: (id: string, text: string) => Promise<boolean>;
 
-  resetDemo: () => boolean;
-
   storageError: string;
 
   clearStorageError: () => void;
@@ -107,8 +107,45 @@ interface DemoState {
 
 const Context = createContext<DemoState | null>(null);
 
-const failMessage =
-  "تعذّر حفظ البيانات محليًا. قد تكون مساحة المتصفح ممتلئة؛ جرّبي صورة أصغر أو امسحي بعض بيانات العرض";
+// Public records are whitelisted so meeting links cannot leak into public state.
+function asOpportunity(value: unknown, id: string): Opportunity | null {
+  if (!value || typeof value !== "object" || !id || id.includes("/"))
+    return null;
+  const data = value as Record<string, unknown>;
+  const fields = [
+    "title",
+    "organization",
+    "location",
+    "description",
+    "requirements",
+    "deadline",
+    "image",
+  ] as const;
+  if (
+    fields.some((key) => typeof data[key] !== "string") ||
+    !categories.includes(data["type"] as Opportunity["type"]) ||
+    !["حضوري", "عن بُعد"].includes(data["mode"] as string) ||
+    !["مبتدئ", "متوسط", "جميع المستويات"].includes(data["level"] as string)
+  )
+    return null;
+  return {
+    id,
+    title: data["title"] as string,
+    type: data["type"] as Opportunity["type"],
+    organization: data["organization"] as string,
+    location: data["location"] as string,
+    mode: data["mode"] as Opportunity["mode"],
+    level: data["level"] as Opportunity["level"],
+    description: data["description"] as string,
+    requirements: data["requirements"] as string,
+    deadline: data["deadline"] as string,
+    image: data["image"] as string,
+    ...(typeof data["externalUrl"] === "string" &&
+    isValidExternalUrl(data["externalUrl"])
+      ? { externalUrl: data["externalUrl"] }
+      : {}),
+  };
+}
 
 // Firestore stores portfolio metadata only. Images never leave the current session.
 
@@ -188,11 +225,13 @@ function isProfile(value: unknown): value is Profile {
 export function DemoProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
 
-  // UI demonstration only: never changes Firebase identity or cloud permissions.
-  const [adminDemo, setAdminDemo] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [opportunitiesLoading, setOpportunitiesLoading] = useState(true);
+  const [meetingLinksLoading, setMeetingLinksLoading] = useState(false);
+  const [meetingLinksError, setMeetingLinksError] = useState(false);
+  const [meetingLinks, setMeetingLinks] = useState<Record<string, string>>({});
 
-  const [opportunities, setOpportunities] =
-    useState<Opportunity[]>(initialOpportunities);
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
 
   const [profile, setProfile] = useState<Profile | null>(null);
 
@@ -208,23 +247,80 @@ export function DemoProvider({ children }: { children: ReactNode }) {
 
   const [storageError, setStorageError] = useState("");
 
-  // Load opportunities from local storage
+  // All visitors observe the same cloud records. Never fall back to stale local data.
+  useEffect(
+    () =>
+      onSnapshot(
+        collection(db, "opportunities"),
+        (snapshot) => {
+          setOpportunities(
+            snapshot.docs
+              .map((entry) => asOpportunity(entry.data(), entry.id))
+              .filter((item): item is Opportunity => item !== null),
+          );
+          setOpportunitiesLoading(false);
+        },
+        () => {
+          setOpportunities([]);
+          setOpportunitiesLoading(false);
+          setStorageError(
+            "تعذّر تحميل الفرص. تحققي من الاتصال ثم حدّثي الصفحة.",
+          );
+        },
+      ),
+    [],
+  );
 
+  // Meeting links are fetched only for an authorized account, never from public records.
   useEffect(() => {
-    setOpportunities(
-      readStore<Opportunity[]>(
-        STORE_KEYS.opportunities,
-
-        initialOpportunities,
-      ).map((item) => {
-        const seed = initialOpportunities.find((seed) => seed.id === item.id);
-
-        return seed && item.image.startsWith("https://images.unsplash.com/")
-          ? { ...item, image: seed.image }
-          : item;
-      }),
+    let active = true;
+    setMeetingLinks({});
+    setMeetingLinksError(false);
+    if (!session || authLoading || enrollmentsLoading) {
+      setMeetingLinksLoading(false);
+      return;
+    }
+    const uid = session.uid;
+    const ids = opportunities
+      .filter(
+        (item) =>
+          item.type === "الدورات" &&
+          (session.role === "admin" ||
+            enrollments.some((entry) => entry.courseId === item.id)),
+      )
+      .map((item) => item.id);
+    setMeetingLinksLoading(ids.length > 0);
+    const pending = new Set(ids);
+    const unsubscribe = ids.map((id) =>
+      onSnapshot(
+        doc(db, "courseMeetingLinks", id),
+        (snapshot) => {
+          if (!active || auth.currentUser?.uid !== uid) return;
+          const url = snapshot.data()?.["zoomUrl"];
+          setMeetingLinks((current) => ({
+            ...current,
+            [id]: typeof url === "string" && isValidZoomUrl(url) ? url : "",
+          }));
+          pending.delete(id);
+          setMeetingLinksLoading(pending.size > 0);
+        },
+        () => {
+          if (!active || auth.currentUser?.uid !== uid) return;
+          setMeetingLinks((current) => ({ ...current, [id]: "" }));
+          setMeetingLinksError(true);
+          setStorageError(
+            "تعذّر تحميل روابط الدورات. حدّثي الصفحة للمحاولة مجددًا.",
+          );
+          pending.delete(id);
+          setMeetingLinksLoading(pending.size > 0);
+        },
+      ),
     );
-  }, []);
+    return () => {
+      active = false;
+      unsubscribe.forEach((stop) => stop());
+    };
+  }, [session, authLoading, opportunities, enrollments, enrollmentsLoading]);
 
   // Firebase is the only authority for the active session.
 
@@ -233,8 +329,10 @@ export function DemoProvider({ children }: { children: ReactNode }) {
 
     let requestId = 0;
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onIdTokenChanged(auth, (user) => {
       const currentRequest = ++requestId;
+      setMeetingLinks({});
+      setAuthLoading(Boolean(user));
 
       if (!user) {
         setProfileLoading(false);
@@ -257,6 +355,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       const email = user.email || "";
 
       setSession({
+        uid: user.uid,
         name: user.displayName || "مستخدمة سُدى",
 
         email,
@@ -277,6 +376,31 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       setEnrollments([]);
 
       setEnrollmentsLoading(true);
+
+      void getIdTokenResult(user)
+        .then((result) => {
+          if (
+            !active ||
+            currentRequest !== requestId ||
+            auth.currentUser?.uid !== user.uid
+          )
+            return;
+          setSession({
+            uid: user.uid,
+            name: user.displayName || "مستخدمة سُدى",
+            email,
+            role: result.claims["admin"] === true ? "admin" : "user",
+          });
+        })
+        .catch(() => {
+          if (active && currentRequest === requestId)
+            setStorageError(
+              "تعذّر التحقق من صلاحيات الحساب. سجّلي الدخول مجددًا.",
+            );
+        })
+        .finally(() => {
+          if (active && currentRequest === requestId) setAuthLoading(false);
+        });
 
       // The profile belongs to the Firebase UID, never to a chosen email/role.
 
@@ -509,47 +633,115 @@ export function DemoProvider({ children }: { children: ReactNode }) {
 
   async function signOutUser() {
     await logoutUser();
-    setAdminDemo(false);
   }
 
-  function persist(key: string, value: unknown) {
-    const ok = writeStore(key, value);
+  async function requireAdmin() {
+    const user = auth.currentUser;
+    if (!user) throw new Error("Authentication required");
+    const token = await getIdTokenResult(user);
+    if (token.claims["admin"] !== true || auth.currentUser?.uid !== user.uid)
+      throw new Error("Admin authorization required");
+    return user.uid;
+  }
 
-    if (!ok) {
-      setStorageError(failMessage);
-    } else {
+  async function saveOpportunity(item: Opportunity): Promise<boolean> {
+    try {
+      const uid = await requireAdmin();
+      const publicItem = asOpportunity(item, item.id);
+      if (
+        !publicItem ||
+        !validateOpportunity(publicItem) ||
+        !publicItem.location.trim() ||
+        (item.externalUrl && !isValidExternalUrl(item.externalUrl)) ||
+        (item.zoomUrl && !isValidZoomUrl(item.zoomUrl))
+      )
+        throw new Error("Invalid opportunity");
+      const batch = writeBatch(db);
+      batch.set(doc(db, "opportunities", item.id), publicItem);
+      const linkRef = doc(db, "courseMeetingLinks", item.id);
+      if (item.type === "الدورات" && item.zoomUrl)
+        batch.set(linkRef, { zoomUrl: item.zoomUrl });
+      else batch.delete(linkRef);
+      await batch.commit();
+      if (auth.currentUser?.uid !== uid) return false;
       setStorageError("");
-    }
-
-    return ok;
-  }
-
-  function saveOpportunity(item: Opportunity) {
-    const next = opportunities.some((p) => p.id === item.id)
-      ? opportunities.map((p) => (p.id === item.id ? item : p))
-      : [item, ...opportunities];
-
-    if (!persist(STORE_KEYS.opportunities, next)) {
+      return true;
+    } catch (error) {
+      console.error("Failed to save opportunity:", error);
+      setStorageError(
+        "تعذّر حفظ الفرصة. تحققي من صلاحية الإدارة والاتصال وحاولي مجددًا.",
+      );
       return false;
     }
-
-    setOpportunities(next);
-
-    return true;
   }
 
-  function deleteOpportunity(id: string) {
-    const next = opportunities.filter((p) => p.id !== id);
-
-    if (!persist(STORE_KEYS.opportunities, next)) {
+  async function deleteOpportunity(id: string): Promise<boolean> {
+    try {
+      const uid = await requireAdmin();
+      const batch = writeBatch(db);
+      batch.delete(doc(db, "opportunities", id));
+      batch.delete(doc(db, "courseMeetingLinks", id));
+      await batch.commit();
+      if (auth.currentUser?.uid !== uid) return false;
+      // Preserve users' historical learning records; removed courses are not displayed.
+      setStorageError("");
+      return true;
+    } catch (error) {
+      console.error("Failed to delete opportunity:", error);
+      setStorageError(
+        "تعذّر حذف الفرصة. تحققي من صلاحية الإدارة والاتصال وحاولي مجددًا.",
+      );
       return false;
     }
+  }
 
-    setOpportunities(next);
-
-    // Deleting a local opportunity must not silently erase cloud learning progress.
-
-    return true;
+  async function importOpportunities(): Promise<boolean> {
+    try {
+      await requireAdmin();
+      const legacy = readStore<unknown>(
+        STORE_KEYS.opportunities,
+        initialOpportunities,
+      );
+      if (!Array.isArray(legacy))
+        throw new Error("Invalid local opportunities");
+      const records = legacy.map((value: Record<string, unknown>) => {
+        const item = asOpportunity(
+          value,
+          typeof value["id"] === "string" ? value["id"] : "",
+        );
+        if (!item || !validateOpportunity(item))
+          throw new Error("Invalid local opportunity");
+        return {
+          item,
+          zoomUrl:
+            typeof value["zoomUrl"] === "string" &&
+            isValidZoomUrl(value["zoomUrl"])
+              ? value["zoomUrl"]
+              : "",
+        };
+      });
+      // Create missing IDs only: an import never overwrites edits from another device.
+      for (const { item, zoomUrl } of records) {
+        await requireAdmin();
+        await runTransaction(db, async (transaction) => {
+          const ref = doc(db, "opportunities", item.id);
+          if ((await transaction.get(ref)).exists()) return;
+          transaction.set(ref, item);
+          if (item.type === "الدورات" && zoomUrl)
+            transaction.set(doc(db, "courseMeetingLinks", item.id), {
+              zoomUrl,
+            });
+        });
+      }
+      setStorageError("");
+      return true;
+    } catch (error) {
+      console.error("Failed to import opportunities:", error);
+      setStorageError(
+        "تعذّر إكمال نقل الفرص. يمكنك إعادة المحاولة دون تكرار الفرص المحفوظة.",
+      );
+      return false;
+    }
   }
 
   async function saveProfile(next: Profile): Promise<boolean> {
@@ -772,32 +964,13 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  function resetDemo() {
-    if (!clearStore()) {
-      setStorageError(failMessage);
-
-      return false;
-    }
-
-    setOpportunities(initialOpportunities);
-
-    // Reset local demo data only; never delete the Firestore profile.
-
-    // Cloud works are not erased by resetting local demo data.
-
-    // Keep Firestore enrollments intact when resetting local demo data.
-
-    setStorageError("");
-
-    return true;
-  }
-
   return (
     <Context.Provider
       value={{
-        adminDemo,
-        startAdminDemo: () => setAdminDemo(true),
-        endAdminDemo: () => setAdminDemo(false),
+        authLoading,
+        opportunitiesLoading,
+        meetingLinksLoading: meetingLinksLoading || meetingLinksError,
+        importOpportunities,
         session,
 
         signIn,
@@ -806,7 +979,11 @@ export function DemoProvider({ children }: { children: ReactNode }) {
 
         signOutUser,
 
-        opportunities,
+        opportunities: opportunities.map((item) =>
+          meetingLinks[item.id] && session && !authLoading
+            ? { ...item, zoomUrl: meetingLinks[item.id]! }
+            : item,
+        ),
 
         saveOpportunity,
 
@@ -835,8 +1012,6 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         updateProgress,
 
         addAchievement,
-
-        resetDemo,
 
         storageError,
 

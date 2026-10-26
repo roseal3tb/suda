@@ -77,8 +77,8 @@ export function DemoNote() {
     <Reveal as="p" className="demo-note">
       <Info size={14} />
       <span>
-        الفرص والجهات المعروضة خيالية وتُحفظ تعديلات الفرص في هذا المتصفح. يُحفظ
-        ملفك المهني وبيانات أعمالك ودوراتك في حسابك؛ صور الأعمال مؤقتة.
+        الفرص والجهات النموذجية خيالية. تُحفظ الفرص مركزيًا، ويُحفظ ملفك المهني
+        وبيانات أعمالك ودوراتك في حسابك؛ صور الأعمال مؤقتة.
       </span>
     </Reveal>
   );
@@ -163,25 +163,23 @@ export function MemberGate({
   children: ReactNode;
   admin?: boolean;
 }) {
-  const { session, adminDemo, startAdminDemo } = useDemo();
-  if (admin && !adminDemo)
+  const { session, authLoading } = useDemo();
+  if (authLoading)
     return (
       <div className="content-wrap">
-        <PageIntro
-          eyebrow="مساحة الإدارة"
-          title="إدارة الفرص التجريبية"
-          description="يمكنك تجربة إضافة الفرص وتعديلها وحذفها. التغييرات تُحفظ في هذا المتصفح فقط."
-        />
+        <p role="status">جارٍ التحقق من الحساب...</p>
+      </div>
+    );
+  if (admin && session && session.role !== "admin")
+    return (
+      <div className="content-wrap">
         <EmptyState
-          title="عرض لوحة الإدارة"
-          description="هذا وضع للعرض التجريبي، ولا يمنح صلاحيات على حسابات المستخدمين أو بياناتهم."
-          action={
-            <Button onClick={startAdminDemo}>فتح لوحة الإدارة التجريبية</Button>
-          }
+          title="الوصول غير مسموح"
+          description="هذه الصفحة مخصصة لحساب الإدارة."
         />
       </div>
     );
-  if (!admin && !session)
+  if (!session)
     return (
       <div className="content-wrap">
         <PageIntro

@@ -10,7 +10,7 @@ import {
 } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { cloud, resetCloud, signedIn } from "./firebase-double";
-import { DemoProvider } from "@/features/suda/demo-context";
+import { DemoProvider, useDemo } from "@/features/suda/demo-context";
 const routing = vi.hoisted(() => ({
   navigate: vi.fn(),
   id: "pattern",
@@ -55,8 +55,8 @@ import { Route as DetailsRoute } from "@/routes/opportunities.$id";
 import { Route as LearningRoute } from "@/routes/learning";
 import { Route as AdminRoute } from "@/routes/admin";
 import { Route as OpportunitiesRoute } from "@/routes/opportunities.index";
-import { STORE_KEYS, readStore } from "@/features/suda/storage";
-import type { Opportunity } from "@/features/suda/mock-data";
+import { STORE_KEYS } from "@/features/suda/storage";
+import { initialOpportunities } from "@/features/suda/mock-data";
 const ProfilePage = ProfileRoute.options.component!;
 const PortfolioPage = PortfolioRoute.options.component!;
 const DetailPage = DetailsRoute.options.component!;
@@ -325,34 +325,28 @@ describe("Sprint 1 journeys with the real provider and an isolated Firebase SDK 
     ).not.toBeInTheDocument();
   });
 
-  it("opens and closes an explicit Admin demonstration without granting a Firebase identity", () => {
-    const view = mount(<AdminPage />);
+  it("denies anonymous and ordinary accounts even with a forged browser role", async () => {
+    let view = mount(<AdminPage />);
+    await screen.findByRole("heading", { name: "يلزم تسجيل الدخول" });
     expect(
       screen.queryByRole("button", { name: "إضافة فرصة" }),
     ).not.toBeInTheDocument();
-    submit("فتح لوحة الإدارة التجريبية");
-    expect(
-      screen.getByRole("button", { name: "إضافة فرصة" }),
-    ).toBeInTheDocument();
-    expect(cloud.auth.currentUser).toBeNull();
-    expect(
-      screen.queryByRole("link", { name: "تسجيل الدخول" }),
-    ).not.toBeInTheDocument();
-    submit("إنهاء العرض التجريبي");
-    expect(
-      screen.queryByRole("button", { name: "إضافة فرصة" }),
-    ).not.toBeInTheDocument();
-    submit("فتح لوحة الإدارة التجريبية");
     view.unmount();
-    mount(<AdminPage />);
+    signedIn();
+    localStorage.setItem("suda:v2:session", JSON.stringify({ role: "admin" }));
+    cloud.records.set("users/designer-a", { displayRole: "admin" });
+    view = mount(<AdminPage />);
+    await screen.findByRole("heading", { name: "الوصول غير مسموح" });
     expect(
-      screen.getByRole("button", { name: "فتح لوحة الإدارة التجريبية" }),
-    ).toBeInTheDocument();
+      screen.queryByRole("button", { name: "إضافة فرصة" }),
+    ).not.toBeInTheDocument();
   });
 
-  it("adds, edits and deletes local Admin opportunities, keeping private pages gated", () => {
-    const view = mount(<AdminPage />);
-    submit("فتح لوحة الإدارة التجريبية");
+  it("trusted Admin adds, edits and deletes cloud opportunities and private meeting links", async () => {
+    signedIn("admin");
+    cloud.claims = { admin: true };
+    mount(<AdminPage />);
+    await screen.findByRole("button", { name: "إضافة فرصة" });
     submit("إضافة فرصة");
     submit(/حفظ الفرصة/);
     expect(screen.getByRole("alert")).toHaveTextContent("أكملي");
@@ -360,43 +354,148 @@ describe("Sprint 1 journeys with the real provider and an isolated Firebase SDK 
     change("الجهة المنظمة", "مرسم تجريبي");
     change("وصف الفرصة", "دورة رسم أزياء");
     change("المتطلبات", "أدوات رسم");
+    change("رابط اجتماع Zoom", "https://zoom.us/j/123456789");
     submit(/حفظ الفرصة/);
-    expect(
-      readStore<Opportunity[]>(STORE_KEYS.opportunities, []).some(
-        (item) => item.title === "فرصة اختبار",
-      ),
-    ).toBe(true);
-    fireEvent.click(
-      screen.getAllByRole("button", { name: "تعديل فرصة اختبار" })[0]!,
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
     );
+    const stored = [...cloud.records.entries()].find(
+      ([path, item]) =>
+        path.startsWith("opportunities/") && item["title"] === "فرصة اختبار",
+    )!;
+    expect(stored[1]).not.toHaveProperty("zoomUrl");
+    const linkPath = stored[0].replace("opportunities/", "courseMeetingLinks/");
+    expect(cloud.records.get(linkPath)).toEqual({
+      zoomUrl: "https://zoom.us/j/123456789",
+    });
+    const edit = screen.getAllByRole("button", {
+      name: "تعديل فرصة اختبار",
+    })[0]!;
+    await waitFor(() => expect(edit).toBeEnabled());
+    fireEvent.click(edit);
+    expect(
+      screen.getByLabelText("رابط اجتماع Zoom — اختياري", { exact: false }),
+    ).toHaveValue("https://zoom.us/j/123456789");
     change("عنوان الفرصة", "فرصة معدلة");
     submit(/حفظ الفرصة/);
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
+    );
     fireEvent.click(
       screen.getAllByRole("button", { name: "حذف فرصة معدلة" })[0]!,
     );
     submit("إلغاء");
-    expect(
-      screen.getAllByRole("button", { name: "حذف فرصة معدلة" }).length,
-    ).toBeGreaterThan(0);
+    expect(cloud.records.has(stored[0])).toBe(true);
     fireEvent.click(
       screen.getAllByRole("button", { name: "حذف فرصة معدلة" })[0]!,
     );
+    cloud.failure = true;
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
     submit("حذف نهائي");
-    expect(
-      readStore<Opportunity[]>(STORE_KEYS.opportunities, []).some(
-        (item) => item.title === "فرصة معدلة",
-      ),
-    ).toBe(false);
-    view.rerender(
-      <DemoProvider>
-        <ProfilePage />
-      </DemoProvider>,
+    await screen.findByText("تعذّر حذف الفرصة. حاولي مجددًا.");
+    expect(cloud.records.has(stored[0])).toBe(true);
+    expect(cloud.records.has(linkPath)).toBe(true);
+    cloud.failure = false;
+    submit("حذف نهائي");
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
     );
+    expect(cloud.records.has(stored[0])).toBe(false);
+    expect(cloud.records.has(linkPath)).toBe(false);
+    expect(localStorage.getItem(STORE_KEYS.opportunities)).toBeNull();
+    log.mockRestore();
+  });
+
+  it("does not show save success when the cloud rejects an Admin write", async () => {
+    signedIn("admin");
+    cloud.claims = { admin: true };
+    mount(<AdminPage />);
+    await screen.findByRole("button", { name: "إضافة فرصة" });
+    submit("إضافة فرصة");
+    change("عنوان الفرصة", "لم تحفظ");
+    change("الجهة المنظمة", "مرسم");
+    change("وصف الفرصة", "وصف");
+    change("المتطلبات", "رسم");
+    cloud.failure = true;
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    submit(/حفظ الفرصة/);
+    await screen.findByText(
+      "تعذّر حفظ الفرصة. تحققي من الاتصال وصلاحيات الحساب.",
+    );
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "يلزم تسجيل الدخول" }),
-    ).toBeInTheDocument();
-    expect(cloud.records.size).toBe(0);
-  }, 15000);
+      [...cloud.records.values()].some((item) => item["title"] === "لم تحفظ"),
+    ).toBe(false);
+    log.mockRestore();
+  });
+
+  it("imports existing IDs without overwriting cloud edits", async () => {
+    signedIn("admin");
+    cloud.claims = { admin: true };
+    cloud.records.set("opportunities/pattern", {
+      ...initialOpportunities[0]!,
+      id: "pattern",
+      title: "نسخة سحابية",
+    });
+    cloud.records.delete("opportunities/draping");
+    mount(<AdminPage />);
+    await screen.findByRole("button", { name: "إضافة فرصة" });
+    submit("نقل الفرص السابقة");
+    await screen.findByText("تم نقل الفرص بنجاح");
+    expect(cloud.records.get("opportunities/pattern")?.["title"]).toBe(
+      "نسخة سحابية",
+    );
+    expect(cloud.records.has("opportunities/draping")).toBe(true);
+  });
+
+  it("shows private Zoom links only after enrollment and clears them on account switch", async () => {
+    signedIn();
+    cloud.records.set("courseMeetingLinks/pattern", {
+      zoomUrl: "https://zoom.us/j/123456789",
+    });
+    mount(<DetailPage />);
+    await screen.findByRole("button", { name: "الالتحاق مجانًا" });
+    expect(
+      screen.queryByRole("link", { name: /فتح اجتماع/ }),
+    ).not.toBeInTheDocument();
+    submit("الالتحاق مجانًا");
+    await screen.findByRole("link", { name: /فتح اجتماع/ });
+    act(() => {
+      signedIn("designer-b");
+      cloud.listeners.forEach((cb) => cb(cloud.auth.currentUser));
+    });
+    await screen.findByRole("button", { name: "الالتحاق مجانًا" });
+    expect(
+      screen.queryByRole("link", { name: /فتح اجتماع/ }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("checks trusted claims again for provider writes after privileges are revoked", async () => {
+    signedIn("admin");
+    cloud.claims = { admin: true };
+    function Probe() {
+      const api = useDemo();
+      return (
+        <button
+          onClick={() =>
+            void api.saveOpportunity({
+              ...initialOpportunities[0]!,
+              id: "denied",
+            })
+          }
+        >
+          write
+        </button>
+      );
+    }
+    mount(<Probe />);
+    cloud.claims = {};
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    submit("write");
+    await waitFor(() => expect(log).toHaveBeenCalled());
+    expect(cloud.records.has("opportunities/denied")).toBe(false);
+    log.mockRestore();
+  });
 
   it("filters opportunities, combines filters, shows no results and resets", () => {
     mount(<OpportunitiesPage />);
@@ -470,30 +569,16 @@ describe("Sprint 1 journeys with the real provider and an isolated Firebase SDK 
     );
   });
 
-  it("describes local reset accurately and retains account records", async () => {
+  it("does not offer a local reset that could replace cloud opportunity records", async () => {
     signedIn();
-    const path = "users/designer-a/enrollments/pattern";
-    const enrollment = {
-      courseId: "pattern",
-      progress: 45,
-      achievements: ["إنجاز سابق"],
-    };
-    cloud.records.set(path, enrollment);
     mount(
       <Shell>
-        <LearningPage />
+        <ProfilePage />
       </Shell>,
     );
-    await screen.findByRole("slider");
-    submit("إعادة ضبط البيانات");
-    expect(screen.getByRole("dialog")).toHaveTextContent(
-      "لن يتأثر الملف المهني",
-    );
-    submit("تأكيد إعادة الضبط");
-    await waitFor(() =>
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
-    );
-    expect(cloud.records.get(path)).toEqual(enrollment);
-    expect(screen.getByRole("slider")).toHaveValue("45");
+    await settled();
+    expect(
+      screen.queryByRole("button", { name: "إعادة ضبط البيانات" }),
+    ).not.toBeInTheDocument();
   });
 });

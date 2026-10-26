@@ -30,8 +30,14 @@ export const Route = createFileRoute("/opportunities/$id")({
 
 function Details() {
   const { id } = Route.useParams();
-  const { opportunities, session, enroll, enrollments, enrollmentsLoading } =
-    useDemo();
+  const {
+    opportunities,
+    opportunitiesLoading,
+    session,
+    enroll,
+    enrollments,
+    enrollmentsLoading,
+  } = useDemo();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const item = opportunities.find((o) => o.id === id);
@@ -52,12 +58,19 @@ function Details() {
     }
   }
 
+  if (opportunitiesLoading)
+    return (
+      <div className="content-wrap">
+        <p role="status">جارٍ تحميل الفرصة...</p>
+      </div>
+    );
+
   if (!item)
     return (
       <div className="content-wrap">
         <EmptyState
           title="هذه الفرصة غير متاحة"
-          description="قد تكون حُذفت من القائمة التجريبية"
+          description="قد تكون حُذفت من قائمة الفرص"
           action={
             <Button asChild>
               <Link to="/opportunities">العودة إلى الفرص</Link>

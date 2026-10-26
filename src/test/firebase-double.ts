@@ -1,4 +1,5 @@
 import { vi } from "vitest";
+import { initialOpportunities } from "@/features/suda/mock-data";
 
 // An in-memory SDK boundary: tests never connect to a live Firebase project.
 const cloud = vi.hoisted(() => ({
@@ -11,6 +12,8 @@ const cloud = vi.hoisted(() => ({
   },
   listeners: new Set<(user: unknown) => void>(),
   records: new Map<string, Record<string, unknown>>(),
+  claims: {} as Record<string, unknown>,
+  snapshots: new Set<() => void>(),
   failure: false,
   signInFailure: false,
 }));
@@ -27,6 +30,10 @@ export function resetCloud() {
   cloud.auth.currentUser = null;
   cloud.listeners.clear();
   cloud.records.clear();
+  cloud.claims = {};
+  cloud.snapshots.clear();
+  for (const item of initialOpportunities)
+    cloud.records.set(`opportunities/${item.id}`, { ...item });
   cloud.failure = false;
   cloud.signInFailure = false;
 }
@@ -34,7 +41,8 @@ export function resetCloud() {
 vi.mock("@/lib/firebase", () => ({ auth: cloud.auth, db: {} }));
 
 vi.mock("firebase/auth", () => ({
-  onAuthStateChanged: (_auth: unknown, callback: (user: unknown) => void) => {
+  getIdTokenResult: async () => ({ claims: { ...cloud.claims } }),
+  onIdTokenChanged: (_auth: unknown, callback: (user: unknown) => void) => {
     cloud.listeners.add(callback);
     callback(cloud.auth.currentUser);
     return () => cloud.listeners.delete(callback);
@@ -75,7 +83,40 @@ vi.mock("firebase/firestore", () => {
   const check = () => {
     if (cloud.failure) throw new Error("Simulated write failure");
   };
+  const docs = (path: string) => ({
+    docs: [...cloud.records.keys()]
+      .filter(
+        (key) =>
+          key.startsWith(path + "/") &&
+          key.split("/").length === path.split("/").length + 1,
+      )
+      .map(snapshot),
+  });
+  const notify = () => cloud.snapshots.forEach((callback) => callback());
   return {
+    onSnapshot: (path: string, callback: (value: unknown) => void) => {
+      const listener = () =>
+        callback(
+          path.split("/").length % 2 === 0 ? snapshot(path) : docs(path),
+        );
+      cloud.snapshots.add(listener);
+      listener();
+      return () => cloud.snapshots.delete(listener);
+    },
+    writeBatch: () => {
+      const changes: (() => void)[] = [];
+      return {
+        set: (path: string, value: Record<string, unknown>) =>
+          changes.push(() => cloud.records.set(path, value)),
+        delete: (path: string) =>
+          changes.push(() => cloud.records.delete(path)),
+        commit: async () => {
+          check();
+          changes.forEach((change) => change());
+          notify();
+        },
+      };
+    },
     doc: (parent: unknown, ...parts: string[]) =>
       typeof parent === "string"
         ? [parent, ...parts].join("/")
@@ -111,13 +152,15 @@ vi.mock("firebase/firestore", () => {
       run: (transaction: unknown) => Promise<unknown>,
     ) => {
       check();
-      return run({
+      const result = await run({
         get: async (path: string) => snapshot(path),
         set: (path: string, value: Record<string, unknown>) =>
           cloud.records.set(path, value),
         update: (path: string, value: Record<string, unknown>) =>
           cloud.records.set(path, { ...cloud.records.get(path), ...value }),
       });
+      notify();
+      return result;
     },
   };
 });

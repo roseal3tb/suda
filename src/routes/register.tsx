@@ -4,8 +4,8 @@ import { pageHead } from "@/features/suda/mock-data";
 export const Route = createFileRoute("/register")({
   head: () =>
     pageHead(
-      "إنشاء حساب تجريبي",
-      "أنشئي جلسة عرض تجريبية لاكتشاف ملفك المهني ومعرض أعمالك في سُدى",
+      "إنشاء حساب",
+      "أنشئي حسابك لحفظ ملفك المهني ومعرض أعمالك ودوراتك في سُدى",
     ),
   component: () => <AuthPage register />,
 });

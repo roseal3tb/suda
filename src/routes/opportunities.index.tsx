@@ -32,7 +32,7 @@ export const Route = createFileRoute("/opportunities/")({
   component: Opportunities,
 });
 function Opportunities() {
-  const { opportunities } = useDemo();
+  const { opportunities, opportunitiesLoading } = useDemo();
   const { category } = Route.useSearch();
   const [filters, setFilters] = useState({
     ...emptyFilters,
@@ -181,7 +181,9 @@ function Opportunities() {
           ))}
         </div>
       )}
-      {items.length ? (
+      {opportunitiesLoading ? (
+        <p role="status">جارٍ تحميل الفرص...</p>
+      ) : items.length ? (
         <div className="opportunity-grid" id="opportunity-results">
           {items.map((item, i) => (
             <OpportunityCard key={item.id} item={item} delay={(i % 3) * 0.15} />

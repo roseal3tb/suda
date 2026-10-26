@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { before, after, test } from "node:test";
 import {
@@ -13,6 +14,7 @@ import {
   setDoc,
   updateDoc,
   deleteDoc,
+  writeBatch,
 } from "firebase/firestore";
 let env, a, b, guest, admin;
 const work = { id: "w1", title: "Design", description: "Test work" };
@@ -142,3 +144,68 @@ test("admin claim does not grant private user profile access", () =>
   assertFails(getDoc(doc(admin, "users/alice"))));
 test("unspecified collections are denied", () =>
   assertFails(setDoc(doc(a, "unknown/x"), { value: 1 })));
+
+test("admin atomically saves a public course and its restricted meeting link", async () => {
+  const batch = writeBatch(admin);
+  batch.set(doc(admin, "opportunities/batch-course"), opportunity);
+  batch.set(doc(admin, "courseMeetingLinks/batch-course"), {
+    zoomUrl: "https://zoom.us/j/123456789",
+  });
+  await assertSucceeds(batch.commit());
+  assert.equal(
+    (await getDoc(doc(guest, "opportunities/batch-course"))).data().zoomUrl,
+    undefined,
+  );
+  await assertFails(getDoc(doc(guest, "courseMeetingLinks/batch-course")));
+  await setDoc(doc(b, "users/bob/enrollments/batch-course"), {
+    courseId: "batch-course",
+    progress: 0,
+    achievements: [],
+  });
+  await assertSucceeds(getDoc(doc(b, "courseMeetingLinks/batch-course")));
+});
+
+test("admin atomically deletes a course and meeting link but retains learning history", async () => {
+  await setDoc(doc(admin, "opportunities/batch-delete"), opportunity);
+  await setDoc(doc(admin, "courseMeetingLinks/batch-delete"), {
+    zoomUrl: "https://zoom.us/j/123456789",
+  });
+  await setDoc(doc(b, "users/bob/enrollments/batch-delete"), {
+    courseId: "batch-delete",
+    progress: 70,
+    achievements: [],
+  });
+  const batch = writeBatch(admin);
+  batch.delete(doc(admin, "opportunities/batch-delete"));
+  batch.delete(doc(admin, "courseMeetingLinks/batch-delete"));
+  await assertSucceeds(batch.commit());
+  assert.equal(
+    (await getDoc(doc(guest, "opportunities/batch-delete"))).exists(),
+    false,
+  );
+  assert.equal(
+    (await getDoc(doc(b, "courseMeetingLinks/batch-delete"))).exists(),
+    false,
+  );
+  assert.equal(
+    (await getDoc(doc(b, "users/bob/enrollments/batch-delete"))).data()
+      .progress,
+    70,
+  );
+});
+
+test("ordinary user cannot edit an opportunity through a direct SDK request", async () => {
+  await setDoc(doc(admin, "opportunities/edit-denied"), opportunity);
+  await assertFails(
+    updateDoc(doc(b, "opportunities/edit-denied"), { title: "Hijacked" }),
+  );
+});
+
+test("string admin claim is not equivalent to boolean true", async () => {
+  const forged = env
+    .authenticatedContext("string-claim", { admin: "true" })
+    .firestore();
+  await assertFails(
+    setDoc(doc(forged, "opportunities/string-claim"), opportunity),
+  );
+});
