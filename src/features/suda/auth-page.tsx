@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { FormField, Wordmark } from "@/components/suda/shared";
 import { toast } from "sonner";
 import { useDemo } from "./demo-context";
-import "./auth-collage.css";
 
 function getAuthErrorMessage(error: unknown): string {
   const code =
