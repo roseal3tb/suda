@@ -265,7 +265,7 @@ export function AuthPage({
 
           <img
             className="suda-login-photo suda-login-photo-back"
-            src="/images/editorial_pastel_gown.webp"
+            src="/images/editorial/editorial_pastel_gown.webp"
             alt="فستان وردي بتصميم أنيق"
             width={1000}
             height={1250}
@@ -274,7 +274,7 @@ export function AuthPage({
 
           <img
             className="suda-login-photo suda-login-photo-front"
-            src="/images/suda-login-portrait.jpeg"
+            src="/images/editorial/suda-login-portrait.jpeg"
             alt="إطلالة فضية بتصوير فني"
             width={1000}
             height={1250}
