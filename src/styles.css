@@ -2118,3 +2118,167 @@ h1, h2, h3, h4, h5, h6, .section-heading h2, .designer-tile-body strong,
     transition: none !important;
   }
 }
+
+/* ==========================================
+   SUDA — Editorial Login / Register Collage
+   ========================================== */
+
+.auth-visual {
+  position: relative;
+  isolation: isolate;
+  min-height: 680px;
+  overflow: hidden;
+  background: #FAF6F1;
+  border-radius: 30px;
+}
+
+/* Override the original auth-visual > div styling */
+.auth-visual > .suda-login-collage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: transparent;
+  overflow: hidden;
+}
+
+/* Override the original full-size auth image */
+.auth-visual .suda-login-photo {
+  position: absolute;
+  inset: auto;
+  display: block;
+  object-fit: cover;
+  max-width: none;
+  box-shadow: 0 22px 50px rgba(86, 78, 88, 0.17);
+  transition:
+    transform 650ms cubic-bezier(.22, 1, .36, 1),
+    box-shadow 650ms ease;
+}
+
+/* First image: editorial pastel gown */
+.auth-visual .suda-login-photo-back {
+  width: 76%;
+  height: 80%;
+  top: 4%;
+  left: 4%;
+  z-index: 1;
+  object-position: center 40%;
+  border-radius: 125px 125px 28px 28px;
+}
+
+/* Second image: overlapping fashion portrait */
+.auth-visual .suda-login-photo-front {
+  width: 59%;
+  height: 65%;
+  top: 20%;
+  right: 4%;
+  z-index: 2;
+  object-position: center 32%;
+  border: 6px solid #FAF6F1;
+  border-radius: 110px 110px 26px 26px;
+}
+
+/* Decorative outline behind the photographs */
+.auth-visual .suda-login-outline {
+  position: absolute;
+  inset: 2% 3% 10% 2%;
+  z-index: 0;
+  border: 1px solid #C5B1BC;
+  border-radius: 145px 145px 36px 36px;
+  pointer-events: none;
+}
+
+/* Small fashion-editorial decorative details */
+.auth-visual .suda-login-sparkle {
+  position: absolute;
+  z-index: 3;
+  color: #A195A2;
+  pointer-events: none;
+  line-height: 1;
+}
+
+.auth-visual .suda-login-sparkle-one {
+  top: 30%;
+  left: 1%;
+  font-size: 28px;
+}
+
+.auth-visual .suda-login-sparkle-two {
+  top: 46%;
+  right: 1%;
+  font-size: 24px;
+}
+
+/* Floating caption card */
+.auth-visual > .suda-login-caption {
+  position: absolute;
+  bottom: 27px;
+  left: 10%;
+  right: 10%;
+  z-index: 4;
+  padding: 23px 27px;
+  background: rgba(250, 246, 241, 0.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(216, 201, 209, 0.75);
+  border-radius: 24px;
+  box-shadow: 0 14px 36px rgba(86, 78, 88, 0.11);
+  text-align: right;
+}
+
+.auth-visual .suda-login-caption h2 {
+  font-size: clamp(24px, 2.5vw, 34px);
+  color: #564E58;
+  margin: 8px 0;
+}
+
+.auth-visual .suda-login-caption p {
+  font-size: 12px;
+  color: #665D67;
+}
+
+/* Gentle interactive effect */
+@media (hover: hover) and (pointer: fine) {
+  .auth-visual:hover .suda-login-photo-back {
+    transform: translate(-5px, -5px) scale(1.015);
+  }
+
+  .auth-visual:hover .suda-login-photo-front {
+    transform: translate(5px, -8px) scale(1.02);
+    box-shadow: 0 28px 58px rgba(86, 78, 88, 0.22);
+  }
+}
+
+/* Tablet */
+@media (min-width: 761px) and (max-width: 1000px) {
+  .auth-visual {
+    min-height: 620px;
+  }
+
+  .auth-visual > .suda-login-caption {
+    left: 6%;
+    right: 6%;
+    padding: 19px;
+  }
+
+  .auth-visual .suda-login-caption h2 {
+    font-size: 25px;
+  }
+}
+
+/* Preserve the website's original mobile behavior */
+@media (max-width: 760px) {
+  .auth-visual {
+    display: none;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .auth-visual .suda-login-photo,
+  .auth-visual:hover .suda-login-photo {
+    transition: none;
+    transform: none;
+  }
+}

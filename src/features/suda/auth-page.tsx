@@ -1,3 +1,4 @@
+
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Eye, EyeOff, Info } from "lucide-react";
@@ -5,13 +6,15 @@ import { Reveal } from "@/components/suda/reveal";
 import { Button } from "@/components/ui/button";
 import { FormField, Wordmark } from "@/components/suda/shared";
 import { toast } from "sonner";
-import { fashionMedia } from "./mock-data";
 import { useDemo } from "./demo-context";
+import "./auth-collage.css";
+
 function getAuthErrorMessage(error: unknown): string {
   const code =
     typeof error === "object" && error !== null && "code" in error
       ? String(error.code)
       : "";
+
   switch (code) {
     case "auth/email-already-in-use":
       return "هذا البريد الإلكتروني مسجّل بالفعل. جرّبي تسجيل الدخول.";
@@ -33,9 +36,15 @@ function getAuthErrorMessage(error: unknown): string {
       return "حدث خطأ غير متوقع. حاولي مرة أخرى.";
   }
 }
-export function AuthPage({ register = false }: { register?: boolean }) {
+
+export function AuthPage({
+  register = false,
+}: {
+  register?: boolean;
+}) {
   const { signIn, signUp, session } = useDemo();
   const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,34 +62,44 @@ export function AuthPage({ register = false }: { register?: boolean }) {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+
     if (register && name.trim().length < 2) {
       setError("اكتبي اسمًا من حرفين على الأقل.");
       return;
     }
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setError("أدخلي بريدًا إلكترونيًا بصيغة صحيحة.");
       return;
     }
+
     if (password.length < 6) {
       setError("كلمة المرور يجب أن تتكوّن من ٦ أحرف على الأقل.");
       return;
     }
+
     if (register && password !== confirm) {
       setError("كلمتا المرور غير متطابقتين.");
       return;
     }
+
     setBusy(true);
+
     try {
       if (register) {
         await signUp(name.trim(), email.trim(), password);
       } else {
         await signIn(email.trim(), password);
       }
+
       setPassword("");
       setConfirm("");
       setError("");
+
       toast.success(
-        register ? "تم إنشاء حسابك بنجاح" : "تم تسجيل الدخول بنجاح",
+        register
+          ? "تم إنشاء حسابك بنجاح"
+          : "تم تسجيل الدخول بنجاح",
         {
           duration: 3000,
           style: {
@@ -90,6 +109,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
           },
         },
       );
+
       await navigate({ to: "/", replace: true });
     } catch (err) {
       setError(getAuthErrorMessage(err));
@@ -97,19 +117,26 @@ export function AuthPage({ register = false }: { register?: boolean }) {
       setBusy(false);
     }
   }
+
   return (
     <section className="auth-layout">
       <Reveal className="auth-form-wrap">
         <Wordmark />
+
         <span className="eyebrow">
           {register ? "إنشاء حساب" : "تسجيل الدخول"}
         </span>
-        <h1>{register ? "إنشاء ملفك في سُدى" : "الدخول إلى سُدى"}</h1>
+
+        <h1>
+          {register ? "إنشاء ملفك في سُدى" : "الدخول إلى سُدى"}
+        </h1>
+
         <p>
           {register
             ? "أنشئي حسابك لبدء بناء ملفك المهني ومعرض أعمالك"
             : "ادخلي إلى ملفك المهني والفرص التي التحقتِ بها"}
         </p>
+
         <form
           className="auth-form"
           noValidate
@@ -129,6 +156,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
               />
             </FormField>
           )}
+
           <FormField label="البريد الإلكتروني">
             <input
               required
@@ -141,6 +169,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
               autoComplete="email"
             />
           </FormField>
+
           <FormField label="كلمة المرور">
             <div className="password-control">
               <input
@@ -150,18 +179,30 @@ export function AuthPage({ register = false }: { register?: boolean }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="٦ أحرف على الأقل"
-                autoComplete={register ? "new-password" : "current-password"}
+                autoComplete={
+                  register ? "new-password" : "current-password"
+                }
               />
+
               <button
                 type="button"
-                aria-label={visible ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
+                aria-label={
+                  visible
+                    ? "إخفاء كلمة المرور"
+                    : "إظهار كلمة المرور"
+                }
                 aria-pressed={visible}
                 onClick={() => setVisible(!visible)}
               >
-                {visible ? <EyeOff size={18} /> : <Eye size={18} />}
+                {visible ? (
+                  <EyeOff size={18} />
+                ) : (
+                  <Eye size={18} />
+                )}
               </button>
             </div>
           </FormField>
+
           {register && (
             <FormField label="تأكيد كلمة المرور">
               <input
@@ -175,11 +216,13 @@ export function AuthPage({ register = false }: { register?: boolean }) {
               />
             </FormField>
           )}
+
           {error && (
             <p role="alert" className="form-error">
               {error}
             </p>
           )}
+
           <Button type="submit" disabled={busy}>
             {busy
               ? "جارٍ المعالجة…"
@@ -188,32 +231,80 @@ export function AuthPage({ register = false }: { register?: boolean }) {
                 : "تسجيل الدخول"}
             <ArrowLeft />
           </Button>
+
           <p className="demo-note">
             <Info size={14} />
             <span>
-              حسابك محمي باستخدام Firebase Authentication. لا تشاركي كلمة مرورك
-              مع أي شخص.
+              حسابك محمي باستخدام Firebase Authentication.
+              لا تشاركي كلمة مرورك مع أي شخص.
             </span>
           </p>
+
           <p className="text-sm">
-            {register ? "لديك حساب بالفعل؟" : "خطوتك الأولى هنا؟"}{" "}
-            <Link className="text-link" to={register ? "/login" : "/register"}>
+            {register
+              ? "لديك حساب بالفعل؟"
+              : "خطوتك الأولى هنا؟"}{" "}
+            <Link
+              className="text-link"
+              to={register ? "/login" : "/register"}
+            >
               {register ? "تسجيل الدخول" : "إنشاء حساب"}
             </Link>
           </p>
         </form>
       </Reveal>
+
       <Reveal className="auth-visual" delay={0.18}>
-        <img
-          src={register ? fashionMedia.register.src : fashionMedia.login.src}
-          alt={register ? fashionMedia.register.alt : fashionMedia.login.alt}
-          width={1000}
-          height={1250}
-        />
-        <div>
-          <span className="eyebrow">من الفكرة إلى التفاصيل</span>
+        <div
+          className="suda-login-collage"
+          aria-label="إلهام من عالم تصميم الأزياء"
+        >
+          <span
+            className="suda-login-outline"
+            aria-hidden="true"
+          />
+
+          <img
+            className="suda-login-photo suda-login-photo-back"
+            src="/images/editorial_pastel_gown.webp"
+            alt="فستان وردي بتصميم أنيق"
+            width={1000}
+            height={1250}
+            loading="eager"
+          />
+
+          <img
+            className="suda-login-photo suda-login-photo-front"
+            src="/images/suda-login-portrait.jpeg"
+            alt="إطلالة فضية بتصوير فني"
+            width={1000}
+            height={1250}
+            loading="eager"
+          />
+
+          <span
+            className="suda-login-sparkle suda-login-sparkle-one"
+            aria-hidden="true"
+          >
+            ✦
+          </span>
+
+          <span
+            className="suda-login-sparkle suda-login-sparkle-two"
+            aria-hidden="true"
+          >
+            ✧
+          </span>
+        </div>
+
+        <div className="suda-login-caption">
+          <span className="eyebrow">
+            من الفكرة إلى التفاصيل
+          </span>
           <h2>مساحة لبدايتك المهنية</h2>
-          <p>ملف يجمع مهاراتك، ومعرض يحكي قصتك مع التصميم</p>
+          <p>
+            ملف يجمع مهاراتك، ومعرض يحكي قصتك مع التصميم
+          </p>
         </div>
       </Reveal>
     </section>
