@@ -1,232 +1,124 @@
-# سُدى | SUDA — Sprint 1
+# سُدى | SUDA — Sprint 2 (Phase 4)
 
 **An Arabic Right-to-Left Fashion Opportunity and Professional Development Platform**
 
-Suda (سُدى) is a web platform designed to help fashion designers in Saudi Arabia discover relevant opportunities, develop their professional profiles, showcase their work, and track their learning progress.
+Suda (سُدى) is a web application designed to help fashion designers in Saudi Arabia discover opportunities, build professional profiles, showcase their work, and track their learning progress. It presents four Opportunity categories: **Courses, Competitions, Internships, and Career Opportunities**.
 
-The platform brings together four opportunity categories: Courses, Competitions, Internships, and Career Opportunities.
-
-Sprint 1 includes the implemented web application, Firebase Authentication, and Cloud Firestore integration for selected user-related functions. Opportunity records and Admin Opportunity Management remain demonstration-based using browser localStorage.
+This README describes the **Sprint 2 implementation**. Unlike Sprint 1, Opportunity records and eligible Course meeting links are integrated with **Cloud Firestore**, rather than managed as browser-only demonstration records. Some features and production-security verification remain limited, as described below.
 
 ## 1. Technology Stack
 
-Suda is developed using the following technologies:
+- **React 19, TypeScript** — User interface and application logic.
+- **TanStack Start and TanStack Router** — Application structure and navigation.
+- **Tailwind CSS, Framer Motion** — Responsive styling and interface transitions.
+- **Firebase Authentication** — Registration, login, logout, and authenticated sessions.
+- **Cloud Firestore** — Opportunity records, user data, enrollments, and Course meeting links.
+- **Vercel** — Web application deployment.
+- **Vitest, TypeScript, ESLint** — Automated tests and code checks.
 
-- **React 19** — User interface development.
-- **TypeScript** — Type-safe application development.
-- **TanStack Start and TanStack Router** — Application architecture and navigation.
-- **Tailwind CSS** — Styling and responsive layouts.
-- **Framer Motion** — Interface animations and transitions.
-- **Firebase Authentication** — User registration, login, logout, and authenticated sessions.
-- **Cloud Firestore** — Persistent storage for selected user-related data.
-- **Browser localStorage** — Demonstration-based Opportunity records and Admin Opportunity Management.
-- **Vercel** — Web application hosting.
-- **Vitest** — Automated testing.
-- **ESLint** — Code quality checks.
+The interface is primarily Arabic, uses right-to-left (RTL) layouts, and supports responsive navigation.
 
-The application uses an Arabic right-to-left (RTL) interface and supports responsive layouts.
+## 2. Implemented Features
 
-## 2. Sprint 1 Implementation
+### User Features
 
-### Implemented Features
+- Browse Opportunities in the four categories, search by keywords, and apply filters.
+- Open Opportunity Details and available external application links.
+- Register, log in, and log out using Firebase Authentication.
+- Create and update a Professional Profile.
+- Add, view, edit, and delete Portfolio items (title and description).
+- Enroll in Courses, update Learning Progress manually, and add achievements.
+- Access a Course Zoom link when a valid link is available and the signed-in user is eligible to view it.
+- Explore the Saudi Inspiration page.
 
-The current Sprint 1 application includes:
-
-- Home page with navigation to the four opportunity categories.
-- Opportunity browsing, keyword search, and combined filtering.
-- Opportunity Details pages.
-- User registration and login through Firebase Authentication.
-- Authenticated user sessions and logout.
-- Professional Profile creation and editing.
-- Portfolio item creation, viewing, editing, and deletion.
-- Course Enrollment.
-- Manual Learning Progress tracking.
-- Achievement recording.
-- Optional Zoom links for enrolled Courses when valid links are available.
-- External application links for Competitions, Internships, and Career Opportunities when available.
-- Demonstration-based Admin Opportunity Management.
-- Saudi Inspiration page.
-- Arabic RTL layout and responsive navigation.
-
-### Firebase Authentication
-
-Firebase Authentication is integrated into the application.
-
-It supports:
-
-- Creating user accounts with an email address and password.
-- Signing in with registered credentials.
-- Signing out.
-- Maintaining authenticated sessions.
-- Providing a unique user identifier (UID) associated with user-related data.
-
-The application uses Firebase Authentication rather than simulated local login sessions.
-
-### Cloud Firestore
-
-Cloud Firestore stores selected user-related information.
-
-The implemented data structure includes:
-
-**Professional Profile**
-
-`users/{uid}`
-
-The Professional Profile is stored as an embedded object containing:
-
-- `name`
-- `bio`
-- `skills[]`
-- `interests[]`
-- `experience`
-
-**Portfolio Items**
-
-`users/{uid}/works/{workId}`
-
-Each Portfolio item stores:
-
-- `id`
-- `title`
-- `description`
-
-Portfolio images may be selected and displayed temporarily in the interface, but they are not uploaded to persistent storage in Sprint 1.
-
-**Course Enrollments**
-
-`users/{uid}/enrollments/{courseId}`
-
-Each Course Enrollment document stores:
-
-- `courseId`
-- `progress`
-- `achievements[]`
-
-Course Enrollment uses the Course ID as the document identifier. The implementation checks for an existing enrollment before creating another record.
-
-Learning Progress is updated manually, and achievements are recorded as text entries.
-
-## 3. Demonstration-Based Functionality
-
-### Opportunities
-
-Opportunity records are currently based on fictional sample data.
-
-The application uses `mock-data.ts` to define the initial Opportunities and `storage.ts` to manage browser localStorage.
-
-Changes to Opportunity records are stored locally in the browser and are not synchronized across devices.
+After successful login, the application navigates to the **Home page (`/`)** while the user remains authenticated.
 
 ### Admin Opportunity Management
 
-The Admin Dashboard contains interfaces for:
+The Admin page provides interfaces to **add, edit, delete, search, and manage Opportunities**. The current code writes Opportunity records to Cloud Firestore. Course Zoom links are stored separately from public Opportunity records.
 
-- Adding Opportunities.
-- Editing Opportunities.
-- Deleting Opportunities.
-- Managing the four Opportunity categories.
+The Admin route and write operations require an authenticated account with a **trusted Firebase custom claim `admin=true`**. The client cannot grant this claim to itself. Admin availability in a deployed environment therefore depends on proper account provisioning and correctly deployed Firestore Security Rules; the presence of Admin UI code alone does not establish production authorization.
 
-Admin Opportunity Management is demonstration-based in Sprint 1.
+### Opportunity Data
 
-Open **الإدارة التجريبية** in the shared navigation, then choose **فتح لوحة الإدارة التجريبية**. This explicit demonstration mode only edits browser-local Opportunity records. It does not create an authenticated Admin account, change the Firebase user's role, or grant access to private Firestore records. Choose **إنهاء العرض التجريبي** to close it; reloading the page also closes the demonstration mode.
+Opportunity records are read from the Firestore `opportunities` collection. The code does **not** substitute browser `localStorage` records when Firestore is empty or unavailable.
 
-Secure server-side Admin authorization has not yet been implemented. Client-side role checks must not be considered a security boundary.
+The repository still contains **fictional sample Opportunities** in `mock-data.ts`. A separate, Admin-authorized import function can migrate legacy or initial records into Firestore; the sample data is not evidence of verified real-world listings.
 
-### Portfolio Images
+## 3. Cloud Firestore Data Structure
 
-Portfolio item titles and descriptions are stored in Cloud Firestore.
+| Collection / document | Purpose |
+| --- | --- |
+| `opportunities/{opportunityId}` | Public Opportunity details, without private Zoom meeting URLs. |
+| `courseMeetingLinks/{courseId}` | Separate Course Zoom meeting links. |
+| `users/{uid}` | User document containing the Professional Profile and migration metadata. |
+| `users/{uid}/works/{workId}` | Portfolio item metadata: `id`, `title`, and `description`. |
+| `users/{uid}/enrollments/{courseId}` | Course Enrollment, `progress`, and `achievements`. |
 
-Selected Portfolio images remain temporary in React state and are not stored persistently.
+**Professional Profile:** Includes fields such as `name`, `bio`, `skills`, `interests`, and `experience`.
 
-Although the Firebase SDK configuration includes a Storage initialization, the application does not implement persistent Portfolio image uploads.
+**Portfolio:** Titles and descriptions are saved to Firestore. Selected images may appear temporarily in the interface, but **persistent image uploads and storage are not implemented**. The Firebase Storage SDK is initialized but is not used for persistent Portfolio image uploads.
 
-### Zoom Links
+**Learning Progress:** The user updates progress manually and adds achievement text. Course Enrollment uses the Course ID to identify its record and prevent duplicate enrollment records.
 
-For Courses, the application may display an optional Zoom URL after the user has enrolled.
+**Course meeting links:** The application separates links from public Opportunity data and attempts to retrieve them for authenticated, eligible users. Actual enforcement depends on the Firestore rules deployed to the connected Firebase project.
 
-Zoom URLs are currently included in local Opportunity data. The application checks the URL format before displaying an available link.
+## 4. Authentication and Security
 
-This interface-level check does not replace secure data-layer authorization.
+Firebase Authentication provides real email/password registration and login. User-specific Firestore paths are associated with the authenticated Firebase UID.
 
-Suda does not host, record, or manage Zoom meetings.
+The repository includes `firestore.rules` and a dedicated `security-tests/` suite. The documented suite reports **30 passing security tests using the Firebase Firestore Rules Emulator**. These tests cover user-data isolation, Admin permissions, Opportunity writes, and restricted meeting links.
 
-### External Applications
+**Important limitation:** Emulator results validate the tested rules file, **not** whether those same rules are deployed and enforced in the live Firebase project. Production rules deployment, Admin account provisioning, and live authorization behavior must be verified separately before claiming production security compliance. GitHub or Vercel deployment does not automatically deploy Firestore Security Rules.
 
-Competitions, Internships, and Career Opportunities may provide links to official external application websites.
+See [`security-tests/README.md`](security-tests/README.md) for the security test setup and documented limitations.
 
-Applications are completed outside Suda. The platform does not submit external applications on behalf of users.
+## 5. Current Limitations
 
-When an appropriate external link is unavailable, the interface provides an unavailable-link state.
+- Portfolio images are not stored persistently; Portfolio text metadata is stored in Firestore.
+- Opportunities in the supplied sample dataset are fictional and should not be presented as verified listings.
+- External applications for Competitions, Internships, and Career Opportunities are completed on external websites, not submitted through Suda.
+- Suda displays eligible Zoom links but does not host or manage Zoom meetings.
+- Access to Admin features requires a trusted Admin claim and appropriate cloud configuration.
+- The provided Firestore Security Rules were tested with an Emulator; their production deployment has not been independently established by that evidence.
+- Broader production security, accessibility, device compatibility, and performance testing remains future verification work.
 
-## 4. Planned Improvements
+Browser `localStorage` utilities remain for **legacy-data migration and import**, not as the current primary storage for Opportunity management.
 
-The proposed final data design includes additional Cloud Firestore collections for centrally managed Opportunity records and restricted Course meeting links.
+## 6. Website Routes
 
-**Planned collections:**
+| Route | Description |
+| --- | --- |
+| `/` | Home page |
+| `/opportunities` | Opportunity browsing, search, and filters |
+| `/opportunities/$id` | Opportunity Details |
+| `/register` | User registration |
+| `/login` | User login |
+| `/profile` | Professional Profile |
+| `/portfolio` | Portfolio management |
+| `/learning` | Course Enrollments, Learning Progress, and achievements |
+| `/admin` | Admin Opportunity Management (authorized Admin only) |
+| `/inspiration` | Saudi Inspiration |
 
-- `opportunities/{opportunityId}` — Centralized Opportunity records.
-- `courseMeetingLinks/{courseId}` — Restricted Course meeting links.
-
-These collections are part of the proposed data model and are not integrated into Cloud Firestore in Sprint 1.
-
-Further development is also required for:
-
-- Secure Admin authorization.
-- Appropriate Firebase Security Rules for private data and administrative operations.
-- Secure access to restricted Course meeting links at the data layer.
-- Centralized Opportunity management.
-- Persistent Portfolio image storage if introduced in a future Sprint.
-- Additional security, accessibility, device compatibility, and performance verification.
-
-## 5. Website Routes
-
-| Route                | Description                                             |
-| -------------------- | ------------------------------------------------------- |
-| `/`                  | Home page and platform introduction                     |
-| `/opportunities`     | Opportunity browsing, search, and filtering             |
-| `/opportunities/$id` | Individual Opportunity Details                          |
-| `/register`          | User registration through Firebase Authentication       |
-| `/login`             | User login through Firebase Authentication              |
-| `/profile`           | Professional Profile management                         |
-| `/portfolio`         | Portfolio management                                    |
-| `/learning`          | Course Enrollments, Learning Progress, and achievements |
-| `/admin`             | Demonstration-based Admin Opportunity Management        |
-| `/inspiration`       | Saudi Inspiration content and designer information      |
-
-The application also provides shared navigation, confirmation dialogs, responsive page layouts, and appropriate empty states.
-
-## 6. Running the Project Locally
+## 7. Run the Project Locally
 
 ### Prerequisites
 
-- Node.js 22.12+ or Node.js 24.
-- npm.
-- Access to a Firebase project configured for the required services.
+- Node.js 22.12+ or Node.js 24
+- npm
+- A Firebase project configured for Authentication and Cloud Firestore
 
-### Installation
-
-Clone the repository:
+### Install
 
 ```bash
 git clone https://github.com/roseal3tb/suda.git
-```
-
-Open the project directory:
-
-```bash
 cd suda
-```
-
-Install dependencies:
-
-```bash
 npm ci
 ```
 
-### Firebase Configuration
+### Configure Firebase
 
-Create a `.env` file in the project root.
-
-The Firebase configuration in `src/lib/firebase.ts` reads the following environment variables:
+Create a `.env` file in the project root using your Firebase project configuration:
 
 ```env
 VITE_FIREBASE_API_KEY=your_firebase_api_key
@@ -237,173 +129,71 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 VITE_FIREBASE_APP_ID=your_firebase_app_id
 ```
 
-Replace the example values with the configuration of your Firebase project.
+Enable **Email/Password** sign-in in Firebase Authentication, configure Firestore as needed, and review access controls before testing cloud operations. Never commit `.env` files or privileged Firebase credentials.
 
-Enable the Email/Password sign-in method in Firebase Authentication and configure Cloud Firestore as required by the application.
-
-The Storage configuration field is included because it exists in the Firebase initialization code; persistent Portfolio image uploads are not implemented.
-
-Do not commit local `.env` files, service-account credentials, or other private configuration values to the repository.
-
-### Start the Development Server
+### Start
 
 ```bash
 npm run dev
 ```
 
-Open the local address displayed in the terminal.
+Open the local address shown in the terminal.
 
-If a local environment cannot enumerate network interfaces, use:
+## 8. Verification and Testing
 
-```bash
-npm run dev -- --host 127.0.0.1 --port 5173
-```
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the development server |
+| `npm run typecheck` | Check TypeScript types |
+| `npm run test` | Run Vitest tests |
+| `npm run lint` | Run ESLint |
+| `npm run build` | Build the application |
+| `npm run preview` | Preview the production build locally |
+| `npm run verify` | Run typecheck, tests, lint, and build sequentially |
 
-## 7. Verification Commands
+To run the separate Firestore Security Rules Emulator test suite, follow the instructions in `security-tests/README.md`.
 
-The project provides the following scripts:
+The project report documents Acceptance Testing, Integration Testing, User Acceptance Testing, and selected Non-Functional Requirement tests. These results apply to their documented test conditions and should not be interpreted as verification of every production scenario.
 
-| Command             | Purpose                                                   |
-| ------------------- | --------------------------------------------------------- |
-| `npm run dev`       | Start the development server                              |
-| `npm run typecheck` | Check TypeScript types                                    |
-| `npm run test`      | Run automated tests                                       |
-| `npm run lint`      | Run ESLint                                                |
-| `npm run build`     | Create a production build                                 |
-| `npm run preview`   | Preview the production build locally                      |
-| `npm run verify`    | Run type checking, tests, linting, and build sequentially |
-
-To run all four verification stages:
-
-```bash
-npm run verify
-```
-
-These commands are available in `package.json`. Successful execution should be confirmed in the target development environment.
-
-Automated checks do not replace manual verification of responsive layouts, browser compatibility, accessibility, security, or production performance.
-
-## 8. Project Structure
-
-The main project directories and files include:
+## 9. Project Structure
 
 ```text
 src/
-  routes/
-  components/
-    suda/
-  features/
-    suda/
-      mock-data.ts
-      demo-context.tsx
-      storage.ts
-      auth-page.tsx
+  routes/                 # Application pages and routes
+  components/suda/        # Shared Suda interface components
+  features/suda/
+    demo-context.tsx      # Application state and Firebase integration
+    mock-data.ts          # Opportunity types, sample data, and utilities
+    storage.ts            # Legacy browser-data utilities
+    auth-page.tsx         # Registration and login forms
   lib/
-    firebase.ts
-    auth.ts
-  test/
-  styles.css
+    firebase.ts           # Firebase initialization
+    auth.ts               # Authentication operations
+  test/                   # Application tests
+  styles.css              # Application styling
 
-public/
-  editorial/
-
-docs/
-  atelier-asset-map.md
-  atelier-delivery.md
-  navigation.md
-  visual-refresh.md
-
+public/editorial/         # Editorial media
+security-tests/           # Firestore Emulator tests
+firestore.rules           # Firestore rules source
+firebase.json             # Emulator / rules configuration
 README.md
 AUTHORS
 package.json
 ```
 
-### Main Responsibilities
+Some files in `docs/` and the security test documentation describe earlier development stages. The active application source code and this Sprint 2 README take precedence when describing the current feature implementation.
 
-- `src/routes/` — Application pages and navigation routes.
-- `src/components/suda/` — Shared Suda interface components.
-- `src/features/suda/mock-data.ts` — Opportunity types, sample records, and domain utilities.
-- `src/features/suda/demo-context.tsx` — Shared application state, Firebase integration, Opportunity changes, Portfolio management, Course Enrollment, Learning Progress, and achievements.
-- `src/features/suda/storage.ts` — Browser localStorage utilities for demonstration data.
-- `src/features/suda/auth-page.tsx` — Registration and login forms.
-- `src/lib/firebase.ts` — Firebase initialization.
-- `src/lib/auth.ts` — Firebase Authentication operations.
-- `src/styles.css` — Application styling and responsive layouts.
-- `src/test/` — Automated tests.
-- `public/editorial/` — Editorial images and media assets.
-- `AUTHORS` — Project team members.
+## 10. Deployment and Project Links
 
-Some historical documentation in the `docs/` directory describes earlier frontend-only development stages. The current implementation status is reflected in the application source code and this README.
+- **Website:** https://sudadesign.vercel.app/
+- **GitHub Repository:** https://github.com/roseal3tb/suda
+- **Jira Workspace / Project:** [Suda Workspace](https://roseal.atlassian.net/?continue=https%3A%2F%2Froseal.atlassian.net%2Fwelcome%2Fsoftware%3FprojectId%3D10000&atlOrigin=eyJpIjoiMjRkZDU2ZmJhNTA2NDFiMGFjY2FlMWM2Zjc5ZDBiOGMiLCJwIjoiamlyYS1zb2Z0d2FyZSJ9)
 
-## 9. User Interface and Visual Identity
+The Jira link above is the link embedded in the Phase 4 report. Jira permissions and access by the instructor should be checked with the relevant account; the link alone does not establish access.
 
-Suda uses a soft editorial visual identity suitable for a fashion-oriented platform.
+## 11. Project Team
 
-The main color palette includes:
-
-| Color          | Hex Code  |
-| -------------- | --------- |
-| Linen          | `#FAF6F1` |
-| Dusty Rose     | `#E8D7E1` |
-| Lavender Taupe | `#C5B1BC` |
-| Mauve-Gray     | `#A195A2` |
-| Moody Plum     | `#564E58` |
-
-The application uses IBM Plex Sans Arabic and Tajawal with fallback fonts.
-
-The interface includes:
-
-- Arabic RTL layouts.
-- Responsive navigation and cards.
-- Editorial imagery.
-- A silent visual montage on the Home page.
-- Motion preferences and visual fallbacks.
-- Form validation and feedback messages.
-- Confirmation dialogs for relevant actions.
-
-The current Opportunity content is fictional demonstration data and should not be interpreted as verified real-world listings.
-
-## 10. Data Management and Security Limitations
-
-The Sprint 1 implementation combines persistent Firebase services with browser-based demonstration data.
-
-**Implemented persistent services:**
-
-- Firebase Authentication for user accounts and authenticated sessions.
-- Cloud Firestore for Professional Profiles.
-- Cloud Firestore for Portfolio item titles and descriptions.
-- Cloud Firestore for Course Enrollments, Learning Progress, and achievements.
-
-**Demonstration-based or incomplete functionality:**
-
-- Opportunity records and Admin Opportunity Management use browser localStorage.
-- Admin authorization is not securely enforced at the server or database level.
-- Portfolio images are not saved persistently.
-- Course meeting links are not stored in a restricted Firestore collection.
-- Opportunity modifications are not synchronized between devices.
-
-The local demonstration reset clears relevant browser-stored demonstration data without deleting user-related Cloud Firestore records.
-
-Production use requires appropriate authentication, authorization, and Firebase Security Rules. The presence of an authenticated Firebase session alone does not establish secure Admin permissions.
-
-## 11. Deployment
-
-The Suda web application is deployed using Vercel.
-
-**Deployed Website:**  
-https://sudadesign.vercel.app
-
-**GitHub Repository:**  
-https://github.com/roseal3tb/suda
-
-**Jira Project:**  
-Suda Workspace
-
-GitHub is used for source code management, Jira supports Scrum planning and task tracking, and Vercel hosts the web application.
-
-## 12. Project Team
-
-The Suda project was developed by:
+Suda was developed by:
 
 - Shmookh Alsalman
 - Hind Alwasel
@@ -411,16 +201,8 @@ The Suda project was developed by:
 - Rawan Almutiri
 - Rose Alatawi
 
-The team members are also listed in the repository's `AUTHORS` file.
-
-## 13. Project Scope
-
-Suda aims to support the professional development of fashion designers in Saudi Arabia through opportunity discovery, professional identity management, and learning tracking.
-
-Sprint 1 demonstrates the main web application and integrates Firebase Authentication and Cloud Firestore for selected user-related functions.
-
-The remaining demonstration-based and planned components are documented separately to avoid presenting incomplete functionality as production-ready.
+See [`AUTHORS`](AUTHORS) for the team record.
 
 ---
 
-**SUDA | سُدى — IT320 Software Engineering Project — Sprint 1**
+**SUDA | سُدى — IT320 Software Engineering Project — Sprint 2 / Phase 4**
