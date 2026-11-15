@@ -2,22 +2,22 @@
 
 All served media is local under `public/editorial/` and comes from the user's supplied archives. No stock photos, image generation, or database was added. See `visual-refresh.md` for the latest change record.
 
-| Location | Image or film |
-|---|---|
-| Enlarged homepage hero | `film/hero.<content-hash>.mp4` / `.webm`: seven quick cuts alternating crafts and models wearing dresses |
-| Hero static fallback | `images/hero_atelier_poster.webp`, extracted from the film's first frame |
-| Home professional-profile band | `profile_red_carpet_gold.webp`, `profile_red_carpet_black.webp`, `editorial_burgundy_look.webp` |
-| Login | `editorial_teal_gown.webp` |
-| Registration | `editorial_couture_duo.webp` |
-| Home inspiration collage | `editorial_pastel_gown.webp`, `inspiration_yellow_model.webp`, `editorial_group_gowns.webp`, `inspiration_lilac_model.webp`, `editorial_black_couture.webp`, `inspiration_mauve_model.webp`, `inspiration_monochrome_model.webp` |
-| Pattern course | `course_pattern_making.webp` |
-| Draping course | `internship_draping.webp` |
-| Heritage competition | `competition_embroidered_couture.webp` |
-| Textile competition | `competition_pink_couture.webp` |
-| Atelier internship | `internship_beadwork.webp` |
-| Collection-development internship | `internship_pink_embroidery.webp` |
-| Junior designer role | `career_studio_sewing.webp` |
-| Pattern-maker role | `career_pattern_cutting.webp`, a separate frame from the supplied pattern-cutting film |
+| Location                          | Image or film                                                                                                                                                                                                                    |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Enlarged homepage hero            | `film/hero.<content-hash>.mp4` / `.webm`: seven quick cuts alternating crafts and models wearing dresses                                                                                                                         |
+| Hero static fallback              | `images/hero_atelier_poster.webp`, extracted from the film's first frame                                                                                                                                                         |
+| Home professional-profile band    | `profile_red_carpet_gold.webp`, `profile_red_carpet_black.webp`, `editorial_burgundy_look.webp`                                                                                                                                  |
+| Login                             | `editorial_teal_gown.webp`                                                                                                                                                                                                       |
+| Registration                      | `editorial_couture_duo.webp`                                                                                                                                                                                                     |
+| Home inspiration collage          | `editorial_pastel_gown.webp`, `inspiration_yellow_model.webp`, `editorial_group_gowns.webp`, `inspiration_lilac_model.webp`, `editorial_black_couture.webp`, `inspiration_mauve_model.webp`, `inspiration_monochrome_model.webp` |
+| Pattern course                    | `course_pattern_making.webp`                                                                                                                                                                                                     |
+| Draping course                    | `internship_draping.webp`                                                                                                                                                                                                        |
+| Heritage competition              | `competition_embroidered_couture.webp`                                                                                                                                                                                           |
+| Textile competition               | `competition_pink_couture.webp`                                                                                                                                                                                                  |
+| Atelier internship                | `internship_beadwork.webp`                                                                                                                                                                                                       |
+| Collection-development internship | `internship_pink_embroidery.webp`                                                                                                                                                                                                |
+| Junior designer role              | `career_studio_sewing.webp`                                                                                                                                                                                                      |
+| Pattern-maker role                | `career_pattern_cutting.webp`, a separate frame from the supplied pattern-cutting film                                                                                                                                           |
 
 The twelve still images used across authentication, the professional-profile band and the inspiration collage are distinct. Photos are not seeded as a demo user's portfolio, nor individually assigned to named designers without a grounded source mapping. Existing opportunity detail pages naturally retain their corresponding card image.
 

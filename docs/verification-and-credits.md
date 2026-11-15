@@ -8,14 +8,14 @@
 
 ## General atelier/craft stock photography
 
-General images are used as *illustrative stock photography only*, not as photographs of SUDA users or named Saudi designers.
+General images are used as _illustrative stock photography only_, not as photographs of SUDA users or named Saudi designers.
 
-| Code key | Photographer | Source | License indicated in existing project |
-|---|---|---|---|
-| atelier | Vitaly Gariev | https://unsplash.com/photos/a-seamstress-is-sewing-at-her-work-station-eFAvYBCfmJY | Unsplash License |
-| draping | Vitaly Gariev | https://unsplash.com/photos/fashion-designers-work-together-on-a-project-Qw59dUeQnNI | Unsplash License |
-| sketches | Ambati Cherubim | https://unsplash.com/photos/women-embroidering-intricate-patterns-on-fabric-f5RmDMCPBzg | Unsplash License |
-| studio | Arawark chen | https://unsplash.com/photos/a-room-filled-with-mannequins-and-sewing-machines-HIrP05jnXNs | Unsplash License |
+| Code key | Photographer    | Source                                                                                    | License indicated in existing project |
+| -------- | --------------- | ----------------------------------------------------------------------------------------- | ------------------------------------- |
+| atelier  | Vitaly Gariev   | https://unsplash.com/photos/a-seamstress-is-sewing-at-her-work-station-eFAvYBCfmJY        | Unsplash License                      |
+| draping  | Vitaly Gariev   | https://unsplash.com/photos/fashion-designers-work-together-on-a-project-Qw59dUeQnNI      | Unsplash License                      |
+| sketches | Ambati Cherubim | https://unsplash.com/photos/women-embroidering-intricate-patterns-on-fabric-f5RmDMCPBzg   | Unsplash License                      |
+| studio   | Arawark chen    | https://unsplash.com/photos/a-room-filled-with-mannequins-and-sewing-machines-HIrP05jnXNs | Unsplash License                      |
 
 Image URLs and author credits came from the project's existing `mock-data.ts`. Source pages for a selection were checked online; the **complete image-to-source matching and current licensing for all four must be rechecked before public launch**. Official license: https://unsplash.com/license.
 

@@ -22,61 +22,61 @@ Subsequent validation found an invalid escaped hover CSS selector and strict Typ
 
 Statuses describe verified scope only. Partial does not imply missing database work.
 
-| Requirement | Status | Evidence | Action |
-|---|---|---|---|
-| Frontend without database | Pass | DemoProvider/browser storage; no Firebase/Supabase/database client integration found in inspected source | Keep final Firebase services planned |
-| All frontend page families | Partial | Ten documented route families exist; all opened live, member/admin interiors inspected in source | Verify signed-in interiors in browser |
-| Register | Partial | Arabic fields, confirmation and local simulation exist; empty submit displays Arabic name error | Test all invalid inputs and successful mock flow |
-| Login | Partial | Empty submit displays Arabic email error; user/admin mock modes clearly disclosed | Verify successful mock login and failure branches |
-| Logout | Not Tested | Handler clears demo session and navigates to login in source | Exercise logout and return to gated pages |
-| Four opportunity categories | Pass | Eight live cards cover courses, competitions, internships and careers | None for inventory |
-| Search | Pass | Unmatched `zzzaudit` yields zero results and Arabic empty state; `الباترون` with course/remote filters yields one correct record | Broaden edge-case coverage if needed |
-| Combined filters and reset | Partial | Keyword/category/mode tested together; reset restores eight records | Exercise level/location combinations and category query navigation |
-| Opportunity details | Pass | All eight live detail URLs opened, across four categories; description, requirements, category and available deadlines displayed | No invented application links |
-| External application links | Partial | Fictional opportunities show disabled/unavailable-link state; HTTPS validation exists | Valid-link click path not tested |
-| Professional Profile addition | Partial | Form and rendering exist; regression test rejects separator-only arrays and accepts valid lists | Browser-test save/reload using demo session |
-| Add Portfolio Item | Partial | Title/description, optional image, error feedback and CRUD present in source | Browser-test upload, errors, save and reload |
-| Learning and Admin pages | Partial | Routes/gates opened; complete frontend interfaces inspected in source | Exercise enrolled-course and admin workflows |
-| Arabic RTL | Partial | Live document reports `lang=ar`, `dir=rtl`; inspected labels/messages Arabic | Check all modal states, keyboard order and responsive RTL |
-| Responsive layout | Not Tested | CSS has mobile/tablet breakpoints, responsive navigation and modal constraints | Actual viewport/device tests required |
-| Accessibility | Partial | Skip link, labels, live results, alerts, disabled-link feedback and Radix dialogs exist | Keyboard, focus, screen-reader and contrast audit pending |
-| Assets and runtime | Partial | No broken images on opportunity listing at inspection; opened public pages rendered | Full asset/link sweep pending; extension log errors excluded from app defects |
-| Performance targets | Not Tested | Production build succeeds; no representative timing measurement | Do not claim the report's two-second/90% target passed |
-| 4.1 Architecture | Partial | Layer responsibilities, current demo and planned BaaS explicitly separated in report | Visually check architecture graphic |
-| 4.2 Class diagram | Partial | Text identifies logical classes, fields, operations and relations | Visually verify graphic/multiplicities |
-| 4.3 Data design | Partial | ER and Firestore hierarchy discussed; embedding/referencing and restricted meeting links explained | Visually verify ER/hierarchy; database connection remains excluded |
-| 4.4 Components design | Partial | Three non-basic functions with activity-diagram references and pseudocode: search, enrollment, learning progress | Visually verify diagrams against pseudocode |
-| 4.5 Interface design | Partial | Sitemap reference, route table, source and deployment links present | Verify sitemap image and refresh report indexes |
-| GitHub README/AUTHORS | Pass | Both exist in cloned repository | README designer count corrected locally |
-| Jira link/instructor access | Not Tested | Workspace label only verified in extracted text | Check PDF hyperlink destination and instructor membership |
+| Requirement                   | Status     | Evidence                                                                                                                         | Action                                                                        |
+| ----------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Frontend without database     | Pass       | DemoProvider/browser storage; no Firebase/Supabase/database client integration found in inspected source                         | Keep final Firebase services planned                                          |
+| All frontend page families    | Partial    | Ten documented route families exist; all opened live, member/admin interiors inspected in source                                 | Verify signed-in interiors in browser                                         |
+| Register                      | Partial    | Arabic fields, confirmation and local simulation exist; empty submit displays Arabic name error                                  | Test all invalid inputs and successful mock flow                              |
+| Login                         | Partial    | Empty submit displays Arabic email error; user/admin mock modes clearly disclosed                                                | Verify successful mock login and failure branches                             |
+| Logout                        | Not Tested | Handler clears demo session and navigates to login in source                                                                     | Exercise logout and return to gated pages                                     |
+| Four opportunity categories   | Pass       | Eight live cards cover courses, competitions, internships and careers                                                            | None for inventory                                                            |
+| Search                        | Pass       | Unmatched `zzzaudit` yields zero results and Arabic empty state; `الباترون` with course/remote filters yields one correct record | Broaden edge-case coverage if needed                                          |
+| Combined filters and reset    | Partial    | Keyword/category/mode tested together; reset restores eight records                                                              | Exercise level/location combinations and category query navigation            |
+| Opportunity details           | Pass       | All eight live detail URLs opened, across four categories; description, requirements, category and available deadlines displayed | No invented application links                                                 |
+| External application links    | Partial    | Fictional opportunities show disabled/unavailable-link state; HTTPS validation exists                                            | Valid-link click path not tested                                              |
+| Professional Profile addition | Partial    | Form and rendering exist; regression test rejects separator-only arrays and accepts valid lists                                  | Browser-test save/reload using demo session                                   |
+| Add Portfolio Item            | Partial    | Title/description, optional image, error feedback and CRUD present in source                                                     | Browser-test upload, errors, save and reload                                  |
+| Learning and Admin pages      | Partial    | Routes/gates opened; complete frontend interfaces inspected in source                                                            | Exercise enrolled-course and admin workflows                                  |
+| Arabic RTL                    | Partial    | Live document reports `lang=ar`, `dir=rtl`; inspected labels/messages Arabic                                                     | Check all modal states, keyboard order and responsive RTL                     |
+| Responsive layout             | Not Tested | CSS has mobile/tablet breakpoints, responsive navigation and modal constraints                                                   | Actual viewport/device tests required                                         |
+| Accessibility                 | Partial    | Skip link, labels, live results, alerts, disabled-link feedback and Radix dialogs exist                                          | Keyboard, focus, screen-reader and contrast audit pending                     |
+| Assets and runtime            | Partial    | No broken images on opportunity listing at inspection; opened public pages rendered                                              | Full asset/link sweep pending; extension log errors excluded from app defects |
+| Performance targets           | Not Tested | Production build succeeds; no representative timing measurement                                                                  | Do not claim the report's two-second/90% target passed                        |
+| 4.1 Architecture              | Partial    | Layer responsibilities, current demo and planned BaaS explicitly separated in report                                             | Visually check architecture graphic                                           |
+| 4.2 Class diagram             | Partial    | Text identifies logical classes, fields, operations and relations                                                                | Visually verify graphic/multiplicities                                        |
+| 4.3 Data design               | Partial    | ER and Firestore hierarchy discussed; embedding/referencing and restricted meeting links explained                               | Visually verify ER/hierarchy; database connection remains excluded            |
+| 4.4 Components design         | Partial    | Three non-basic functions with activity-diagram references and pseudocode: search, enrollment, learning progress                 | Visually verify diagrams against pseudocode                                   |
+| 4.5 Interface design          | Partial    | Sitemap reference, route table, source and deployment links present                                                              | Verify sitemap image and refresh report indexes                               |
+| GitHub README/AUTHORS         | Pass       | Both exist in cloned repository                                                                                                  | README designer count corrected locally                                       |
+| Jira link/instructor access   | Not Tested | Workspace label only verified in extracted text                                                                                  | Check PDF hyperlink destination and instructor membership                     |
 
 ## Pages checklist
 
-| Page | Source | Live browser verification |
-|---|---|---|
-| `/` | Implemented | Home content/navigation inspected |
-| `/opportunities` | Implemented | Eight cards, search, course filter, combined filter, empty/reset states |
-| `/opportunities/{id}` | Implemented | All eight seed detail pages opened |
-| `/login` | Implemented | Form, empty validation and register navigation |
-| `/register` | Implemented | Form and empty validation |
-| `/profile` | Implemented | Visitor gate only; actual form covered by regression test |
-| `/portfolio` | Implemented | Visitor gate only |
-| `/learning` | Implemented | Visitor gate only; stale enrollment case covered by regression test |
-| `/admin` | Implemented | Visitor/admin-mode gate only |
-| `/inspiration` | Implemented, supplementary | Eleven names render; expansion/source URLs not fully tested |
+| Page                  | Source                     | Live browser verification                                               |
+| --------------------- | -------------------------- | ----------------------------------------------------------------------- |
+| `/`                   | Implemented                | Home content/navigation inspected                                       |
+| `/opportunities`      | Implemented                | Eight cards, search, course filter, combined filter, empty/reset states |
+| `/opportunities/{id}` | Implemented                | All eight seed detail pages opened                                      |
+| `/login`              | Implemented                | Form, empty validation and register navigation                          |
+| `/register`           | Implemented                | Form and empty validation                                               |
+| `/profile`            | Implemented                | Visitor gate only; actual form covered by regression test               |
+| `/portfolio`          | Implemented                | Visitor gate only                                                       |
+| `/learning`           | Implemented                | Visitor gate only; stale enrollment case covered by regression test     |
+| `/admin`              | Implemented                | Visitor/admin-mode gate only                                            |
+| `/inspiration`        | Implemented, supplementary | Eleven names render; expansion/source URLs not fully tested             |
 
 Logout is a header action, not a separate route. Profile/portfolio/admin creation and editing use dialogs, not additional standalone routes.
 
 ## Issue register and resolutions
 
-| ID / severity | Page and reproduction | Expected versus original actual | Resolution and verification |
-|---|---|---|---|
-| P1 / Medium | Profile: enter only `، ,` in skills/interests, submit otherwise valid form | At least one real item required; original saves empty arrays | Validate parsed arrays; component regression checks rejection and valid save |
-| L1 / Medium | Learning: account retains enrollment after another account removes/reclassifies its course | Useful empty guidance; original hides rows but also suppresses empty state | Derive active course enrollments before choosing list/empty view; regression covers removed/non-course references |
-| T1 / Low | Run designer directory test | Current eleven unique entries accepted; old assertion expects eight | Update count and optional-source narrowing; test suite passes |
-| D1 / Low | Read README directory descriptions | Match actual eleven entries; old text says eight | Update relevant descriptions |
-| C1 / Low | Production build: escaped hover utility selector | Valid selector; optimizer warns invalid pseudo-class | Correct CSS escape; rebuilt without that warning |
-| TS1 / Medium | Run strict TypeScript check | Zero errors; original optional-property/search/indexed-fixture errors | Correct search return shape, omit absent link/modal properties, narrow fixture/source values; strict check rerun |
+| ID / severity | Page and reproduction                                                                      | Expected versus original actual                                            | Resolution and verification                                                                                       |
+| ------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| P1 / Medium   | Profile: enter only `، ,` in skills/interests, submit otherwise valid form                 | At least one real item required; original saves empty arrays               | Validate parsed arrays; component regression checks rejection and valid save                                      |
+| L1 / Medium   | Learning: account retains enrollment after another account removes/reclassifies its course | Useful empty guidance; original hides rows but also suppresses empty state | Derive active course enrollments before choosing list/empty view; regression covers removed/non-course references |
+| T1 / Low      | Run designer directory test                                                                | Current eleven unique entries accepted; old assertion expects eight        | Update count and optional-source narrowing; test suite passes                                                     |
+| D1 / Low      | Read README directory descriptions                                                         | Match actual eleven entries; old text says eight                           | Update relevant descriptions                                                                                      |
+| C1 / Low      | Production build: escaped hover utility selector                                           | Valid selector; optimizer warns invalid pseudo-class                       | Correct CSS escape; rebuilt without that warning                                                                  |
+| TS1 / Medium  | Run strict TypeScript check                                                                | Zero errors; original optional-property/search/indexed-fixture errors      | Correct search return shape, omit absent link/modal properties, narrow fixture/source values; strict check rerun  |
 
 P1 and L1 were identified from code and reproduced in focused component tests, not in the signed-in live browser. No deployed fix is claimed.
 
@@ -90,18 +90,18 @@ Corrections preserve the existing design: meaningful profile validation, a usefu
 
 The project separates route components, shared UI, fictional domain records/pure rules, browser storage and mutable React context. Per-demo-email storage supports demonstration isolation, not secure authorization. No password storage was found in the demo login path. Existing session role selection is deliberately labeled as mock behavior.
 
-| Modified file | Change |
-|---|---|
-| `src/routes/profile.tsx` | Parse required lists before validation; reject empty parsed lists |
-| `src/routes/learning.tsx` | Base course list/empty state on available enrolled courses |
+| Modified file                        | Change                                                                  |
+| ------------------------------------ | ----------------------------------------------------------------------- |
+| `src/routes/profile.tsx`             | Parse required lists before validation; reject empty parsed lists       |
+| `src/routes/learning.tsx`            | Base course list/empty state on available enrolled courses              |
 | `src/routes/opportunities.index.tsx` | Optional typed search result and bracket access for unknown query input |
-| `src/routes/admin.tsx` | Omit absent external/Zoom properties rather than assigning undefined |
-| `src/routes/portfolio.tsx` | Omit absent optional modal description |
-| `src/styles.css` | Correct escaped hover utility selector |
-| `src/test/suda-extended.test.ts` | Eleven-entry directory assertions and optional-source safety |
-| `src/test/suda-rules.test.ts` | Explicitly narrow known fixture indexes under strict checking |
-| `src/test/suda-audit.test.tsx` | Two focused component regression cases |
-| `README.md` | Correct directory count |
+| `src/routes/admin.tsx`               | Omit absent external/Zoom properties rather than assigning undefined    |
+| `src/routes/portfolio.tsx`           | Omit absent optional modal description                                  |
+| `src/styles.css`                     | Correct escaped hover utility selector                                  |
+| `src/test/suda-extended.test.ts`     | Eleven-entry directory assertions and optional-source safety            |
+| `src/test/suda-rules.test.ts`        | Explicitly narrow known fixture indexes under strict checking           |
+| `src/test/suda-audit.test.tsx`       | Two focused component regression cases                                  |
+| `README.md`                          | Correct directory count                                                 |
 
 No existing feature was intentionally removed. Existing CRUD demonstrations are retained; no later-sprint database work was introduced.
 

@@ -1,4 +1,3 @@
-
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Eye, EyeOff, Info } from "lucide-react";
@@ -36,11 +35,7 @@ function getAuthErrorMessage(error: unknown): string {
   }
 }
 
-export function AuthPage({
-  register = false,
-}: {
-  register?: boolean;
-}) {
+export function AuthPage({ register = false }: { register?: boolean }) {
   const { signIn, signUp, session } = useDemo();
   const navigate = useNavigate();
 
@@ -96,9 +91,7 @@ export function AuthPage({
       setError("");
 
       toast.success(
-        register
-          ? "تم إنشاء حسابك بنجاح"
-          : "تم تسجيل الدخول بنجاح",
+        register ? "تم إنشاء حسابك بنجاح" : "تم تسجيل الدخول بنجاح",
         {
           duration: 3000,
           style: {
@@ -126,9 +119,7 @@ export function AuthPage({
           {register ? "إنشاء حساب" : "تسجيل الدخول"}
         </span>
 
-        <h1>
-          {register ? "إنشاء ملفك في سُدى" : "الدخول إلى سُدى"}
-        </h1>
+        <h1>{register ? "إنشاء ملفك في سُدى" : "الدخول إلى سُدى"}</h1>
 
         <p>
           {register
@@ -178,26 +169,16 @@ export function AuthPage({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="٦ أحرف على الأقل"
-                autoComplete={
-                  register ? "new-password" : "current-password"
-                }
+                autoComplete={register ? "new-password" : "current-password"}
               />
 
               <button
                 type="button"
-                aria-label={
-                  visible
-                    ? "إخفاء كلمة المرور"
-                    : "إظهار كلمة المرور"
-                }
+                aria-label={visible ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
                 aria-pressed={visible}
                 onClick={() => setVisible(!visible)}
               >
-                {visible ? (
-                  <EyeOff size={18} />
-                ) : (
-                  <Eye size={18} />
-                )}
+                {visible ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </FormField>
@@ -234,19 +215,14 @@ export function AuthPage({
           <p className="demo-note">
             <Info size={14} />
             <span>
-              حسابك محمي باستخدام Firebase Authentication.
-              لا تشاركي كلمة مرورك مع أي شخص.
+              حسابك محمي باستخدام Firebase Authentication. لا تشاركي كلمة مرورك
+              مع أي شخص.
             </span>
           </p>
 
           <p className="text-sm">
-            {register
-              ? "لديك حساب بالفعل؟"
-              : "خطوتك الأولى هنا؟"}{" "}
-            <Link
-              className="text-link"
-              to={register ? "/login" : "/register"}
-            >
+            {register ? "لديك حساب بالفعل؟" : "خطوتك الأولى هنا؟"}{" "}
+            <Link className="text-link" to={register ? "/login" : "/register"}>
               {register ? "تسجيل الدخول" : "إنشاء حساب"}
             </Link>
           </p>
@@ -258,10 +234,7 @@ export function AuthPage({
           className="suda-login-collage"
           aria-label="إلهام من عالم تصميم الأزياء"
         >
-          <span
-            className="suda-login-outline"
-            aria-hidden="true"
-          />
+          <span className="suda-login-outline" aria-hidden="true" />
 
           <img
             className="suda-login-photo suda-login-photo-back"
@@ -297,13 +270,9 @@ export function AuthPage({
         </div>
 
         <div className="suda-login-caption">
-          <span className="eyebrow">
-            من الفكرة إلى التفاصيل
-          </span>
+          <span className="eyebrow">من الفكرة إلى التفاصيل</span>
           <h2>مساحة لبدايتك المهنية</h2>
-          <p>
-            ملف يجمع مهاراتك، ومعرض يحكي قصتك مع التصميم
-          </p>
+          <p>ملف يجمع مهاراتك، ومعرض يحكي قصتك مع التصميم</p>
         </div>
       </Reveal>
     </section>

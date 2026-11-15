@@ -1,4 +1,5 @@
 # Suda implementation
+
 - [ ] Centralized Arabic RTL design system and temporary wordmark
 - [ ] Isolated fictional demo state and opportunity filtering
 - [ ] Home, listing, details and free enrollment/Zoom states

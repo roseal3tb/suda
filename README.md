@@ -47,13 +47,13 @@ The repository still contains **fictional sample Opportunities** in `mock-data.t
 
 ## 3. Cloud Firestore Data Structure
 
-| Collection / document | Purpose |
-| --- | --- |
-| `opportunities/{opportunityId}` | Public Opportunity details, without private Zoom meeting URLs. |
-| `courseMeetingLinks/{courseId}` | Separate Course Zoom meeting links. |
-| `users/{uid}` | User document containing the Professional Profile and migration metadata. |
-| `users/{uid}/works/{workId}` | Portfolio item metadata: `id`, `title`, and `description`. |
-| `users/{uid}/enrollments/{courseId}` | Course Enrollment, `progress`, and `achievements`. |
+| Collection / document                | Purpose                                                                   |
+| ------------------------------------ | ------------------------------------------------------------------------- |
+| `opportunities/{opportunityId}`      | Public Opportunity details, without private Zoom meeting URLs.            |
+| `courseMeetingLinks/{courseId}`      | Separate Course Zoom meeting links.                                       |
+| `users/{uid}`                        | User document containing the Professional Profile and migration metadata. |
+| `users/{uid}/works/{workId}`         | Portfolio item metadata: `id`, `title`, and `description`.                |
+| `users/{uid}/enrollments/{courseId}` | Course Enrollment, `progress`, and `achievements`.                        |
 
 **Professional Profile:** Includes fields such as `name`, `bio`, `skills`, `interests`, and `experience`.
 
@@ -87,18 +87,18 @@ Browser `localStorage` utilities remain for **legacy-data migration and import**
 
 ## 6. Website Routes
 
-| Route | Description |
-| --- | --- |
-| `/` | Home page |
-| `/opportunities` | Opportunity browsing, search, and filters |
-| `/opportunities/$id` | Opportunity Details |
-| `/register` | User registration |
-| `/login` | User login |
-| `/profile` | Professional Profile |
-| `/portfolio` | Portfolio management |
-| `/learning` | Course Enrollments, Learning Progress, and achievements |
-| `/admin` | Admin Opportunity Management (authorized Admin only) |
-| `/inspiration` | Saudi Inspiration |
+| Route                | Description                                             |
+| -------------------- | ------------------------------------------------------- |
+| `/`                  | Home page                                               |
+| `/opportunities`     | Opportunity browsing, search, and filters               |
+| `/opportunities/$id` | Opportunity Details                                     |
+| `/register`          | User registration                                       |
+| `/login`             | User login                                              |
+| `/profile`           | Professional Profile                                    |
+| `/portfolio`         | Portfolio management                                    |
+| `/learning`          | Course Enrollments, Learning Progress, and achievements |
+| `/admin`             | Admin Opportunity Management (authorized Admin only)    |
+| `/inspiration`       | Saudi Inspiration                                       |
 
 ## 7. Run the Project Locally
 
@@ -141,15 +141,15 @@ Open the local address shown in the terminal.
 
 ## 8. Verification and Testing
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Start the development server |
-| `npm run typecheck` | Check TypeScript types |
-| `npm run test` | Run Vitest tests |
-| `npm run lint` | Run ESLint |
-| `npm run build` | Build the application |
-| `npm run preview` | Preview the production build locally |
-| `npm run verify` | Run typecheck, tests, lint, and build sequentially |
+| Command             | Purpose                                            |
+| ------------------- | -------------------------------------------------- |
+| `npm run dev`       | Start the development server                       |
+| `npm run typecheck` | Check TypeScript types                             |
+| `npm run test`      | Run Vitest tests                                   |
+| `npm run lint`      | Run ESLint                                         |
+| `npm run build`     | Build the application                              |
+| `npm run preview`   | Preview the production build locally               |
+| `npm run verify`    | Run typecheck, tests, lint, and build sequentially |
 
 To run the separate Firestore Security Rules Emulator test suite, follow the instructions in `security-tests/README.md`.
 

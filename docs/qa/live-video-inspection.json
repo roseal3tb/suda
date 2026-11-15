@@ -6,15 +6,9 @@
     "paused": false,
     "muted": true,
     "readyState": 4,
-    "buffered": [
-      0,
-      7.466667
-    ],
+    "buffered": [0, 7.466667],
     "duration": 7.466667,
-    "timeSamples": [
-      3.665599,
-      5.283231
-    ]
+    "timeSamples": [3.665599, 5.283231]
   },
   "http": {
     "mp4Bytes": 1130148,

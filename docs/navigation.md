@@ -4,18 +4,18 @@ This document describes the current route and interaction behavior of the Suda a
 
 ## Routes and access
 
-| Route | Function | Access |
-| --- | --- | --- |
-| `/` | Home page and Opportunity category entry points | Public |
-| `/opportunities` | Browse, search, and filter Opportunities | Public |
+| Route                | Function                                                   | Access                                 |
+| -------------------- | ---------------------------------------------------------- | -------------------------------------- |
+| `/`                  | Home page and Opportunity category entry points            | Public                                 |
+| `/opportunities`     | Browse, search, and filter Opportunities                   | Public                                 |
 | `/opportunities/$id` | Opportunity Details, enrollment actions, or external links | Public page; enrollment requires login |
-| `/login` | Sign in with Firebase Authentication | Guest |
-| `/register` | Register with Firebase Authentication | Guest |
-| `/profile` | View and edit Professional Profile | Authenticated user |
-| `/portfolio` | Add, edit, and delete Portfolio items | Authenticated user |
-| `/learning` | Course Enrollments, Learning Progress, and achievements | Authenticated user |
-| `/admin` | Create, edit, and delete Opportunities | Authorized Admin |
-| `/inspiration` | Saudi Inspiration content and designer information | Public |
+| `/login`             | Sign in with Firebase Authentication                       | Guest                                  |
+| `/register`          | Register with Firebase Authentication                      | Guest                                  |
+| `/profile`           | View and edit Professional Profile                         | Authenticated user                     |
+| `/portfolio`         | Add, edit, and delete Portfolio items                      | Authenticated user                     |
+| `/learning`          | Course Enrollments, Learning Progress, and achievements    | Authenticated user                     |
+| `/admin`             | Create, edit, and delete Opportunities                     | Authorized Admin                       |
+| `/inspiration`       | Saudi Inspiration content and designer information         | Public                                 |
 
 ## Main navigation and workflows
 
