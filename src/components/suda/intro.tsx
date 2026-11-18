@@ -16,10 +16,16 @@ export function Intro() {
   const latestFinish = useRef<() => void>(() => {});
 
   function finish() {
+    // Hand focus to the page itself, not the skip link: a focused skip link
+    // becomes visible and would sit on top of the header after the intro.
     if (surface.current?.contains(document.activeElement)) {
-      document
-        .querySelector<HTMLAnchorElement>(".skip-link")
-        ?.focus({ preventScroll: true });
+      const main = document.getElementById("main-content");
+      if (main) {
+        if (!main.hasAttribute("tabindex")) main.setAttribute("tabindex", "-1");
+        main.focus({ preventScroll: true });
+      } else {
+        (document.activeElement as HTMLElement | null)?.blur();
+      }
     }
     setShow(false);
   }

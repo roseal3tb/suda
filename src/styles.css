@@ -8058,3 +8058,8 @@ h6,
 .home-thread-story > .inspiration-teaser {
   padding-top: 64px;
 }
+
+/* Focus lands on <main> after the intro; it is a landmark, not a control */
+#main-content:focus {
+  outline: none;
+}
