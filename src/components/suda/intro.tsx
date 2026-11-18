@@ -1,9 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { INTRO_KEY } from "@/features/suda/storage";
+import {
+  LOOM_STRIPS as STRIPS,
+  LOOM_TIMING,
+  WARP_X,
+  buildWeave,
+} from "./thread-geometry";
 
-/** The First Stitch: a single drawn thread reveals the unaltered Suda artwork.
- * No cloth panels, video dependency, or blocking animation for reduced-motion
- * visitors. The intro is shown only once per browser tab session. */
+/** «رُؤى تُنسَج» — The Loom.
+ * Warp threads fall into place, a needle weaves the weft over and under them,
+ * the Suda artwork rises from the woven band, and the cloth parts into strips
+ * to reveal the site. Shown once per tab session; skippable with the button or
+ * Escape; never shown with reduced motion. */
+
+const WEAVE = buildWeave();
+
 export function Intro() {
   const [show, setShow] = useState(false);
   const [leaving, setLeaving] = useState(false);
@@ -35,8 +46,8 @@ export function Intro() {
     if (seen || preference.matches) return;
     setShow(true);
     timers.current = [
-      setTimeout(() => setLeaving(true), 2220),
-      setTimeout(() => latestFinish.current(), 2900),
+      setTimeout(() => setLeaving(true), LOOM_TIMING.leaveAt),
+      setTimeout(() => latestFinish.current(), LOOM_TIMING.finishAt),
     ];
     const simplify = () => {
       if (preference.matches) {
@@ -59,10 +70,11 @@ export function Intro() {
   }
 
   if (!show) return null;
+  const begin = (seconds: number) => `${seconds.toFixed(3)}s`;
   return (
     <div
       ref={surface}
-      className={`thread-intro first-stitch-intro ${leaving ? "is-leaving" : ""} ${skipping ? "is-skipping" : ""}`}
+      className={`thread-intro loom-intro ${leaving ? "is-leaving" : ""} ${skipping ? "is-skipping" : ""}`}
       role="region"
       aria-label="مقدمة سُدى"
       dir="rtl"
@@ -74,45 +86,101 @@ export function Intro() {
         }
       }}
     >
-      <div className="first-stitch-guides" aria-hidden="true">
-        <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
-          <path d="M0 170 Q360 30 690 170 T1200 130" />
-          <path d="M90 0 V800 M1110 0 V800" />
-          <path d="M0 638 Q300 520 580 663 T1200 634" />
-          <circle cx="110" cy="630" r="92" />
-          <circle cx="1110" cy="168" r="112" />
-          <path d="M120 0 C220 185 210 365 90 510" />
-          <path d="M1000 360 C1150 450 1180 655 1050 800" />
-        </svg>
+      <div className="loom-strips" aria-hidden="true">
+        {Array.from({ length: STRIPS }, (_, i) => (
+          <span
+            key={i}
+            className={i % 2 ? "is-down" : "is-up"}
+            style={{ transitionDelay: `${(STRIPS - 1 - i) * 0.035}s` }}
+          />
+        ))}
       </div>
-      <div className="first-stitch-art" aria-hidden="true">
+
+      <div className="loom-art" aria-hidden="true">
         <svg
-          className="first-stitch-sweep"
-          viewBox="0 0 1000 350"
-          fill="none"
-          preserveAspectRatio="xMidYMid meet"
+          viewBox="0 0 1200 800"
+          preserveAspectRatio="xMidYMid slice"
+          focusable="false"
         >
-          <path
-            className="first-stitch-trail"
-            pathLength="1"
-            d="M-35 246 C124 250 174 143 292 182 C365 207 380 249 473 177 C521 137 558 207 510 224 C452 243 477 139 597 170 C720 198 772 64 900 129 C953 156 996 145 1030 123"
-          />
-          <g
-            className="first-stitch-needle"
-            transform="translate(904 130) rotate(-28)"
-          >
-            <path d="M0 0 H92" />
-            <ellipse cx="74" cy="0" rx="10" ry="4.5" />
+          <defs>
+            <radialGradient id="loom-glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#faf6f1" stopOpacity="0.96" />
+              <stop offset="62%" stopColor="#faf6f1" stopOpacity="0.82" />
+              <stop offset="100%" stopColor="#faf6f1" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+
+          {WARP_X.map((x, k) => (
+            <line
+              key={x}
+              className="loom-warp"
+              x1={x}
+              y1={-10}
+              x2={x}
+              y2={810}
+              pathLength={1}
+              style={{
+                animationDelay: `${0.04 + Math.abs(k - 7) * 0.035}s`,
+              }}
+            />
+          ))}
+
+          <path className="loom-weft" d={WEAVE.d} pathLength={1}>
+            <animate
+              attributeName="stroke-dashoffset"
+              from="1"
+              to="0"
+              begin={begin(LOOM_TIMING.weftStart)}
+              dur={begin(LOOM_TIMING.weftDuration)}
+              fill="freeze"
+            />
+          </path>
+
+          {WEAVE.crossings.map(({ x, y, at }) => (
+            <g key={`${x}-${y}`} className="loom-over" opacity="0">
+              <line x1={x} y1={y - 9} x2={x} y2={y + 9} className="gap" />
+              <line x1={x} y1={y - 11} x2={x} y2={y + 11} className="warp" />
+              <set
+                attributeName="opacity"
+                to="1"
+                begin={begin(at)}
+                fill="freeze"
+              />
+            </g>
+          ))}
+
+          <g className="loom-needle" opacity="0">
+            <path d="M0 0 H46 L52 0" />
+            <ellipse cx="6" cy="0" rx="4.6" ry="2" />
+            <animateMotion
+              path={WEAVE.d}
+              begin={begin(LOOM_TIMING.weftStart)}
+              dur={begin(LOOM_TIMING.weftDuration)}
+              rotate="auto"
+              fill="freeze"
+            />
+            <set
+              attributeName="opacity"
+              to="1"
+              begin={begin(LOOM_TIMING.weftStart)}
+              fill="freeze"
+            />
           </g>
-          <path
-            className="first-stitch-dashes"
-            d="M205 286h95m50 0h25m244-202h145m28 0h19"
+
+          <ellipse
+            className="loom-glow"
+            cx="600"
+            cy="403"
+            rx="330"
+            ry="175"
+            fill="url(#loom-glow)"
           />
         </svg>
       </div>
-      <div className="first-stitch-center">
-        <span className="first-stitch-kicker">كل حكاية تبدأ بخيط</span>
-        <div className="first-stitch-logo">
+
+      <div className="loom-center">
+        <span className="loom-kicker">كل حكاية تبدأ بخيط</span>
+        <div className="loom-logo">
           <img
             src="/suda-logo-transparent.png"
             alt="سُدى"
@@ -120,12 +188,13 @@ export function Intro() {
             height={1128}
           />
         </div>
-        <span className="first-stitch-tagline">رُؤى تُنسَج</span>
-        <span className="first-stitch-accent" aria-hidden="true" />
+        <span className="loom-tagline">رُؤى تُنسَج</span>
+        <span className="loom-stitch" aria-hidden="true" />
       </div>
+
       <button
         type="button"
-        className="first-stitch-skip thread-intro-skip"
+        className="loom-skip thread-intro-skip"
         autoFocus
         onClick={skip}
       >

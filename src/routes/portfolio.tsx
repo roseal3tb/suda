@@ -23,6 +23,7 @@ import {
 import { pageHead, type Work } from "@/features/suda/mock-data";
 import { preparePortfolioImage } from "@/features/suda/image-utils";
 import { useDemo } from "@/features/suda/demo-context";
+import { CardStitch } from "@/components/suda/card-stitch";
 export const Route = createFileRoute("/portfolio")({
   head: () =>
     pageHead(
@@ -127,6 +128,7 @@ function Portfolio() {
               key={work.id}
               delay={(i % 3) * 0.15}
             >
+              <CardStitch />
               <button
                 className="work-image"
                 type="button"

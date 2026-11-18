@@ -4,6 +4,7 @@ import { ArrowUpLeft, ChevronDown, ExternalLink } from "lucide-react";
 import { Reveal } from "@/components/suda/reveal";
 import { designers } from "@/features/suda/designers";
 import { pageHead } from "@/features/suda/mock-data";
+import { CardStitch } from "@/components/suda/card-stitch";
 export const Route = createFileRoute("/inspiration")({
   head: () =>
     pageHead(
@@ -82,6 +83,7 @@ function Inspiration() {
               aria-controls="designer-details"
               onClick={() => select(designer.id)}
             >
+              <CardStitch />
               <span className="designer-index">
                 {String(index + 1).padStart(2, "0")}
               </span>

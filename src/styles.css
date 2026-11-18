@@ -5296,199 +5296,6 @@ a:focus-visible {
   }
 }
 
-/* SUDA First Stitch — confirmed, no-fabric intro with a hand-drawn thread.
-   Original logo is loaded as-is; this section supersedes the older panel wipe. */
-.first-stitch-intro {
-  background: #faf6f1;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  isolation: isolate;
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity 0.55s ease,
-    transform 0.65s cubic-bezier(0.2, 0.75, 0.35, 1);
-}
-.first-stitch-intro.is-leaving {
-  opacity: 0;
-  transform: translateY(-12px) scale(1.02);
-}
-.first-stitch-intro.is-skipping {
-  transition-duration: 0.22s;
-}
-.first-stitch-guides {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.56;
-}
-.first-stitch-guides svg {
-  width: 100%;
-  height: 100%;
-}
-.first-stitch-guides path,
-.first-stitch-guides circle {
-  fill: none;
-  stroke: #c5b1bc;
-  stroke-width: 1.2;
-  stroke-dasharray: 8 13;
-  opacity: 0.44;
-}
-.first-stitch-art {
-  position: absolute;
-  inset: 50% 0 auto;
-  height: 340px;
-  transform: translateY(-45%);
-  pointer-events: none;
-  z-index: 2;
-}
-.first-stitch-sweep {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-.first-stitch-trail {
-  stroke: #806c7b;
-  stroke-width: 2.35;
-  stroke-linecap: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: first-stitch-draw 1.75s 0.08s cubic-bezier(0.48, 0, 0.24, 1)
-    forwards;
-}
-.first-stitch-needle {
-  stroke: #a195a2;
-  fill: none;
-  stroke-width: 2.7;
-  opacity: 0;
-  animation: first-stitch-reveal 0.55s 1.05s ease forwards;
-}
-.first-stitch-dashes {
-  stroke: #c5b1bc;
-  stroke-width: 1.3;
-  stroke-dasharray: 5 9;
-  opacity: 0.42;
-}
-.first-stitch-center {
-  position: relative;
-  z-index: 1;
-  width: min(92vw, 520px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 26px 10px 65px;
-  pointer-events: none;
-}
-.first-stitch-kicker {
-  font-size: 13px;
-  letter-spacing: 0.015em;
-  color: #746876;
-  opacity: 0;
-  transform: translateY(9px);
-  animation: first-stitch-up 0.55s 0.12s ease forwards;
-}
-.first-stitch-logo {
-  width: min(66vw, 350px);
-  height: auto;
-  opacity: 0;
-  transform: scale(0.94) translateY(8px);
-  animation: first-stitch-logo-reveal 0.8s 0.68s cubic-bezier(0.16, 1, 0.3, 1)
-    forwards;
-}
-.first-stitch-logo img {
-  display: block;
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-}
-.first-stitch-tagline {
-  font-family: "IBM Plex Sans Arabic", sans-serif;
-  font-weight: 500;
-  font-size: clamp(22px, 3vw, 32px);
-  color: #564e58;
-  line-height: 1.6;
-  opacity: 0;
-  transform: translateY(10px);
-  animation: first-stitch-up 0.58s 1.15s ease forwards;
-}
-.first-stitch-accent {
-  width: 0;
-  height: 1px;
-  margin-top: 19px;
-  background: #a195a2;
-  animation: first-stitch-accent-grow 0.6s 1.45s ease forwards;
-}
-.first-stitch-skip {
-  z-index: 3;
-  bottom: clamp(22px, 4vh, 46px);
-  inset-inline-end: clamp(18px, 5vw, 64px);
-  background: rgb(250 246 241 / 0.92);
-  border: 1px solid #c5b1bc;
-  color: #564e58;
-}
-.first-stitch-skip:hover {
-  border-color: #a195a2;
-  background: #e8d7e1;
-}
-@keyframes first-stitch-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-@keyframes first-stitch-reveal {
-  to {
-    opacity: 0.78;
-  }
-}
-@keyframes first-stitch-up {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes first-stitch-logo-reveal {
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-@keyframes first-stitch-accent-grow {
-  to {
-    width: 110px;
-  }
-}
-@media (max-width: 700px) {
-  .first-stitch-art {
-    height: 260px;
-    transform: translateY(-40%);
-    opacity: 0.7;
-  }
-  .first-stitch-center {
-    padding-bottom: 60px;
-  }
-  .first-stitch-kicker {
-    font-size: 12px;
-  }
-  .first-stitch-logo {
-    width: min(69vw, 290px);
-  }
-  .first-stitch-skip {
-    font-size: 12px;
-    bottom: 26px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .first-stitch-intro {
-    display: none !important;
-  }
-  .first-stitch-intro * {
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
 /* The approved couture drawing now occupies the LEFT hero column visibly,
    rather than sitting underneath the opaque editorial film. */
 .atelier-hero > .atelier-hero-pattern {
@@ -7875,5 +7682,382 @@ h6,
 @media (max-width: 760px) {
   .category-tabs .saved-toggle {
     margin-inline-start: 0;
+  }
+}
+
+/* ── Card stitch: a running stitch traces the card on hover/focus/tap ── */
+:where(.stitch-host) {
+  position: relative;
+}
+.card-stitch {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  --stitch-color: var(--suda-plum);
+  --stitch-time: 1.15s;
+  --stitch-ease: cubic-bezier(0.65, 0, 0.3, 1);
+}
+.card-stitch-svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  filter: drop-shadow(0 0 1.2px rgb(250 246 241 / 0.95));
+}
+.card-stitch-thread {
+  fill: none;
+  stroke: var(--stitch-color);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 7 6;
+  opacity: 0.85;
+}
+.card-stitch-reveal {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 8;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.55s var(--stitch-ease);
+}
+.card-stitch-needle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 34px;
+  height: 8px;
+  offset-distance: 0%;
+  offset-rotate: auto;
+  offset-anchor: 6px 4px;
+  opacity: 0;
+  transition:
+    offset-distance 0.55s var(--stitch-ease),
+    opacity 0.2s ease;
+}
+.card-stitch-needle svg {
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 1px 1px rgb(86 78 88 / 0.25));
+}
+.card-stitch-needle path {
+  fill: none;
+  stroke: #8a8191;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+.card-stitch-needle ellipse {
+  fill: none;
+  stroke: #8a8191;
+  stroke-width: 1.1;
+}
+.stitch-host:is(:hover, :focus-visible, :has(:focus-visible), .is-stitched)
+  .card-stitch-reveal {
+  stroke-dashoffset: 0;
+  transition-duration: var(--stitch-time);
+}
+.stitch-host:is(:hover, :focus-visible, :has(:focus-visible), .is-stitched)
+  .card-stitch-needle {
+  offset-distance: 100%;
+  animation: stitch-needle-ride var(--stitch-time) var(--stitch-ease) forwards;
+  transition-duration: var(--stitch-time), 0s;
+}
+@keyframes stitch-needle-ride {
+  0% {
+    opacity: 0;
+  }
+  8%,
+  82% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+/* Darker cards and photos keep the thread readable */
+.couture-voice-card-3 .card-stitch,
+.couture-voice-card-0 .card-stitch {
+  --stitch-color: #463f48;
+}
+
+/* Wavy thread replacing a divider (quote cards) */
+.couture-voice-author {
+  position: relative;
+  transition: border-color 0.35s ease;
+}
+.thread-wave {
+  position: absolute;
+  top: -12px;
+  inset-inline: 0;
+  height: 24px;
+  pointer-events: none;
+}
+.thread-wave svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.thread-wave path {
+  fill: none;
+  stroke: var(--suda-plum);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.45s var(--suda-ease);
+}
+.thread-wave-knot {
+  position: absolute;
+  top: 9px;
+  inset-inline-end: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--suda-plum);
+  transform: scale(0);
+  transition: transform 0.25s ease;
+}
+.stitch-host:is(:hover, :focus-visible, :has(:focus-visible), .is-stitched)
+  .couture-voice-author {
+  border-top-color: transparent;
+}
+.stitch-host:is(:hover, :focus-visible, :has(:focus-visible), .is-stitched)
+  .thread-wave
+  path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.9s 0.2s var(--suda-ease);
+}
+.stitch-host:is(:hover, :focus-visible, :has(:focus-visible), .is-stitched)
+  .thread-wave-knot {
+  transform: scale(1);
+  transition-delay: 1s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-stitch-reveal,
+  .thread-wave path,
+  .thread-wave-knot {
+    transition: none !important;
+  }
+  .card-stitch-needle {
+    display: none;
+  }
+}
+
+/* ── «رُؤى تُنسَج» The Loom intro ── */
+.loom-intro {
+  background: transparent;
+  color: var(--suda-plum);
+}
+.loom-strips {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+}
+.loom-strips span {
+  background: #faf6f1;
+  border-inline-start: 1px solid rgb(197 177 188 / 0.45);
+  transition: transform 0.62s cubic-bezier(0.7, 0, 0.25, 1);
+  will-change: transform;
+}
+.loom-art {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transition:
+    opacity 0.32s ease,
+    transform 0.5s cubic-bezier(0.2, 0.7, 0.3, 1),
+    filter 0.4s ease;
+}
+.loom-art svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.loom-warp {
+  stroke: #c5b1bc;
+  stroke-width: 1.3;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  animation: loom-draw 0.75s cubic-bezier(0.6, 0, 0.25, 1) forwards;
+}
+.loom-weft {
+  fill: none;
+  stroke: #564e58;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+}
+.loom-over .gap {
+  stroke: #faf6f1;
+  stroke-width: 5.5;
+}
+.loom-over .warp {
+  stroke: #b8a3b0;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.loom-needle path {
+  fill: none;
+  stroke: #7d7385;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+.loom-needle ellipse {
+  fill: none;
+  stroke: #7d7385;
+  stroke-width: 1.4;
+}
+.loom-glow {
+  opacity: 0;
+  animation: loom-fade 0.7s 1.25s ease forwards;
+}
+.loom-center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 1.6vh, 16px);
+  text-align: center;
+  transition:
+    opacity 0.32s ease,
+    transform 0.5s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.loom-kicker {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--suda-ink-secondary);
+  opacity: 0;
+  transform: translateY(8px);
+  animation: loom-up 0.6s 0.15s ease forwards;
+}
+.loom-logo {
+  width: min(34vw, 360px);
+  clip-path: inset(0 0 0 100%);
+  filter: blur(6px);
+  animation: loom-sweep 0.95s 1.3s cubic-bezier(0.55, 0, 0.2, 1) forwards;
+}
+.loom-logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.loom-tagline {
+  font-family: var(--font-editorial, inherit);
+  font-size: clamp(22px, 2.6vw, 32px);
+  font-weight: 600;
+  clip-path: inset(0 0 0 100%);
+  animation: loom-sweep-sharp 0.75s 1.9s cubic-bezier(0.55, 0, 0.2, 1) forwards;
+}
+.loom-stitch {
+  width: 132px;
+  height: 2px;
+  background: repeating-linear-gradient(
+    to left,
+    #564e58 0 7px,
+    transparent 7px 12px
+  );
+  transform: scaleX(0);
+  transform-origin: right;
+  animation: loom-grow 0.6s 2.25s ease forwards;
+}
+.loom-skip {
+  z-index: 3;
+  bottom: clamp(22px, 4vh, 46px);
+  inset-inline-end: clamp(18px, 5vw, 64px);
+  background: rgb(250 246 241 / 0.92);
+  border: 1px solid #c5b1bc;
+  color: #564e58;
+  transition: opacity 0.25s ease;
+}
+.loom-skip:hover {
+  border-color: #a195a2;
+  background: #e8d7e1;
+}
+
+/* Leaving: the art lifts away and the cloth parts into strips */
+.loom-intro.is-leaving .loom-art,
+.loom-intro.is-leaving .loom-center {
+  opacity: 0;
+  transform: scale(1.04);
+}
+.loom-intro.is-leaving .loom-art {
+  filter: blur(3px);
+}
+.loom-intro.is-leaving .loom-skip {
+  opacity: 0;
+}
+.loom-intro.is-leaving .loom-strips .is-up {
+  transform: translateY(-104%);
+}
+.loom-intro.is-leaving .loom-strips .is-down {
+  transform: translateY(104%);
+}
+.loom-intro.is-skipping .loom-strips span,
+.loom-intro.is-skipping .loom-art,
+.loom-intro.is-skipping .loom-center {
+  transition-duration: 0.22s !important;
+  transition-delay: 0s !important;
+}
+
+@keyframes loom-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes loom-fade {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes loom-fade-soft {
+  to {
+    opacity: 0.55;
+  }
+}
+@keyframes loom-up {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes loom-sweep {
+  to {
+    clip-path: inset(0 0 0 0);
+    filter: blur(0);
+  }
+}
+@keyframes loom-sweep-sharp {
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes loom-grow {
+  to {
+    transform: scaleX(1);
+  }
+}
+@media (max-width: 700px) {
+  .loom-glow {
+    animation-name: loom-fade-soft;
+  }
+  .loom-logo {
+    width: min(64vw, 270px);
+  }
+  .loom-kicker {
+    font-size: 12px;
+  }
+  .loom-skip {
+    font-size: 12px;
+    bottom: 26px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loom-intro {
+    display: none !important;
   }
 }

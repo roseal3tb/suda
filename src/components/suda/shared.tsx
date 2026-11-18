@@ -32,6 +32,7 @@ import {
   type Opportunity,
 } from "@/features/suda/mock-data";
 import { useDemo } from "@/features/suda/demo-context";
+import { CardStitch } from "@/components/suda/card-stitch";
 export const categoryIcons = {
   الدورات: BookOpen,
   المسابقات: Trophy,
@@ -95,6 +96,7 @@ export function OpportunityCard({
         params={{ id: item.id }}
         className="opportunity-card"
       >
+        <CardStitch />
         <div className="card-image">
           <img
             src={item.image}

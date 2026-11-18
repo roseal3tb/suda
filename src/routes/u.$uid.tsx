@@ -12,6 +12,7 @@ import {
   type PublicProfile,
   type Work,
 } from "@/features/suda/mock-data";
+import { CardStitch } from "@/components/suda/card-stitch";
 
 export const Route = createFileRoute("/u/$uid")({
   head: () =>
@@ -157,6 +158,7 @@ function PublicProfilePage() {
               className={`lookbook-piece lookbook-piece-${i % 5}`}
               delay={(i % 3) * 0.12}
             >
+              <CardStitch />
               <button
                 type="button"
                 onClick={() => setView(work)}

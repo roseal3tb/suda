@@ -16,6 +16,7 @@ import {
   type Opportunity,
 } from "@/features/suda/mock-data";
 import { useDemo } from "@/features/suda/demo-context";
+import { CardStitch } from "@/components/suda/card-stitch";
 
 export const Route = createFileRoute("/learning")({
   head: () =>
@@ -145,6 +146,7 @@ function LearningRow({
 
   return (
     <Reveal as="article" className="learning-row">
+      <CardStitch />
       <img
         src={course.image}
         alt="تفاصيل تصميم أزياء توضيحية"
