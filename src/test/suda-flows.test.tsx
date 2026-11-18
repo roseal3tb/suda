@@ -127,14 +127,14 @@ describe("Sprint 1 journeys with the real provider and an isolated Firebase SDK 
     );
     await screen.findByText("Experience designer-a");
     await screen.findByText("Description designer-a");
-    await screen.findByText("Achievement designer-a");
+    await screen.findAllByText("Achievement designer-a");
     act(() => {
       signedIn("designer-b");
       cloud.listeners.forEach((callback) => callback(cloud.auth.currentUser));
     });
     await screen.findByText("Experience designer-b");
     await screen.findByText("Description designer-b");
-    await screen.findByText("Achievement designer-b");
+    await screen.findAllByText("Achievement designer-b");
     expect(screen.queryByText("Experience designer-a")).not.toBeInTheDocument();
     expect(
       screen.queryByText("Description designer-a"),
@@ -580,5 +580,92 @@ describe("Sprint 1 journeys with the real provider and an isolated Firebase SDK 
     expect(
       screen.queryByRole("button", { name: "إعادة ضبط البيانات" }),
     ).not.toBeInTheDocument();
+  });
+  it("keeps a portfolio image with the work after reloading", async () => {
+    signedIn();
+    const image = "data:image/jpeg;base64,c3VkYQ==";
+    cloud.records.set("users/designer-a/works/with-image", {
+      id: "with-image",
+      title: "فستان بصورة",
+      description: "تصميم بصورة محفوظة",
+      image,
+    });
+    mount(<PortfolioPage />);
+    const heading = await screen.findByRole("heading", { name: "فستان بصورة" });
+    expect(heading).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "فستان بصورة" })).toHaveAttribute(
+      "src",
+      image,
+    );
+  });
+
+  it("saves an opportunity, tracks its status and removes it", async () => {
+    signedIn();
+    mount(<OpportunitiesPage />);
+    await settled();
+    const save = await screen.findByRole("button", {
+      name: "حفظ من الفكرة إلى الباترون",
+    });
+    await waitFor(() => expect(save).not.toBeDisabled());
+    fireEvent.click(save);
+    await waitFor(() =>
+      expect(cloud.records.get("users/designer-a/saved/pattern")).toMatchObject(
+        { opportunityId: "pattern", status: "محفوظة" },
+      ),
+    );
+    submit(/فرصي المحفوظة/);
+    fireEvent.click(await screen.findByRole("radio", { name: "قدّمت" }));
+    await waitFor(() =>
+      expect(
+        cloud.records.get("users/designer-a/saved/pattern")?.["status"],
+      ).toBe("قدّمت"),
+    );
+    submit("حذف من الفكرة إلى الباترون من قائمتي");
+    await waitFor(() =>
+      expect(cloud.records.has("users/designer-a/saved/pattern")).toBe(false),
+    );
+  });
+
+  it("sends a password reset without revealing whether the account exists", async () => {
+    mount(<AuthPage />);
+    submit("نسيتِ كلمة المرور؟");
+    expect(screen.getByRole("alert")).toHaveTextContent("اكتبي بريدك");
+    change("البريد الإلكتروني", "Designer@Example.test");
+    submit("نسيتِ كلمة المرور؟");
+    await screen.findByText(/إن كان البريد مسجّلًا/);
+    expect(cloud.resetEmails).toEqual(["designer@example.test"]);
+  });
+
+  it("publishes a public profile snapshot without private account fields", async () => {
+    signedIn();
+    cloud.records.set("users/designer-a", {
+      profile: {
+        name: "مصممة منشورة",
+        bio: "نبذة",
+        skills: ["رسم"],
+        interests: ["تراث"],
+        experience: "",
+      },
+    });
+    mount(<ProfilePage />);
+    await screen.findByText("نبذة");
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "نشر ملفي برابط" }),
+      ).not.toBeDisabled(),
+    );
+    submit("نشر ملفي برابط");
+    await waitFor(() =>
+      expect(cloud.records.get("publicProfiles/designer-a")).toEqual({
+        name: "مصممة منشورة",
+        bio: "نبذة",
+        skills: ["رسم"],
+        interests: ["تراث"],
+        experience: "",
+        achievements: [],
+        published: true,
+      }),
+    );
+    await screen.findByRole("button", { name: "إيقاف المشاركة" });
   });
 });

@@ -74,13 +74,88 @@ test("second user cannot delete first portfolio", () =>
   assertFails(deleteDoc(doc(b, "users/alice/works/w1"))));
 test("owner saves own portfolio metadata", () =>
   assertSucceeds(setDoc(doc(a, "users/alice/works/w1"), work)));
-test("portfolio image data is not accepted as metadata", () =>
-  assertFails(
+test("owner saves a compressed JPEG with her work", () =>
+  assertSucceeds(
     setDoc(doc(a, "users/alice/works/w1"), {
       ...work,
-      image: "data:image/png;base64,fixture",
+      image: "data:image/jpeg;base64,fixture",
     }),
   ));
+test("non-image or oversized work images are rejected", async () => {
+  await assertFails(
+    setDoc(doc(a, "users/alice/works/w1"), {
+      ...work,
+      image: "javascript:alert(1)",
+    }),
+  );
+  await assertFails(
+    setDoc(doc(a, "users/alice/works/w1"), {
+      ...work,
+      image: "data:image/jpeg;base64," + "a".repeat(700001),
+    }),
+  );
+});
+test("visitors cannot read works of an unpublished profile", () =>
+  assertFails(getDoc(doc(guest, "users/alice/works/w1"))));
+test("publishing a profile makes it and its works public, never the account", async () => {
+  await assertSucceeds(
+    setDoc(doc(a, "publicProfiles/alice"), {
+      name: "Alice",
+      bio: "",
+      skills: ["رسم"],
+      interests: [],
+      experience: "",
+      achievements: [],
+      published: true,
+    }),
+  );
+  await assertSucceeds(getDoc(doc(guest, "publicProfiles/alice")));
+  await assertSucceeds(getDoc(doc(guest, "users/alice/works/w1")));
+  await assertFails(getDoc(doc(guest, "users/alice")));
+  await assertFails(getDocs(collection(guest, "publicProfiles")));
+});
+test("public profiles reject private fields and other owners", async () => {
+  await assertFails(
+    setDoc(doc(a, "publicProfiles/alice"), {
+      name: "Alice",
+      bio: "",
+      skills: [],
+      interests: [],
+      experience: "",
+      achievements: [],
+      published: true,
+      email: "alice@example.com",
+    }),
+  );
+  await assertFails(
+    setDoc(doc(b, "publicProfiles/alice"), {
+      name: "Hijack",
+      bio: "",
+      skills: [],
+      interests: [],
+      experience: "",
+      achievements: [],
+      published: true,
+    }),
+  );
+});
+test("saved opportunities are private and status-checked", async () => {
+  await assertSucceeds(
+    setDoc(doc(a, "users/alice/saved/o1"), {
+      opportunityId: "o1",
+      status: "قدّمت",
+      savedAt: 1,
+    }),
+  );
+  await assertFails(getDoc(doc(b, "users/alice/saved/o1")));
+  await assertFails(
+    setDoc(doc(a, "users/alice/saved/o1"), {
+      opportunityId: "o1",
+      status: "مقبولة",
+      savedAt: 1,
+    }),
+  );
+});
 test("second user cannot read first enrollment", () =>
   assertFails(getDoc(doc(b, "users/alice/enrollments/c1"))));
 test("second user cannot change first progress", () =>

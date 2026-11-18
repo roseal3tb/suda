@@ -22,7 +22,12 @@ import {
 
 import { auth, db } from "@/lib/firebase";
 
-import { loginUser, logoutUser, registerUser } from "@/lib/auth";
+import {
+  loginUser,
+  logoutUser,
+  registerUser,
+  requestPasswordReset,
+} from "@/lib/auth";
 
 import {
   initialOpportunities,
@@ -31,10 +36,15 @@ import {
   validateOpportunity,
   isValidZoomUrl,
   isValidExternalUrl,
+  savedStatuses,
+  MAX_WORK_IMAGE_CHARS,
   type Opportunity,
   type Profile,
   type Work,
   type Enrollment,
+  type SavedOpportunity,
+  type SavedStatus,
+  type PublicProfile,
 } from "./mock-data";
 
 import { readStore, STORE_KEYS, userStoreKey } from "./storage";
@@ -70,6 +80,8 @@ interface DemoState {
 
   signOutUser: () => Promise<void>;
 
+  resetPassword: (email: string) => Promise<void>;
+
   opportunities: Opportunity[];
 
   saveOpportunity: (item: Opportunity) => Promise<boolean>;
@@ -99,6 +111,25 @@ interface DemoState {
   updateProgress: (id: string, value: number) => Promise<boolean>;
 
   addAchievement: (id: string, text: string) => Promise<boolean>;
+
+  saved: SavedOpportunity[];
+
+  savedLoading: boolean;
+
+  isSaved: (opportunityId: string) => boolean;
+
+  toggleSaved: (opportunityId: string) => Promise<boolean>;
+
+  setSavedStatus: (
+    opportunityId: string,
+    status: SavedStatus,
+  ) => Promise<boolean>;
+
+  published: boolean;
+
+  publishLoading: boolean;
+
+  setPublished: (published: boolean) => Promise<boolean>;
 
   storageError: string;
 
@@ -147,7 +178,7 @@ function asOpportunity(value: unknown, id: string): Opportunity | null {
   };
 }
 
-// Firestore stores portfolio metadata only. Images never leave the current session.
+// Portfolio images are compressed in the browser and stored inline (under 700 KB).
 
 function asStoredWork(value: unknown, fallbackId = ""): Work | null {
   if (!value || typeof value !== "object") return null;
@@ -164,12 +195,33 @@ function asStoredWork(value: unknown, fallbackId = ""): Work | null {
   )
     return null;
 
+  const image = data["image"];
+
   return {
     id,
     title: data["title"],
     description: data["description"],
-    image: "",
+    image:
+      typeof image === "string" &&
+      /^data:image\/(jpeg|webp);base64,/.test(image) &&
+      image.length <= MAX_WORK_IMAGE_CHARS
+        ? image
+        : "",
   };
+}
+
+function asSaved(value: unknown, id: string): SavedOpportunity | null {
+  if (!value || typeof value !== "object" || !id || id.includes("/"))
+    return null;
+  const data = value as Record<string, unknown>;
+  const status = data["status"];
+  const savedAt = data["savedAt"];
+  if (
+    !savedStatuses.includes(status as SavedStatus) ||
+    typeof savedAt !== "number"
+  )
+    return null;
+  return { opportunityId: id, status: status as SavedStatus, savedAt };
 }
 
 // Only accept well-formed enrollment records; document ID is authoritative.
@@ -246,6 +298,14 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   const [enrollmentsLoading, setEnrollmentsLoading] = useState(true);
 
   const [storageError, setStorageError] = useState("");
+
+  const [saved, setSaved] = useState<SavedOpportunity[]>([]);
+
+  const [savedLoading, setSavedLoading] = useState(true);
+
+  const [published, setPublishedState] = useState(false);
+
+  const [publishLoading, setPublishLoading] = useState(true);
 
   // All visitors observe the same cloud records. Never fall back to stale local data.
   useEffect(
@@ -349,6 +409,14 @@ export function DemoProvider({ children }: { children: ReactNode }) {
 
         setEnrollmentsLoading(false);
 
+        setSaved([]);
+
+        setSavedLoading(false);
+
+        setPublishedState(false);
+
+        setPublishLoading(false);
+
         return;
       }
 
@@ -376,6 +444,58 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       setEnrollments([]);
 
       setEnrollmentsLoading(true);
+
+      setSaved([]);
+
+      setSavedLoading(true);
+
+      setPublishedState(false);
+
+      setPublishLoading(true);
+
+      // Saved opportunities and public-profile state belong to the UID only.
+      void (async () => {
+        try {
+          const snapshot = await getDocs(
+            collection(db, "users", user.uid, "saved"),
+          );
+          if (
+            !active ||
+            currentRequest !== requestId ||
+            auth.currentUser?.uid !== user.uid
+          )
+            return;
+          setSaved(
+            snapshot.docs
+              .map((entry) => asSaved(entry.data(), entry.id))
+              .filter((item): item is SavedOpportunity => item !== null),
+          );
+        } catch (error) {
+          if (!active || currentRequest !== requestId) return;
+          console.error("Failed to load saved opportunities:", error);
+        } finally {
+          if (active && currentRequest === requestId) setSavedLoading(false);
+        }
+      })();
+
+      void (async () => {
+        try {
+          const snapshot = await getDoc(doc(db, "publicProfiles", user.uid));
+          if (
+            !active ||
+            currentRequest !== requestId ||
+            auth.currentUser?.uid !== user.uid
+          )
+            return;
+          setPublishedState(snapshot.data()?.["published"] === true);
+        } catch (error) {
+          if (!active || currentRequest !== requestId) return;
+          console.error("Failed to load public profile state:", error);
+        } finally {
+          if (active && currentRequest === requestId)
+            setPublishLoading(false);
+        }
+      })();
 
       void getIdTokenResult(user)
         .then((result) => {
@@ -635,6 +755,135 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     await logoutUser();
   }
 
+  async function resetPassword(email: string) {
+    await requestPasswordReset(email);
+  }
+
+  function publicSnapshot(
+    source: Profile,
+    learning: Enrollment[],
+    isPublic: boolean,
+  ): PublicProfile {
+    return {
+      name: source.name.trim().slice(0, 100),
+      bio: source.bio,
+      skills: source.skills.slice(0, 30),
+      interests: source.interests.slice(0, 30),
+      experience: source.experience,
+      achievements: learning.flatMap((item) => item.achievements).slice(0, 60),
+      published: isPublic,
+    };
+  }
+
+  // Keeps the opt-in public page in step with the private profile.
+  async function syncPublicProfile(
+    uid: string,
+    source: Profile | null,
+    learning: Enrollment[],
+    isPublic: boolean,
+  ) {
+    if (!source) return;
+    await setDoc(
+      doc(db, "publicProfiles", uid),
+      publicSnapshot(source, learning, isPublic),
+    );
+  }
+
+  async function setPublished(next: boolean): Promise<boolean> {
+    const user = auth.currentUser;
+    if (!user || !profile) {
+      setStorageError("أنشئي ملفك المهني أولًا ثم شاركيه.");
+      return false;
+    }
+    try {
+      await syncPublicProfile(user.uid, profile, enrollments, next);
+      if (auth.currentUser?.uid !== user.uid) return false;
+      setPublishedState(next);
+      setStorageError("");
+      return true;
+    } catch (error) {
+      console.error("Failed to update public profile:", error);
+      setStorageError(
+        "تعذّر تحديث مشاركة الملف. تحققي من الاتصال وحاولي مجددًا.",
+      );
+      return false;
+    }
+  }
+
+  function isSaved(opportunityId: string) {
+    return saved.some((item) => item.opportunityId === opportunityId);
+  }
+
+  async function toggleSaved(opportunityId: string): Promise<boolean> {
+    const user = auth.currentUser;
+    if (!user) {
+      setStorageError("سجّلي الدخول لحفظ الفرص في حسابك.");
+      return false;
+    }
+    if (!opportunityId || opportunityId.includes("/")) return false;
+    const ref = doc(db, "users", user.uid, "saved", opportunityId);
+    try {
+      if (isSaved(opportunityId)) {
+        await deleteDoc(ref);
+        if (auth.currentUser?.uid !== user.uid) return false;
+        setSaved((current) =>
+          current.filter((item) => item.opportunityId !== opportunityId),
+        );
+      } else {
+        const record: SavedOpportunity = {
+          opportunityId,
+          status: "محفوظة",
+          savedAt: Date.now(),
+        };
+        await setDoc(ref, record);
+        if (auth.currentUser?.uid !== user.uid) return false;
+        setSaved((current) => [
+          record,
+          ...current.filter((item) => item.opportunityId !== opportunityId),
+        ]);
+      }
+      setStorageError("");
+      return true;
+    } catch (error) {
+      console.error("Failed to toggle saved opportunity:", error);
+      setStorageError("تعذّر حفظ الفرصة. تحققي من الاتصال وحاولي مجددًا.");
+      return false;
+    }
+  }
+
+  async function setSavedStatus(
+    opportunityId: string,
+    status: SavedStatus,
+  ): Promise<boolean> {
+    const user = auth.currentUser;
+    if (
+      !user ||
+      !opportunityId ||
+      opportunityId.includes("/") ||
+      !savedStatuses.includes(status)
+    )
+      return false;
+    // Upsert: marking an unsaved opportunity as applied also saves it.
+    const current = saved.find(
+      (item) => item.opportunityId === opportunityId,
+    ) ?? { opportunityId, status: "محفوظة" as SavedStatus, savedAt: Date.now() };
+    const record: SavedOpportunity = { ...current, status };
+    try {
+      await setDoc(doc(db, "users", user.uid, "saved", opportunityId), record);
+      if (auth.currentUser?.uid !== user.uid) return false;
+      setSaved((list) => [
+        record,
+        ...list.filter((item) => item.opportunityId !== opportunityId),
+      ]);
+      setStorageError("");
+      return true;
+    } catch (error) {
+      console.error("Failed to update saved status:", error);
+      setStorageError("تعذّر تحديث الحالة. تحققي من الاتصال وحاولي مجددًا.");
+      return false;
+    }
+  }
+
   async function requireAdmin() {
     const user = auth.currentUser;
     if (!user) throw new Error("Authentication required");
@@ -766,12 +1015,17 @@ export function DemoProvider({ children }: { children: ReactNode }) {
 
       setStorageError("");
 
+      if (published)
+        void syncPublicProfile(user.uid, next, enrollments, true).catch(
+          (error) => console.error("Failed to sync public profile:", error),
+        );
+
       return true;
     } catch (error) {
       console.error("Failed to save Firestore profile:", error);
 
       setStorageError(
-        "تعذّر حفظ الملف المهني في Firebase. تحققي من الاتصالوحاولي مجددًا.",
+        "تعذّر حفظ الملف المهني في Firebase. تحققي من الاتصال وحاولي مجددًا.",
       );
 
       return false;
@@ -788,7 +1042,12 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      // Save text only; image is intentionally temporary in React state.
+      const image =
+        work.image &&
+        /^data:image\/(jpeg|webp);base64,/.test(work.image) &&
+        work.image.length <= MAX_WORK_IMAGE_CHARS
+          ? work.image
+          : "";
 
       await setDoc(doc(db, "users", user.uid, "works", work.id), {
         id: work.id,
@@ -796,14 +1055,18 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         title: work.title,
 
         description: work.description,
+
+        ...(image ? { image } : {}),
       });
 
       if (auth.currentUser?.uid !== user.uid) return false;
 
+      const stored = { ...work, image };
+
       setWorks((current) =>
         current.some((item) => item.id === work.id)
-          ? current.map((item) => (item.id === work.id ? work : item))
-          : [work, ...current],
+          ? current.map((item) => (item.id === work.id ? stored : item))
+          : [stored, ...current],
       );
 
       setStorageError("");
@@ -946,14 +1209,23 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         return true;
       });
       if (auth.currentUser?.uid !== user.uid) return false;
-      if (updated)
-        setEnrollments((current) =>
-          current.map((item) =>
-            item.courseId === id
-              ? { ...item, achievements: [...item.achievements, achievement] }
-              : item,
-          ),
+      if (updated) {
+        const nextEnrollments = enrollments.map((item) =>
+          item.courseId === id
+            ? { ...item, achievements: [...item.achievements, achievement] }
+            : item,
         );
+        setEnrollments(nextEnrollments);
+        if (published)
+          void syncPublicProfile(
+            user.uid,
+            profile,
+            nextEnrollments,
+            true,
+          ).catch((error) =>
+            console.error("Failed to sync public achievements:", error),
+          );
+      }
       setStorageError("");
       return updated;
     } catch (error) {
@@ -978,6 +1250,8 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         signUp,
 
         signOutUser,
+
+        resetPassword,
 
         opportunities: opportunities.map((item) =>
           meetingLinks[item.id] && session && !authLoading
@@ -1012,6 +1286,22 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         updateProgress,
 
         addAchievement,
+
+        saved,
+
+        savedLoading,
+
+        isSaved,
+
+        toggleSaved,
+
+        setSavedStatus,
+
+        published,
+
+        publishLoading,
+
+        setPublished,
 
         storageError,
 

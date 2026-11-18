@@ -243,6 +243,14 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </Link>
           <p className="suda-footer-motto">رُؤى تُنسَج</p>
           <span className="suda-footer-rule" aria-hidden="true" />
+          <nav className="suda-footer-nav" aria-label="روابط سريعة">
+            {nav.slice(1).map((n) => (
+              <Link key={n.to} to={n.to}>
+                {n.label}
+              </Link>
+            ))}
+            {!session && <Link to="/register">إنشاء حساب</Link>}
+          </nav>
         </div>
         <div className="suda-footer-utility">
           <p>© ٢٠٢٦ سُدى · جميع الحقوق محفوظة</p>

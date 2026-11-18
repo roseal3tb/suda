@@ -1,19 +1,32 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Search, RotateCcw, X, SlidersHorizontal } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  Search,
+  RotateCcw,
+  X,
+  SlidersHorizontal,
+  Bookmark,
+  ChevronDown,
+  Trash2,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DemoNote,
   EmptyState,
+  LoadingCards,
   OpportunityCard,
   PageIntro,
   categoryIcons,
 } from "@/components/suda/shared";
 import {
   categories,
+  deadlineInfo,
   emptyFilters,
   filterOpportunities,
   pageHead,
+  savedStatuses,
+  sortByDeadline,
+  type Opportunity,
 } from "@/features/suda/mock-data";
 import { useDemo } from "@/features/suda/demo-context";
 export const Route = createFileRoute("/opportunities/")({
@@ -32,7 +45,9 @@ export const Route = createFileRoute("/opportunities/")({
   component: Opportunities,
 });
 function Opportunities() {
-  const { opportunities, opportunitiesLoading } = useDemo();
+  const { opportunities, opportunitiesLoading, session, saved } = useDemo();
+  const [showSaved, setShowSaved] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const { category } = Route.useSearch();
   const [filters, setFilters] = useState({
     ...emptyFilters,
@@ -41,7 +56,16 @@ function Opportunities() {
   useEffect(() => {
     setFilters((prev) => ({ ...prev, type: category || "" }));
   }, [category]);
-  const items = filterOpportunities(opportunities, filters);
+  const items = sortByDeadline(filterOpportunities(opportunities, filters));
+  const savedItems = saved
+    .map((entry) => ({
+      entry,
+      item: opportunities.find((o) => o.id === entry.opportunityId),
+    }))
+    .filter(
+      (row): row is { entry: (typeof saved)[number]; item: Opportunity } =>
+        Boolean(row.item),
+    );
   const activeFilters = [
     { key: "query" as const, label: "البحث", value: filters.query.trim() },
     { key: "type" as const, label: "نوع الفرصة", value: filters.type },
@@ -68,6 +92,23 @@ function Opportunities() {
             <SlidersHorizontal size={17} aria-hidden="true" />
             <span>تصفّحي بالطريقة التي تناسبك</span>
           </div>
+          {session && (
+            <Button
+              variant={showSaved ? "default" : "outline"}
+              size="sm"
+              className="saved-toggle"
+              aria-pressed={showSaved}
+              onClick={() => setShowSaved(!showSaved)}
+            >
+              <Bookmark />
+              فرصي المحفوظة
+              {saved.length > 0 && (
+                <span className="count-pill">
+                  {saved.length.toLocaleString("ar-SA")}
+                </span>
+              )}
+            </Button>
+          )}
           <span className="discovery-count">
             {activeFilters.length
               ? `${activeFilters.length.toLocaleString("ar-SA")} فلاتر نشطة`
@@ -97,7 +138,26 @@ function Opportunities() {
             );
           })}
         </div>
-        <div className="filter-bar">
+        <button
+          type="button"
+          className="filters-mobile-toggle"
+          aria-expanded={filtersOpen}
+          aria-controls="suda-filter-bar"
+          onClick={() => setFiltersOpen(!filtersOpen)}
+        >
+          <SlidersHorizontal size={16} aria-hidden="true" />
+          البحث والفلاتر
+          {activeFilters.length > 0 && (
+            <span className="count-pill">
+              {activeFilters.length.toLocaleString("ar-SA")}
+            </span>
+          )}
+          <ChevronDown size={16} aria-hidden="true" />
+        </button>
+        <div
+          id="suda-filter-bar"
+          className={`filter-bar ${filtersOpen ? "is-open" : ""}`}
+        >
           <label className="query-filter">
             ابحثي عن فرصتك
             <div className="search-input">
@@ -149,9 +209,14 @@ function Opportunities() {
           </label>
         </div>
       </section>
+      {showSaved && session && (
+        <SavedTracker rows={savedItems} />
+      )}
       <div className="result-line">
         <span aria-live="polite">
-          {items.length.toLocaleString("ar-SA")} نتائج تجريبية
+          {opportunitiesLoading
+            ? "جارٍ تجهيز النتائج…"
+            : `${items.length.toLocaleString("ar-SA")} نتائج تجريبية`}
         </span>
         <Button
           variant="ghost"
@@ -182,7 +247,7 @@ function Opportunities() {
         </div>
       )}
       {opportunitiesLoading ? (
-        <p role="status">جارٍ تحميل الفرص...</p>
+        <LoadingCards label="جارٍ تحميل الفرص..." />
       ) : items.length ? (
         <div className="opportunity-grid" id="opportunity-results">
           {items.map((item, i) => (
@@ -208,5 +273,81 @@ function Opportunities() {
       )}
       <DemoNote />
     </div>
+  );
+}
+
+function SavedTracker({
+  rows,
+}: {
+  rows: {
+    entry: { opportunityId: string; status: (typeof savedStatuses)[number] };
+    item: Opportunity;
+  }[];
+}) {
+  const { setSavedStatus, toggleSaved } = useDemo();
+  if (!rows.length)
+    return (
+      <section className="saved-tracker is-empty" aria-label="فرصي المحفوظة">
+        <Bookmark size={22} strokeWidth={1.3} aria-hidden="true" />
+        <p>
+          لم تحفظي فرصًا بعد. اضغطي على علامة الحفظ في أي فرصة لتعودي إليها
+          وتتابعي حالة تقديمك.
+        </p>
+      </section>
+    );
+  return (
+    <section className="saved-tracker" aria-label="فرصي المحفوظة">
+      <header>
+        <h2>فرصي المحفوظة</h2>
+        <small>
+          تابعي أين وصلتِ مع كل فرصة. التقديم نفسه يتم لدى الجهة المنظمة.
+        </small>
+      </header>
+      <ul>
+        {sortByDeadline(rows.map((r) => ({ ...r, deadline: r.item.deadline }))).map(
+          ({ entry, item }) => {
+            const deadline = deadlineInfo(item.deadline);
+            return (
+              <li key={item.id}>
+                <div className="saved-tracker-title">
+                  <Link to="/opportunities/$id" params={{ id: item.id }}>
+                    {item.title}
+                  </Link>
+                  <span className={`deadline-badge is-${deadline.tone}`}>
+                    {deadline.label}
+                  </span>
+                </div>
+                <div
+                  className="status-segments"
+                  role="radiogroup"
+                  aria-label={`حالة ${item.title}`}
+                >
+                  {savedStatuses.map((status) => (
+                    <button
+                      key={status}
+                      type="button"
+                      role="radio"
+                      aria-checked={entry.status === status}
+                      className={entry.status === status ? "is-active" : ""}
+                      onClick={() => void setSavedStatus(item.id, status)}
+                    >
+                      {status}
+                    </button>
+                  ))}
+                </div>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  aria-label={`حذف ${item.title} من قائمتي`}
+                  onClick={() => void toggleSaved(item.id)}
+                >
+                  <Trash2 />
+                </Button>
+              </li>
+            );
+          },
+        )}
+      </ul>
+    </section>
   );
 }

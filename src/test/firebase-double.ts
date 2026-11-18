@@ -16,6 +16,7 @@ const cloud = vi.hoisted(() => ({
   snapshots: new Set<() => void>(),
   failure: false,
   signInFailure: false,
+  resetEmails: [] as string[],
 }));
 
 export function signedIn(uid = "designer-a") {
@@ -36,6 +37,7 @@ export function resetCloud() {
     cloud.records.set(`opportunities/${item.id}`, { ...item });
   cloud.failure = false;
   cloud.signInFailure = false;
+  cloud.resetEmails = [];
 }
 
 vi.mock("@/lib/firebase", () => ({ auth: cloud.auth, db: {} }));
@@ -67,6 +69,9 @@ vi.mock("firebase/auth", () => ({
     next: { displayName: string },
   ) => {
     user.displayName = next.displayName;
+  },
+  sendPasswordResetEmail: async (_auth: unknown, email: string) => {
+    cloud.resetEmails.push(email);
   },
   signOut: async () => {
     cloud.auth.currentUser = null;

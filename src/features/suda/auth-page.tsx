@@ -36,7 +36,34 @@ function getAuthErrorMessage(error: unknown): string {
 }
 
 export function AuthPage({ register = false }: { register?: boolean }) {
-  const { signIn, signUp, session } = useDemo();
+  const { signIn, signUp, session, resetPassword } = useDemo();
+  const [resetState, setResetState] = useState<"idle" | "busy" | "sent">(
+    "idle",
+  );
+
+  async function handleReset() {
+    setError("");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError("اكتبي بريدك الإلكتروني أولًا، ثم اضغطي «نسيتِ كلمة المرور؟».");
+      return;
+    }
+    setResetState("busy");
+    try {
+      await resetPassword(email.trim());
+      setResetState("sent");
+    } catch (err) {
+      const code =
+        typeof err === "object" && err !== null && "code" in err
+          ? String(err.code)
+          : "";
+      // Never reveal whether an account exists for this email.
+      if (code === "auth/user-not-found") setResetState("sent");
+      else {
+        setResetState("idle");
+        setError(getAuthErrorMessage(err));
+      }
+    }
+  }
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
@@ -169,6 +196,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="٦ أحرف على الأقل"
+                minLength={6}
                 autoComplete={register ? "new-password" : "current-password"}
               />
 
@@ -182,6 +210,25 @@ export function AuthPage({ register = false }: { register?: boolean }) {
               </button>
             </div>
           </FormField>
+
+          {!register && (
+            <div className="forgot-row">
+              <button
+                type="button"
+                className="text-link"
+                disabled={resetState === "busy"}
+                onClick={() => void handleReset()}
+              >
+                {resetState === "busy" ? "جارٍ الإرسال…" : "نسيتِ كلمة المرور؟"}
+              </button>
+              {resetState === "sent" && (
+                <span role="status" className="success-message">
+                  إن كان البريد مسجّلًا، ستصلك رسالة لإعادة تعيين كلمة المرور.
+                  تفقّدي البريد غير المرغوب أيضًا.
+                </span>
+              )}
+            </div>
+          )}
 
           {register && (
             <FormField label="تأكيد كلمة المرور">

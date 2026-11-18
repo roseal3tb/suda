@@ -12,8 +12,11 @@ import {
   Spool,
   Plus,
   Info,
+  Bookmark,
+  BookmarkCheck,
+  Clock,
 } from "lucide-react";
-import type { ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "./reveal";
 import { editorialText } from "@/lib/editorial-text";
@@ -24,6 +27,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  deadlineInfo,
   formatDate,
   opportunityImageAlt,
   type Opportunity,
@@ -77,8 +81,8 @@ export function DemoNote() {
     <Reveal as="p" className="demo-note">
       <Info size={14} />
       <span>
-        الفرص والجهات النموذجية خيالية. تُحفظ الفرص مركزيًا، ويُحفظ ملفك المهني
-        وبيانات أعمالك ودوراتك في حسابك؛ صور الأعمال مؤقتة.
+        الفرص والجهات النموذجية خيالية لأغراض العرض. ملفك المهني وأعمالك
+        بصورها ودوراتك وفرصك المحفوظة تُحفظ في حسابك.
       </span>
     </Reveal>
   );
@@ -91,8 +95,13 @@ export function OpportunityCard({
   delay?: number;
 }) {
   const Icon = categoryIcons[item.type];
+  const deadline = deadlineInfo(item.deadline);
   return (
-    <Reveal className="suda-opportunity-reveal" delay={delay}>
+    <Reveal
+      className={`suda-opportunity-reveal ${deadline.tone === "closed" ? "is-closed" : ""}`}
+      delay={delay}
+    >
+      <SaveOpportunityButton id={item.id} title={item.title} floating />
       <Link
         to="/opportunities/$id"
         params={{ id: item.id }}
@@ -110,6 +119,12 @@ export function OpportunityCard({
             <Icon size={13} />
             {item.type}
           </span>
+          {deadline.tone !== "open" && deadline.tone !== "flexible" && (
+            <span className={`deadline-badge is-${deadline.tone}`}>
+              <Clock size={12} aria-hidden="true" />
+              {deadline.label}
+            </span>
+          )}
           <span className="image-arrow">
             <ArrowUpLeft size={19} />
           </span>
@@ -128,6 +143,9 @@ export function OpportunityCard({
             <span>
               <CalendarDays size={13} />
               {item.deadline ? formatDate(item.deadline) : "موعد مرن"}
+              {deadline.tone === "open" && (
+                <em className="deadline-inline">· {deadline.label}</em>
+              )}
             </span>
             <span>
               عرض التفاصيل <ArrowLeft size={14} />
@@ -137,6 +155,166 @@ export function OpportunityCard({
       </Link>
     </Reveal>
   );
+}
+/** Bookmark toggle. Visitors are invited to sign in instead of failing silently. */
+export function SaveOpportunityButton({
+  id,
+  title,
+  floating = false,
+}: {
+  id: string;
+  title: string;
+  floating?: boolean;
+}) {
+  const { session, isSaved, toggleSaved, savedLoading } = useDemo();
+  const [busy, setBusy] = useState(false);
+  const saved = isSaved(id);
+  if (!session)
+    return floating ? null : (
+      <Button asChild variant="outline">
+        <Link to="/login">
+          <Bookmark />
+          سجّلي الدخول لحفظ الفرصة
+        </Link>
+      </Button>
+    );
+  const label = saved ? `إزالة ${title} من المحفوظة` : `حفظ ${title}`;
+  return (
+    <button
+      type="button"
+      className={`save-toggle ${floating ? "is-floating" : ""} ${saved ? "is-saved" : ""}`}
+      aria-pressed={saved}
+      aria-label={label}
+      title={saved ? "محفوظة في حسابك" : "احفظي الفرصة"}
+      disabled={busy || savedLoading}
+      onClick={() => {
+        setBusy(true);
+        void toggleSaved(id).finally(() => setBusy(false));
+      }}
+    >
+      {saved ? <BookmarkCheck size={17} /> : <Bookmark size={17} />}
+      {!floating && <span>{saved ? "محفوظة" : "احفظي الفرصة"}</span>}
+    </button>
+  );
+}
+/** Visually quiet placeholders that keep the layout stable while loading. */
+export function LoadingCards({
+  label,
+  count = 3,
+}: {
+  label: string;
+  count?: number;
+}) {
+  return (
+    <div className="loading-cards" role="status" aria-live="polite">
+      <span className="sr-only">{label}</span>
+      {Array.from({ length: count }, (_, i) => (
+        <div className="loading-card" key={i} aria-hidden="true">
+          <span className="shimmer loading-card-image" />
+          <span className="shimmer loading-line" />
+          <span className="shimmer loading-line is-short" />
+        </div>
+      ))}
+    </div>
+  );
+}
+/** Tag entry: type and press Enter or a comma; chips can be removed one by one.
+ * Pending text is still read on submit so nothing typed is lost. */
+export function TagInput({
+  label,
+  hint,
+  tags,
+  draft,
+  onTagsChange,
+  onDraftChange,
+  suggestions = [],
+  placeholder,
+  error,
+  max = 30,
+}: {
+  label: string;
+  hint?: string;
+  tags: string[];
+  draft: string;
+  onTagsChange: (tags: string[]) => void;
+  onDraftChange: (draft: string) => void;
+  suggestions?: string[];
+  placeholder?: string;
+  error?: string;
+  max?: number;
+}) {
+  const id = useId();
+  const add = (values: string[]) => {
+    const next = [...tags];
+    for (const value of values.map((v) => v.trim()).filter(Boolean))
+      if (!next.includes(value) && next.length < max) next.push(value);
+    onTagsChange(next);
+  };
+  const available = suggestions.filter((s) => !tags.includes(s)).slice(0, 8);
+  return (
+    <div className={`form-field tag-field ${error ? "has-error" : ""}`}>
+      <label htmlFor={id}>{label}</label>
+      <div className="tag-input">
+        <input
+          id={id}
+          value={draft}
+          placeholder={tags.length ? "أضيفي المزيد…" : placeholder}
+          aria-invalid={Boolean(error)}
+          aria-describedby={`${id}-hint`}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (/[,،\n]/.test(value)) {
+              const parts = value.split(/[,،\n]/);
+              const rest = parts.pop() ?? "";
+              add(parts);
+              onDraftChange(rest);
+            } else onDraftChange(value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && draft.trim()) {
+              e.preventDefault();
+              add([draft]);
+              onDraftChange("");
+            } else if (e.key === "Backspace" && !draft && tags.length) {
+              onTagsChange(tags.slice(0, -1));
+            }
+          }}
+        />
+        {tags.map((tag) => (
+          <span className="tag-chip" key={tag}>
+            {tag}
+            <button
+              type="button"
+              aria-label={`إزالة ${tag}`}
+              onClick={() => onTagsChange(tags.filter((t) => t !== tag))}
+            >
+              <X size={12} />
+            </button>
+          </span>
+        ))}
+      </div>
+      <small id={`${id}-hint`}>
+        {error ? <span className="field-error">{error}</span> : hint}
+      </small>
+      {available.length > 0 && (
+        <div className="tag-suggestions" role="group" aria-label="اقتراحات للإضافة">
+          {available.map((s) => (
+            <button type="button" key={s} onClick={() => add([s])}>
+              <Plus size={12} />
+              {s}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+/** Split free text the same way the tag input does. */
+export function splitTags(text: string): string[] {
+  return text
+    .split(/[,،\n]/)
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 export function EmptyState({
   title,

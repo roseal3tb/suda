@@ -20,6 +20,10 @@ vi.mock("@/features/suda/demo-context", () => ({
     session: { name: "اختبار" },
     saveProfile: demo.saveProfile,
     enrollments: demo.enrollments,
+    works: [],
+    published: false,
+    publishLoading: false,
+    setPublished: vi.fn(),
     opportunities: initialOpportunities,
   }),
 }));
@@ -47,7 +51,8 @@ describe("Audit regression cases", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: /حفظ الملف/ }));
     expect(demo.saveProfile).not.toHaveBeenCalled();
-    expect(screen.getByRole("alert")).toHaveTextContent("مهارة واهتمامًا");
+    expect(screen.getByRole("alert")).toHaveTextContent("أكملي الحقول");
+    expect(screen.getByText(/أضيفي مهارة واحدة/)).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("المهارات *", { exact: false }), {
       target: { value: "رسم، خياطة" },
     });

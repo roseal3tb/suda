@@ -243,6 +243,111 @@ export interface Enrollment {
   progress: number;
   achievements: string[];
 }
+
+/** Where a designer is with an opportunity she saved. Applications still
+ * happen on the organizer's official site; this is only a personal tracker. */
+export const savedStatuses = ["محفوظة", "قدّمت", "بانتظار الرد"] as const;
+export type SavedStatus = (typeof savedStatuses)[number];
+export interface SavedOpportunity {
+  opportunityId: string;
+  status: SavedStatus;
+  savedAt: number;
+}
+
+/** A designer's opt-in public page. Only these fields are ever public. */
+export interface PublicProfile {
+  name: string;
+  bio: string;
+  skills: string[];
+  interests: string[];
+  experience: string;
+  achievements: string[];
+  published: boolean;
+}
+
+/** Firestore documents are limited to 1 MiB; keep image data well below it. */
+export const MAX_WORK_IMAGE_CHARS = 700_000;
+
+/** Calendar days left until a YYYY-MM-DD deadline (negative once passed). */
+export function daysUntil(date: string, now: Date = new Date()): number | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+  const end = new Date(`${date}T23:59:59`);
+  if (Number.isNaN(end.getTime())) return null;
+  const today = new Date(now);
+  today.setHours(0, 0, 0, 0);
+  const endDay = new Date(end);
+  endDay.setHours(0, 0, 0, 0);
+  return Math.round((endDay.getTime() - today.getTime()) / 86_400_000);
+}
+
+export type DeadlineTone = "open" | "soon" | "today" | "closed" | "flexible";
+export function deadlineInfo(
+  date: string,
+  now: Date = new Date(),
+): { tone: DeadlineTone; label: string } {
+  const days = daysUntil(date, now);
+  if (days === null) return { tone: "flexible", label: "موعد مرن" };
+  if (days < 0) return { tone: "closed", label: "انتهى التقديم" };
+  if (days === 0) return { tone: "today", label: "آخر يوم اليوم" };
+  if (days === 1) return { tone: "soon", label: "ينتهي غدًا" };
+  if (days === 2) return { tone: "soon", label: "ينتهي خلال يومين" };
+  if (days <= 7)
+    return {
+      tone: "soon",
+      label: `ينتهي خلال ${days.toLocaleString("ar-SA")} ${days <= 10 ? "أيام" : "يومًا"}`,
+    };
+  return {
+    tone: "open",
+    label: `متبقٍ ${days.toLocaleString("ar-SA")} ${days <= 10 ? "أيام" : "يومًا"}`,
+  };
+}
+
+/** Open opportunities first by nearest deadline; closed ones sink to the end. */
+export function sortByDeadline<T extends { deadline: string }>(
+  items: T[],
+  now: Date = new Date(),
+): T[] {
+  const rank = (item: T) => {
+    const days = daysUntil(item.deadline, now);
+    if (days === null) return 10_000;
+    return days < 0 ? 20_000 - days : days;
+  };
+  return [...items].sort((a, b) => rank(a) - rank(b));
+}
+
+/** Profile completeness drives the "next step" guidance on the profile page. */
+export function profileCompleteness(
+  profile: Profile | null,
+  worksCount: number,
+): { percent: number; missing: { key: string; label: string }[] } {
+  const checks = [
+    { key: "name", label: "اسمك", done: Boolean(profile?.name.trim()) },
+    { key: "bio", label: "نبذة عنك", done: Boolean(profile?.bio.trim()) },
+    {
+      key: "skills",
+      label: "ثلاث مهارات على الأقل",
+      done: (profile?.skills.length ?? 0) >= 3,
+    },
+    {
+      key: "interests",
+      label: "اهتماماتك",
+      done: (profile?.interests.length ?? 0) > 0,
+    },
+    {
+      key: "experience",
+      label: "خبراتك أو مشاريعك",
+      done: Boolean(profile?.experience.trim()),
+    },
+    { key: "work", label: "أول عمل في معرضك", done: worksCount > 0 },
+  ];
+  const done = checks.filter((c) => c.done).length;
+  return {
+    percent: Math.round((done / checks.length) * 100),
+    missing: checks
+      .filter((c) => !c.done)
+      .map(({ key, label }) => ({ key, label })),
+  };
+}
 export interface Filters {
   query: string;
   type: string;

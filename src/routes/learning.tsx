@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { Check, Plus, ArrowLeft, Video } from "lucide-react";
+import { Check, Plus, ArrowLeft, Video, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/suda/reveal";
 import {
   DemoNote,
   EmptyState,
+  LoadingCards,
   MemberGate,
   PageIntro,
 } from "@/components/suda/shared";
@@ -52,7 +53,7 @@ function Learning() {
         description="تابعي دوراتك، حدّثي تقدّمك بنفسك، وسجّلي ما أنجزتِه"
       />
       {enrollmentsLoading || opportunitiesLoading ? (
-        <p role="status">جارٍ تحميل دوراتك...</p>
+        <LoadingCards label="جارٍ تحميل دوراتك..." count={2} />
       ) : activeEnrollments.length ? (
         activeEnrollments.map((enrollment) => {
           const course = opportunities.find(
@@ -126,14 +127,15 @@ function LearningRow({
     }
   }
 
-  async function saveProgress() {
+  async function saveProgress(value: number = progress) {
     if (busy) return;
     setBusy(true);
+    setProgress(value);
     setSavedProgress(null);
     setError("");
     try {
-      const ok = await updateProgress(course.id, progress);
-      if (ok) setSavedProgress(progress);
+      const ok = await updateProgress(course.id, value);
+      if (ok) setSavedProgress(value);
       else setError("تعذّر حفظ التقدّم. تحققي من الاتصال وحاولي مجددًا.");
     } catch (cause) {
       console.error("Failed to save progress:", cause);
@@ -158,7 +160,38 @@ function LearningRow({
             {course.title}
           </Link>
         </h2>
-        <small>التقدّم يُحدَّث يدويًا بواسطتك، ولا يُرصد تلقائيًا</small>
+        <small>حدّثي تقدّمك بنفسك: اختاري مرحلة أو حرّكي المؤشر</small>
+        {enrollment.progress >= 100 && (
+          <span className="course-complete">
+            <Award size={15} aria-hidden="true" />
+            أتممتِ هذه الدورة
+          </span>
+        )}
+        <div
+          className="milestones"
+          role="group"
+          aria-label={`مراحل ${course.title}`}
+        >
+          {[
+            { value: 0, label: "لم أبدأ" },
+            { value: 25, label: "بدأت" },
+            { value: 50, label: "في المنتصف" },
+            { value: 75, label: "قاربت" },
+            { value: 100, label: "أتممت" },
+          ].map((step) => (
+            <button
+              key={step.value}
+              type="button"
+              disabled={busy}
+              className={progress >= step.value ? "is-reached" : ""}
+              aria-pressed={enrollment.progress === step.value}
+              onClick={() => void saveProgress(step.value)}
+            >
+              <span className="milestone-dot" aria-hidden="true" />
+              {step.label}
+            </button>
+          ))}
+        </div>
         <div className="progress-controls">
           <input
             type="range"
@@ -178,7 +211,7 @@ function LearningRow({
             variant="outline"
             size="sm"
             disabled={busy}
-            onClick={() => void saveProgress()}
+            onClick={() => void saveProgress(progress)}
           >
             <Check />
             {busy ? "جارٍ الحفظ..." : "حفظ التقدّم"}
@@ -208,7 +241,7 @@ function LearningRow({
         </form>
         {achievementSaved && (
           <p className="success-message" role="status">
-            تم حفظ الإنجاز في حسابك بنجاح
+            حُفظ الإنجاز، ويظهر الآن في ملفك المهني
           </p>
         )}
         {error && (

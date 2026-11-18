@@ -3,20 +3,33 @@ service cloud.firestore {
   match /databases/{database}/documents {
     function owner(uid) { return request.auth != null && request.auth.uid == uid; }
     function admin() { return request.auth != null && request.auth.token.get('admin', false) == true; }
+    function isPublished(uid) {
+      return exists(/databases/$(database)/documents/publicProfiles/$(uid))
+        && get(/databases/$(database)/documents/publicProfiles/$(uid)).data.published == true;
+    }
+    function stringList(value, max) {
+      return value is list && value.size() <= max;
+    }
     match /users/{uid} {
       allow read: if owner(uid);
       allow create, update: if owner(uid)
         && request.resource.data.keys().hasOnly(['name','email','profile','displayRole','portfolioLegacyMigrated','enrollmentsLegacyMigrated']);
       allow delete: if false;
       match /works/{workId} {
-        allow read, delete: if owner(uid);
+        // Works become readable by visitors only after the owner publishes her profile.
+        allow read: if owner(uid) || isPublished(uid);
+        allow delete: if owner(uid);
         allow create, update: if owner(uid)
-          && request.resource.data.keys().hasOnly(['id','title','description'])
+          && request.resource.data.keys().hasOnly(['id','title','description','image'])
           && request.resource.data.id == workId
           && request.resource.data.title is string
           && request.resource.data.description is string
           && request.resource.data.title.size() > 0
-          && request.resource.data.description.size() > 0;
+          && request.resource.data.description.size() > 0
+          && (!('image' in request.resource.data)
+            || (request.resource.data.image is string
+              && request.resource.data.image.matches('^data:image/(jpeg|webp);base64,.*')
+              && request.resource.data.image.size() <= 700000));
       }
       match /enrollments/{courseId} {
         allow read, delete: if owner(uid);
@@ -28,6 +41,32 @@ service cloud.firestore {
           && request.resource.data.progress <= 100
           && request.resource.data.achievements is list;
       }
+      // Personal tracker of saved opportunities; applications still happen externally.
+      match /saved/{opportunityId} {
+        allow read, delete: if owner(uid);
+        allow create, update: if owner(uid)
+          && request.resource.data.keys().hasOnly(['opportunityId','status','savedAt'])
+          && request.resource.data.opportunityId == opportunityId
+          && request.resource.data.status in ['محفوظة','قدّمت','بانتظار الرد']
+          && request.resource.data.savedAt is number;
+      }
+    }
+    // Opt-in public profile. Never contains email or private account fields.
+    match /publicProfiles/{uid} {
+      allow get: if owner(uid) || resource.data.published == true;
+      allow list: if false;
+      allow delete: if owner(uid);
+      allow create, update: if owner(uid)
+        && request.resource.data.keys().hasOnly(['name','bio','skills','interests','experience','achievements','published'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 2
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.bio is string
+        && request.resource.data.experience is string
+        && stringList(request.resource.data.skills, 30)
+        && stringList(request.resource.data.interests, 30)
+        && stringList(request.resource.data.achievements, 60)
+        && request.resource.data.published is bool;
     }
     // Public opportunities must never contain private meeting URLs.
     match /opportunities/{id} {

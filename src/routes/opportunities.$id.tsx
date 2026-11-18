@@ -7,12 +7,19 @@ import {
   ArrowUpLeft,
   Check,
   BookOpen,
+  Clock,
 } from "lucide-react";
 import { Reveal } from "@/components/suda/reveal";
 import { Button } from "@/components/ui/button";
-import { DemoNote, EmptyState, categoryIcons } from "@/components/suda/shared";
+import {
+  DemoNote,
+  EmptyState,
+  SaveOpportunityButton,
+  categoryIcons,
+} from "@/components/suda/shared";
 import {
   canAccessZoom,
+  deadlineInfo,
   formatDate,
   pageHead,
   isValidZoomUrl,
@@ -37,8 +44,11 @@ function Details() {
     enroll,
     enrollments,
     enrollmentsLoading,
+    saved,
+    setSavedStatus,
   } = useDemo();
   const [busy, setBusy] = useState(false);
+  const [openedApply, setOpenedApply] = useState(false);
   const [error, setError] = useState("");
   const item = opportunities.find((o) => o.id === id);
 
@@ -61,7 +71,17 @@ function Details() {
   if (opportunitiesLoading)
     return (
       <div className="content-wrap">
-        <p role="status">جارٍ تحميل الفرصة...</p>
+        <div className="detail-skeleton" role="status">
+          <span className="sr-only">جارٍ تحميل الفرصة...</span>
+          <div>
+            <span className="shimmer loading-line is-short" />
+            <span className="shimmer loading-title" />
+            <span className="shimmer loading-line" />
+            <span className="shimmer loading-line" />
+            <span className="shimmer loading-line is-short" />
+          </div>
+          <span className="shimmer loading-card-image" />
+        </div>
       </div>
     );
 
@@ -82,6 +102,8 @@ function Details() {
 
   const Icon = categoryIcons[item.type];
   const enrolled = canAccessZoom(enrollments, id);
+  const deadline = deadlineInfo(item.deadline);
+  const savedEntry = saved.find((entry) => entry.opportunityId === id);
 
   return (
     <div className="content-wrap">
@@ -100,6 +122,15 @@ function Details() {
           </span>
           <h1>{item.title}</h1>
           <span className="org">{item.organization}</span>
+          <div className="detail-actions">
+            <SaveOpportunityButton id={item.id} title={item.title} />
+            {deadline.tone !== "flexible" && (
+              <span className={`deadline-badge is-${deadline.tone}`}>
+                <Clock size={13} aria-hidden="true" />
+                {deadline.label}
+              </span>
+            )}
+          </div>
           <div className="detail-tags">
             <span>
               <MapPin size={15} />
@@ -188,6 +219,7 @@ function Details() {
                       href={item.externalUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => setOpenedApply(true)}
                     >
                       الرابط الرسمي للتقديم <ArrowUpLeft />
                     </a>
@@ -196,6 +228,19 @@ function Details() {
                   <Button disabled variant="outline">
                     رابط التقديم غير متاح <ArrowUpLeft />
                   </Button>
+                )}
+                {openedApply && session && savedEntry?.status !== "قدّمت" && (
+                  <div className="apply-followup" role="status">
+                    <span>هل أكملتِ التقديم لدى الجهة المنظمة؟</span>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => void setSavedStatus(item.id, "قدّمت")}
+                    >
+                      <Check />
+                      نعم، علّميها «قدّمت»
+                    </Button>
+                  </div>
                 )}
               </>
             )}

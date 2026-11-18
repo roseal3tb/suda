@@ -1,6 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { Pencil, Trash2, Check, Plus, ImagePlus } from "lucide-react";
+import {
+  Pencil,
+  Trash2,
+  Check,
+  Plus,
+  ImagePlus,
+  ArrowLeft,
+} from "lucide-react";
 import { Reveal } from "@/components/suda/reveal";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +16,7 @@ import {
   DemoNote,
   EmptyState,
   FormField,
+  LoadingCards,
   MemberGate,
   Modal,
   PageIntro,
@@ -20,7 +28,7 @@ export const Route = createFileRoute("/portfolio")({
   head: () =>
     pageHead(
       "معرض الأعمال",
-      "معرض شخصي لحفظ أعمال تصميم الأزياء في حسابك، مع صور مؤقتة",
+      "معرض شخصي لأعمال تصميم الأزياء بصورها، محفوظ في حسابك وقابل للمشاركة",
     ),
   component: () => (
     <MemberGate>
@@ -93,7 +101,7 @@ function Portfolio() {
       <PageIntro
         eyebrow="معرض الأعمال"
         title="معرض أعمالي"
-        description="تُحفظ عناوين أعمالك وأوصافها في حسابك؛ الصور مؤقتة وتختفي بعد إغلاق الموقع أو تسجيل الخروج"
+        description="أعمالك بصورها وتفاصيلها، محفوظة في حسابك وتظهر في ملفك المهني"
         action={
           works.length > 0 ? (
             <AddButton onClick={() => start()}>إضافة عمل</AddButton>
@@ -103,11 +111,14 @@ function Portfolio() {
       {saved && (
         <p role="status" className="success-message">
           <Check size={16} />
-          حُفظ عنوان العمل ووصفه في حسابك. الصورة مؤقتة
+          حُفظ العمل في معرضك
+          <Link className="text-link" to="/profile">
+            شاهديه في ملفك المهني <ArrowLeft size={14} />
+          </Link>
         </p>
       )}
       {worksLoading ? (
-        <p role="status">جارٍ تحميل معرض الأعمال…</p>
+        <LoadingCards label="جارٍ تحميل معرض الأعمال…" />
       ) : works.length ? (
         <div className="work-grid">
           {works.map((work, i) => (
@@ -163,7 +174,7 @@ function Portfolio() {
       ) : (
         <EmptyState
           title="معرضك جاهز لأعمالك"
-          description="لا توجد أعمال بعد. أضيفي تصميمًا أو مشروعًا دراسيًا لتبدئي معرضك"
+          description="لا توجد أعمال بعد. أضيفي تصميمًا أو مشروعًا دراسيًا مع صورته لتبدئي معرضك"
           action={
             <Button variant="outline" onClick={() => start()}>
               <Plus />
@@ -178,7 +189,7 @@ function Portfolio() {
         onClose={() => {
           if (!busy) setForm(null);
         }}
-        description="يُحفظ عنوان العمل ووصفه في حسابك؛ الصورة مؤقتة ولا تُحفظ بعد إعادة تحميل الصفحة."
+        description="أضيفي العنوان والوصف، وصورة لعملك إن أحببتِ. تُضغط الصورة تلقائيًا وتُحفظ مع العمل."
         title={
           form && works.some((w) => w.id === form.id)
             ? "تعديل العمل"
@@ -208,7 +219,7 @@ function Portfolio() {
             <FormField
               label="صورة عملك — اختيارية"
 
-              hint="يمكنك حفظ العمل بدون صورة وإضافتها لاحقًا، الصورة مؤقتة خلال هذه الزيارة فقط."
+              hint="اختيارية: يمكنك حفظ العمل الآن وإضافة الصورة لاحقًا."
             >
               <div
                 className={`rounded-xl border-2 border-dashed p-5 text-center transition-colors ${
@@ -248,7 +259,9 @@ function Portfolio() {
                   <ImagePlus size={18} />
                   اختاري أو افلتي صورة من الجهاز
                 </label>
-                <p className="mt-3 text-sm text-muted-foreground"></p>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  JPG أو PNG أو WebP — تُضغط تلقائيًا للحفاظ على سرعة الموقع
+                </p>
               </div>
             </FormField>
             {form.image ? (
@@ -274,7 +287,7 @@ function Portfolio() {
             )}
             <div className="form-actions">
               <Button type="submit" disabled={busy}>
-                {busy ? "جارٍ الحفظ أو تجهيز الصورة…" : "حفظ العمل"} <Check />
+                {busy ? "جارٍ تجهيز العمل…" : "حفظ العمل"} <Check />
               </Button>
               <Button
                 type="button"
