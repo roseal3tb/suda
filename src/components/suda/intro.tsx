@@ -1,20 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { INTRO_KEY } from "@/features/suda/storage";
-import {
-  LOOM_STRIPS as STRIPS,
-  LOOM_TIMING,
-  WARP_X,
-  buildWeave,
-} from "./thread-geometry";
+import { INTRO_THREAD, INTRO_TIMING } from "./thread-geometry";
 
-/** «رُؤى تُنسَج» — The Loom.
- * Warp threads fall into place, a needle weaves the weft over and under them,
- * the Suda artwork rises from the woven band, and the cloth parts into strips
- * to reveal the site. Shown once per tab session; skippable with the button or
- * Escape; never shown with reduced motion. */
-
-const WEAVE = buildWeave();
-
+/** «الغرزة الأولى» — The First Stitch.
+ * One thread, one needle: the needle swoops in from the right, sews the Suda
+ * artwork into place as it passes, ties a single loop and leaves a line of
+ * running stitches under «رُؤى تُنسَج». Shown once per tab session;
+ * skippable with the button or Escape; never shown with reduced motion. */
 export function Intro() {
   const [show, setShow] = useState(false);
   const [leaving, setLeaving] = useState(false);
@@ -46,8 +38,8 @@ export function Intro() {
     if (seen || preference.matches) return;
     setShow(true);
     timers.current = [
-      setTimeout(() => setLeaving(true), LOOM_TIMING.leaveAt),
-      setTimeout(() => latestFinish.current(), LOOM_TIMING.finishAt),
+      setTimeout(() => setLeaving(true), INTRO_TIMING.leaveAt),
+      setTimeout(() => latestFinish.current(), INTRO_TIMING.finishAt),
     ];
     const simplify = () => {
       if (preference.matches) {
@@ -70,11 +62,12 @@ export function Intro() {
   }
 
   if (!show) return null;
-  const begin = (seconds: number) => `${seconds.toFixed(3)}s`;
+  const begin = `${INTRO_TIMING.threadStart}s`;
+  const dur = `${INTRO_TIMING.threadDuration}s`;
   return (
     <div
       ref={surface}
-      className={`thread-intro loom-intro ${leaving ? "is-leaving" : ""} ${skipping ? "is-skipping" : ""}`}
+      className={`thread-intro stitch-intro ${leaving ? "is-leaving" : ""} ${skipping ? "is-skipping" : ""}`}
       role="region"
       aria-label="مقدمة سُدى"
       dir="rtl"
@@ -86,101 +79,85 @@ export function Intro() {
         }
       }}
     >
-      <div className="loom-strips" aria-hidden="true">
-        {Array.from({ length: STRIPS }, (_, i) => (
-          <span
-            key={i}
-            className={i % 2 ? "is-down" : "is-up"}
-            style={{ transitionDelay: `${(STRIPS - 1 - i) * 0.035}s` }}
-          />
-        ))}
-      </div>
-
-      <div className="loom-art" aria-hidden="true">
+      <div className="stitch-intro-guides" aria-hidden="true">
         <svg
           viewBox="0 0 1200 800"
           preserveAspectRatio="xMidYMid slice"
           focusable="false"
         >
-          <defs>
-            <radialGradient id="loom-glow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#faf6f1" stopOpacity="0.96" />
-              <stop offset="62%" stopColor="#faf6f1" stopOpacity="0.82" />
-              <stop offset="100%" stopColor="#faf6f1" stopOpacity="0" />
-            </radialGradient>
-          </defs>
-
-          {WARP_X.map((x, k) => (
-            <line
-              key={x}
-              className="loom-warp"
-              x1={x}
-              y1={-10}
-              x2={x}
-              y2={810}
-              pathLength={1}
-              style={{
-                animationDelay: `${0.04 + Math.abs(k - 7) * 0.035}s`,
-              }}
-            />
-          ))}
-
-          <path className="loom-weft" d={WEAVE.d} pathLength={1}>
-            <animate
-              attributeName="stroke-dashoffset"
-              from="1"
-              to="0"
-              begin={begin(LOOM_TIMING.weftStart)}
-              dur={begin(LOOM_TIMING.weftDuration)}
-              fill="freeze"
-            />
-          </path>
-
-          {WEAVE.crossings.map(({ x, y, at }) => (
-            <g key={`${x}-${y}`} className="loom-over" opacity="0">
-              <line x1={x} y1={y - 9} x2={x} y2={y + 9} className="gap" />
-              <line x1={x} y1={y - 11} x2={x} y2={y + 11} className="warp" />
-              <set
-                attributeName="opacity"
-                to="1"
-                begin={begin(at)}
-                fill="freeze"
-              />
-            </g>
-          ))}
-
-          <g className="loom-needle" opacity="0">
-            <path d="M0 0 H46 L52 0" />
-            <ellipse cx="6" cy="0" rx="4.6" ry="2" />
-            <animateMotion
-              path={WEAVE.d}
-              begin={begin(LOOM_TIMING.weftStart)}
-              dur={begin(LOOM_TIMING.weftDuration)}
-              rotate="auto"
-              fill="freeze"
-            />
-            <set
-              attributeName="opacity"
-              to="1"
-              begin={begin(LOOM_TIMING.weftStart)}
-              fill="freeze"
-            />
-          </g>
-
-          <ellipse
-            className="loom-glow"
-            cx="600"
-            cy="403"
-            rx="330"
-            ry="175"
-            fill="url(#loom-glow)"
-          />
+          <path d="M0 170 Q360 30 690 170 T1200 130" />
+          <path d="M0 638 Q300 520 580 663 T1200 634" />
+          <circle cx="110" cy="630" r="92" />
+          <circle cx="1110" cy="168" r="112" />
         </svg>
       </div>
 
-      <div className="loom-center">
-        <span className="loom-kicker">كل حكاية تبدأ بخيط</span>
-        <div className="loom-logo">
+      <div className="stitch-intro-band" aria-hidden="true">
+        <svg
+          viewBox="0 0 1000 350"
+          preserveAspectRatio="xMidYMid slice"
+          focusable="false"
+        >
+          <defs>
+            <linearGradient id="stitch-intro-steel" x1="0" x2="1">
+              <stop offset="0" stopColor="#6f6573" />
+              <stop offset="0.55" stopColor="#c9bfc8" />
+              <stop offset="1" stopColor="#8a8191" />
+            </linearGradient>
+          </defs>
+          <path className="stitch-intro-shadow" d={INTRO_THREAD} pathLength={1}>
+            <animate
+              attributeName="stroke-dashoffset"
+              values="1;0"
+              keyTimes="0;1"
+              calcMode="spline"
+              keySplines={INTRO_TIMING.ease}
+              begin={begin}
+              dur={dur}
+              fill="freeze"
+            />
+          </path>
+          <path className="stitch-intro-thread" d={INTRO_THREAD} pathLength={1}>
+            <animate
+              attributeName="stroke-dashoffset"
+              values="1;0"
+              keyTimes="0;1"
+              calcMode="spline"
+              keySplines={INTRO_TIMING.ease}
+              begin={begin}
+              dur={dur}
+              fill="freeze"
+            />
+          </path>
+          <g className="stitch-intro-needle" opacity="0">
+            <path d="M-2 0 H58 L66 0" stroke="url(#stitch-intro-steel)" />
+            <ellipse cx="7" cy="0" rx="5" ry="2.1" />
+            <animateMotion
+              path={INTRO_THREAD}
+              keyPoints="0;1"
+              keyTimes="0;1"
+              calcMode="spline"
+              keySplines={INTRO_TIMING.ease}
+              begin={begin}
+              dur={dur}
+              rotate="auto"
+              fill="freeze"
+            />
+            <animate
+              attributeName="opacity"
+              values="0;1;1;0"
+              keyTimes="0;0.06;0.9;1"
+              begin={begin}
+              dur={dur}
+              fill="freeze"
+            />
+          </g>
+        </svg>
+      </div>
+
+      <div className="stitch-intro-center">
+        <span className="stitch-intro-kicker">كل حكاية تبدأ بخيط</span>
+        <div className="stitch-intro-logo">
           <img
             src="/suda-logo-transparent.png"
             alt="سُدى"
@@ -188,13 +165,13 @@ export function Intro() {
             height={1128}
           />
         </div>
-        <span className="loom-tagline">رُؤى تُنسَج</span>
-        <span className="loom-stitch" aria-hidden="true" />
+        <span className="stitch-intro-tagline">رُؤى تُنسَج</span>
+        <span className="stitch-intro-stitches" aria-hidden="true" />
       </div>
 
       <button
         type="button"
-        className="loom-skip thread-intro-skip"
+        className="stitch-intro-skip thread-intro-skip"
         autoFocus
         onClick={skip}
       >

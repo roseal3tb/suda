@@ -1,91 +1,89 @@
-import { useEffect, useId, useRef, useState } from "react";
-import { roundedFrame } from "./thread-geometry";
+import { useEffect, useRef, useState } from "react";
+import { cardThreadPath } from "./thread-geometry";
 
 /**
- * Hover thread for cards: a running stitch traces the card's inner edge while
- * a needle leads the thread. Shows on hover, keyboard focus, or a tap.
+ * Hover thread for cards: a needle pulls one thread across the whole card,
+ * from the top-right corner, through a single soft loop, to a knot near the
+ * bottom-left. The thread sits *behind* the card's content, so photos and
+ * text stay on top and the needle seems to sew underneath them. Shows on
+ * hover, keyboard focus, or a tap.
  *
  * Purely decorative (aria-hidden) and built from spans and SVG only, so it is
- * valid inside buttons and links. Drop it in as the last child of a card.
+ * valid inside buttons and links. Place it as a direct child of the card.
  */
-export function CardStitch({ inset = 9 }: { inset?: number }) {
+export function CardStitch() {
   const holder = useRef<HTMLSpanElement>(null);
-  const maskId = `stitch-${useId().replace(/:/g, "")}`;
-  const [shape, setShape] = useState<{ w: number; h: number; d: string }>();
+  const [shape, setShape] = useState<{
+    w: number;
+    h: number;
+    d: string;
+    endX: number;
+    endY: number;
+  }>();
 
   useEffect(() => {
-    const host = holder.current?.parentElement;
-    if (!host) return;
-    host.classList.add("stitch-host");
+    const card = holder.current?.parentElement;
+    if (!card) return;
+    card.classList.add("stitch-host");
 
     const measure = () => {
-      const w = host.clientWidth;
-      const h = host.clientHeight;
-      if (w < 40 || h < 40) return;
-      const style = getComputedStyle(host);
-      const radius = (value: string) =>
-        Math.max(4, (Number.parseFloat(value) || 0) - inset);
-      const d = roundedFrame(w, h, inset, {
-        tl: radius(style.borderTopLeftRadius),
-        tr: radius(style.borderTopRightRadius),
-        br: radius(style.borderBottomRightRadius),
-        bl: radius(style.borderBottomLeftRadius),
-      });
-      setShape((current) => (current?.d === d ? current : { w, h, d }));
+      const w = card.clientWidth;
+      const h = card.clientHeight;
+      if (w < 60 || h < 60) return;
+      // A photo across the top of the card hides the thread behind it, so
+      // the loop is tied in the visible part below the photo.
+      const cardTop = card.getBoundingClientRect().top;
+      const photo = [...card.querySelectorAll("img")].find(
+        (img) => img.getBoundingClientRect().top - cardTop < 12,
+      );
+      const photoBottom = photo
+        ? photo.getBoundingClientRect().bottom - cardTop
+        : 0;
+      const thread = cardThreadPath(w, h, photoBottom);
+      setShape((current) =>
+        current?.d === thread.d ? current : { w, h, ...thread },
+      );
     };
     measure();
     const observer =
       typeof ResizeObserver === "undefined"
         ? null
         : new ResizeObserver(measure);
-    observer?.observe(host);
+    observer?.observe(card);
 
-    // Touch screens have no hover: a tap stitches the card for a moment.
+    // Touch screens have no hover: a tap sews the thread for a moment.
     let timer: ReturnType<typeof setTimeout> | undefined;
     const onPointerDown = (event: PointerEvent) => {
       if (event.pointerType === "mouse") return;
-      host.classList.add("is-stitched");
+      card.classList.add("is-stitched");
       clearTimeout(timer);
-      timer = setTimeout(() => host.classList.remove("is-stitched"), 1800);
+      timer = setTimeout(() => card.classList.remove("is-stitched"), 1800);
     };
-    host.addEventListener("pointerdown", onPointerDown);
+    card.addEventListener("pointerdown", onPointerDown);
 
     return () => {
       observer?.disconnect();
       clearTimeout(timer);
-      host.removeEventListener("pointerdown", onPointerDown);
-      host.classList.remove("stitch-host", "is-stitched");
+      card.removeEventListener("pointerdown", onPointerDown);
+      card.classList.remove("stitch-host", "is-stitched");
     };
-  }, [inset]);
+  }, []);
 
   return (
-    <span ref={holder} className="card-stitch" aria-hidden="true">
+    <span ref={holder} className="card-thread" aria-hidden="true">
       {shape && (
         <>
           <svg
-            className="card-stitch-svg"
+            className="card-thread-svg"
             width={shape.w}
             height={shape.h}
             viewBox={`0 0 ${shape.w} ${shape.h}`}
             focusable="false"
           >
-            <defs>
-              <mask id={maskId} maskUnits="userSpaceOnUse">
-                <path
-                  className="card-stitch-reveal"
-                  d={shape.d}
-                  pathLength={1}
-                />
-              </mask>
-            </defs>
-            <path
-              className="card-stitch-thread"
-              d={shape.d}
-              mask={`url(#${maskId})`}
-            />
+            <path className="card-thread-line" d={shape.d} pathLength={1} />
           </svg>
           <span
-            className="card-stitch-needle"
+            className="card-thread-needle"
             style={{ offsetPath: `path("${shape.d}")` }}
           >
             <svg viewBox="0 0 34 8" width="34" height="8" focusable="false">
@@ -93,27 +91,12 @@ export function CardStitch({ inset = 9 }: { inset?: number }) {
               <ellipse cx="6" cy="4" rx="3.6" ry="1.7" />
             </svg>
           </span>
+          <span
+            className="card-thread-knot"
+            style={{ left: shape.endX - 3.5, top: shape.endY - 3.5 }}
+          />
         </>
       )}
-    </span>
-  );
-}
-
-/**
- * A wavy thread that replaces a card's divider line on hover.
- * Starts on the right so it reads in the same direction as Arabic text.
- */
-export function ThreadWave() {
-  return (
-    <span className="thread-wave" aria-hidden="true">
-      <svg viewBox="0 0 300 24" preserveAspectRatio="none" focusable="false">
-        <path
-          d="M300 12 C287 2 275 2 262 12 S237 22 225 12 S200 2 187 12 S162 22 150 12 S125 2 112 12 S87 22 75 12 S50 2 37 12 S12 22 0 12"
-          pathLength={1}
-          vectorEffect="non-scaling-stroke"
-        />
-      </svg>
-      <span className="thread-wave-knot" />
     </span>
   );
 }

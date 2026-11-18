@@ -19,7 +19,7 @@ import { AtelierFilm } from "@/components/suda/atelier-film";
 import { HeroAtelierPattern } from "@/components/suda/hero-atelier-pattern";
 import { ThreadJourney } from "@/components/suda/thread-interlude";
 import { Reveal, WordsReveal } from "@/components/suda/reveal";
-import { CardStitch, ThreadWave } from "@/components/suda/card-stitch";
+import { CardStitch } from "@/components/suda/card-stitch";
 export const Route = createFileRoute("/")({
   head: () =>
     pageHead(
@@ -165,7 +165,6 @@ function Home() {
               </span>
               <blockquote dir="rtl">{voice.quote}</blockquote>
               <div className="couture-voice-author">
-                <ThreadWave />
                 <div>
                   <strong>{voice.name}</strong>
                 </div>
@@ -208,6 +207,7 @@ function Home() {
               </div>
               <h3>{title}</h3>
               <p>{body}</p>
+
               <Link to={to} className="suda-journey-link">
                 {action}
                 <ArrowLeft size={17} />

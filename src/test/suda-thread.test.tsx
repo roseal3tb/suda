@@ -2,35 +2,46 @@ import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 import { CardStitch } from "@/components/suda/card-stitch";
 import {
-  buildWeave,
-  LOOM_TIMING,
-  roundedFrame,
+  INTRO_THREAD,
+  INTRO_TIMING,
+  cardThreadPath,
 } from "@/components/suda/thread-geometry";
 
-describe("card stitch thread", () => {
-  it("starts at the top-right and runs right-to-left like Arabic", () => {
-    const d = roundedFrame(300, 200, 9, { tl: 21, tr: 21, br: 21, bl: 21 });
-    expect(d.startsWith("M270 9 H30")).toBe(true);
-    expect(d.endsWith("270 9")).toBe(true);
+describe("card thread", () => {
+  it("crosses the whole card from the top-right to a knot at the bottom-left", () => {
+    for (const [w, h] of [
+      [300, 430],
+      [380, 320],
+      [560, 300],
+    ] as const) {
+      const { d, endX, endY } = cardThreadPath(w, h);
+      const start = /^M([\d.]+) ([\d.]+)/.exec(d);
+      expect(Number(start?.[1])).toBeGreaterThanOrEqual(w);
+      expect(Number(start?.[2])).toBeLessThan(h * 0.25);
+      expect(endX).toBeLessThan(w * 0.25);
+      expect(endY).toBeGreaterThan(h * 0.75);
+      expect(d.endsWith(`${endX} ${endY}`)).toBe(true);
+    }
   });
 
-  it("never lets a corner radius exceed half the frame", () => {
-    const d = roundedFrame(60, 40, 9, { tl: 99, tr: 99, br: 99, bl: 99 });
-    // inner frame is 42 × 22, so radii clamp to 11
-    expect(d).toContain("A11 11");
-    expect(d).not.toContain("A99");
+  it("keeps the loop round on any card shape", () => {
+    // the loop radius is in pixels, never stretched with the card
+    const tall = cardThreadPath(200, 900).d;
+    const wide = cardThreadPath(900, 200).d;
+    expect(tall).toContain("C");
+    expect(wide).toContain("C");
+    expect(tall.split("C")).toHaveLength(5);
   });
 
   it("is decorative and marks its card as a stitch host", () => {
     const view = render(
       <article className="couture-voice-card">
-        <p>نص</p>
         <CardStitch />
+        <p>نص</p>
       </article>,
     );
-    const card = view.container.querySelector("article");
-    expect(card).toHaveClass("stitch-host");
-    expect(view.container.querySelector(".card-stitch")).toHaveAttribute(
+    expect(view.container.querySelector("article")).toHaveClass("stitch-host");
+    expect(view.container.querySelector(".card-thread")).toHaveAttribute(
       "aria-hidden",
       "true",
     );
@@ -38,22 +49,18 @@ describe("card stitch thread", () => {
   });
 });
 
-describe("loom intro weave", () => {
-  it("passes under alternate warp threads in order, within the weaving time", () => {
-    const { d, crossings } = buildWeave();
-    expect(d.startsWith("M1300 318")).toBe(true);
-    expect(crossings.length).toBeGreaterThan(30);
-    const end = LOOM_TIMING.weftStart + LOOM_TIMING.weftDuration + 0.05;
-    let previous = 0;
-    for (const crossing of crossings) {
-      expect(crossing.at).toBeGreaterThan(LOOM_TIMING.weftStart);
-      expect(crossing.at).toBeLessThan(end);
-      expect(crossing.at).toBeGreaterThanOrEqual(previous);
-      previous = crossing.at;
-    }
+describe("intro thread", () => {
+  it("enters from the right and leaves on the left", () => {
+    const start = Number(/^M(-?[\d.]+)/.exec(INTRO_THREAD)?.[1]);
+    const end = Number(/(-?[\d.]+) [\d.]+$/.exec(INTRO_THREAD)?.[1]);
+    expect(start).toBeGreaterThan(1000);
+    expect(end).toBeLessThan(0);
   });
 
-  it("finishes the intro after the cloth has parted", () => {
-    expect(LOOM_TIMING.finishAt).toBeGreaterThan(LOOM_TIMING.leaveAt + 600);
+  it("finishes sewing before the intro leaves", () => {
+    const sewnAt =
+      (INTRO_TIMING.threadStart + INTRO_TIMING.threadDuration) * 1000;
+    expect(INTRO_TIMING.leaveAt).toBeGreaterThan(sewnAt + 400);
+    expect(INTRO_TIMING.finishAt).toBeGreaterThan(INTRO_TIMING.leaveAt);
   });
 });

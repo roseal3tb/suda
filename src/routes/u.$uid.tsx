@@ -172,6 +172,7 @@ function PublicProfilePage() {
                   </span>
                 )}
               </button>
+
               <h2>{work.title}</h2>
               <p>{work.description}</p>
             </Reveal>
