@@ -3,8 +3,8 @@ import { cardThreadPath } from "./thread-geometry";
 
 /**
  * Hover thread for cards: a needle pulls one thread across the whole card,
- * from the top-right corner, through a single soft loop, to a knot near the
- * bottom-left. The thread sits *behind* the card's content, so photos and
+ * from the top-right corner, through a single soft loop, and rests at the
+ * bottom-left with the needle still on the end of the thread. The thread sits *behind* the card's content, so photos and
  * text stay on top and the needle seems to sew underneath them. Shows on
  * hover, keyboard focus, or a tap.
  *
@@ -86,15 +86,11 @@ export function CardStitch() {
             className="card-thread-needle"
             style={{ offsetPath: `path("${shape.d}")` }}
           >
-            <svg viewBox="0 0 34 8" width="34" height="8" focusable="false">
-              <path d="M2 4 H31 L34 4" />
-              <ellipse cx="6" cy="4" rx="3.6" ry="1.7" />
+            <svg viewBox="0 0 42 10" width="42" height="10" focusable="false">
+              <path d="M2 5 H38 L42 5" />
+              <ellipse cx="7" cy="5" rx="4.2" ry="2" />
             </svg>
           </span>
-          <span
-            className="card-thread-knot"
-            style={{ left: shape.endX - 3.5, top: shape.endY - 3.5 }}
-          />
         </>
       )}
     </span>

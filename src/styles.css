@@ -7717,13 +7717,15 @@ h6,
   top: 0;
   left: 0;
   display: block;
-  width: 34px;
-  height: 8px;
+  width: 42px;
+  height: 10px;
   offset-distance: 0%;
   offset-rotate: auto;
-  offset-anchor: 6px 4px;
+  offset-anchor: 7px 5px;
   opacity: 0;
-  transition: offset-distance 0.5s cubic-bezier(0.65, 0, 0.3, 1);
+  transition:
+    offset-distance 0.5s cubic-bezier(0.65, 0, 0.3, 1),
+    opacity 0.35s ease;
 }
 .card-thread-needle svg {
   display: block;
@@ -7732,23 +7734,14 @@ h6,
 }
 .card-thread-needle path {
   fill: none;
-  stroke: #8a8191;
-  stroke-width: 1.7;
+  stroke: #7d7385;
+  stroke-width: 2;
   stroke-linecap: round;
 }
 .card-thread-needle ellipse {
   fill: none;
   stroke: #8a8191;
   stroke-width: 1.1;
-}
-.card-thread-knot {
-  position: absolute;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #8f7d8c;
-  transform: scale(0);
-  transition: transform 0.2s ease;
 }
 .stitch-host:is(:hover, :focus-visible, :has(:focus-visible), .is-stitched)
   .card-thread-line {
@@ -7758,33 +7751,16 @@ h6,
 .stitch-host:is(:hover, :focus-visible, :has(:focus-visible), .is-stitched)
   .card-thread-needle {
   offset-distance: 100%;
-  transition-duration: 1.3s;
-  animation: card-thread-needle 1.3s cubic-bezier(0.65, 0, 0.3, 1) forwards;
-}
-.stitch-host:is(:hover, :focus-visible, :has(:focus-visible), .is-stitched)
-  .card-thread-knot {
-  transform: scale(1);
-  transition: transform 0.3s 1.22s cubic-bezier(0.3, 1.6, 0.5, 1);
-}
-@keyframes card-thread-needle {
-  0% {
-    opacity: 0;
-  }
-  8%,
-  84% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
+  opacity: 1;
+  /* the needle stays on the end of the thread once it is sewn */
+  transition:
+    offset-distance 1.3s cubic-bezier(0.65, 0, 0.3, 1),
+    opacity 0.15s ease;
 }
 @media (prefers-reduced-motion: reduce) {
   .card-thread-line,
-  .card-thread-knot {
-    transition: none !important;
-  }
   .card-thread-needle {
-    display: none;
+    transition: none !important;
   }
 }
 
