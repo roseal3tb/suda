@@ -15,10 +15,7 @@ import {
 
 export const Route = createFileRoute("/u/$uid")({
   head: () =>
-    pageHead(
-      "ملف مصممة",
-      "ملف مهني ومعرض أعمال لمصممة أزياء على سُدى",
-    ),
+    pageHead("ملف مصممة", "ملف مهني ومعرض أعمال لمصممة أزياء على سُدى"),
   component: PublicProfilePage,
 });
 

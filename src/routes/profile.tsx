@@ -16,7 +16,6 @@ import {
 import { Reveal } from "@/components/suda/reveal";
 import { Button } from "@/components/ui/button";
 import {
-  DemoNote,
   EmptyState,
   FormField,
   MemberGate,
@@ -131,8 +130,7 @@ function ProfilePage() {
       errors.name = "اكتبي اسمك (حرفان على الأقل)";
     if (!skills.length)
       errors.skills = "أضيفي مهارة واحدة على الأقل، أو اختاري من الاقتراحات";
-    if (!interests.length)
-      errors.interests = "أضيفي اهتمامًا واحدًا على الأقل";
+    if (!interests.length) errors.interests = "أضيفي اهتمامًا واحدًا على الأقل";
     setFieldErrors(errors);
     if (Object.keys(errors).length) {
       setError("أكملي الحقول المحدّدة باللون الأحمر ثم احفظي");
@@ -151,7 +149,7 @@ function ProfilePage() {
       });
       if (!ok) {
         setError(
-          "تعذّر حفظ الملف المهني. تحققي من اتصال الإنترنت وحاولي مجددًا.",
+          "تعذّر حفظ الملف المهني، تحققي من اتصال الإنترنت وحاولي مجددًا",
         );
         return;
       }
@@ -159,7 +157,7 @@ function ProfilePage() {
       setSaved(true);
     } catch (error) {
       console.error("Profile save failed:", error);
-      setError("حدث خطأ أثناء حفظ الملف المهني. حاولي مجددًا.");
+      setError("حدث خطأ أثناء حفظ الملف المهني، حاولي مجددًا");
     } finally {
       setSaving(false);
     }
@@ -272,8 +270,8 @@ function ProfilePage() {
                 </div>
                 <p>
                   {published
-                    ? "أي شخص لديه الرابط يرى ملفك وأعمالك وإنجازاتك. بريدك لا يظهر."
-                    : "انشري ملفك لتحصلي على رابط تضعينه في سيرتك أو مع تقديمك على الفرص."}
+                    ? "أي شخص لديه الرابط يرى ملفك وأعمالك وإنجازاتك، بريدك لا يظهر"
+                    : "انشري ملفك لتحصلي على رابط تضعينه في سيرتك أو مع تقديمك على الفرص"}
                 </p>
                 <Button
                   variant={published ? "outline" : "default"}
@@ -289,7 +287,9 @@ function ProfilePage() {
                 </Button>
                 {published && shareUrl && (
                   <div className="share-link-row">
-                    <code dir="ltr">{shareUrl.replace(/^https?:\/\//, "")}</code>
+                    <code dir="ltr">
+                      {shareUrl.replace(/^https?:\/\//, "")}
+                    </code>
                     <Button
                       size="icon"
                       variant="ghost"
@@ -357,7 +357,11 @@ function ProfilePage() {
                     {works.slice(0, 3).map((work) => (
                       <figure key={work.id}>
                         {work.image ? (
-                          <img src={work.image} alt={work.title} loading="lazy" />
+                          <img
+                            src={work.image}
+                            alt={work.title}
+                            loading="lazy"
+                          />
                         ) : (
                           <span className="profile-work-empty">
                             <Sparkles size={20} />
@@ -368,7 +372,7 @@ function ProfilePage() {
                     ))}
                   </div>
                 ) : (
-                  <p>معرضك فارغ بعد. أول عمل يجعل ملفك يحكي قصتك.</p>
+                  <p>معرضك فارغ بعد، أول عمل يجعل ملفك يحكي قصتك</p>
                 )}
               </Reveal>
               {achievements.length > 0 && (
@@ -392,7 +396,7 @@ function ProfilePage() {
       ) : (
         <EmptyState
           title="ملفك المهني"
-          description="ابدئي باسمك، أضيفي مهاراتك واهتماماتك، وأكملي نبذتك المهنية. يستغرق ذلك دقيقتين"
+          description="ابدئي باسمك، أضيفي مهاراتك واهتماماتك، وأكملي نبذتك المهنية، يستغرق ذلك دقيقتين"
           action={
             <Button variant="outline" onClick={start}>
               <Plus />
@@ -401,14 +405,13 @@ function ProfilePage() {
           }
         />
       )}
-      <DemoNote />
       <Modal
         open={editing}
         onClose={() => {
           if (!saving) setEditing(false);
         }}
         title={profile ? "تعديل الملف المهني" : "إنشاء الملف المهني"}
-        description="الحقول المعلّمة بـ * مطلوبة. اكتبي المهارة واضغطي Enter أو فاصلة، أو اختاري من الاقتراحات."
+        description="الحقول المعلّمة بـ * مطلوبة، اكتبي المهارة واضغطي Enter أو فاصلة، أو اختاري من الاقتراحات"
       >
         <form
           className="form-stack"
@@ -459,9 +462,7 @@ function ProfilePage() {
             }
             suggestions={interestSuggestions}
             placeholder="الأزياء التراثية، الأقمشة، التشكيل"
-            {...(fieldErrors.interests
-              ? { error: fieldErrors.interests }
-              : {})}
+            {...(fieldErrors.interests ? { error: fieldErrors.interests } : {})}
           />
           <FormField label="الخبرات">
             <textarea

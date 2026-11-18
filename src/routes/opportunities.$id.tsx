@@ -12,7 +12,6 @@ import {
 import { Reveal } from "@/components/suda/reveal";
 import { Button } from "@/components/ui/button";
 import {
-  DemoNote,
   EmptyState,
   SaveOpportunityButton,
   categoryIcons,
@@ -59,10 +58,10 @@ function Details() {
     try {
       const ok = await enroll(item);
       if (!ok)
-        setError("تعذّر الالتحاق بالدورة. تحققي من الاتصال وحاولي مجددًا.");
+        setError("تعذّر الالتحاق بالدورة، تحققي من الاتصال وحاولي مجددًا");
     } catch (cause) {
       console.error("Failed to enroll:", cause);
-      setError("تعذّر الالتحاق بالدورة. حاولي مجددًا.");
+      setError("تعذّر الالتحاق بالدورة، حاولي مجددًا");
     } finally {
       setBusy(false);
     }
@@ -155,7 +154,7 @@ function Details() {
                 <h3>الالتحاق بالدورة</h3>
                 <p>
                   دورة مجانية · في حال توفّر اجتماع رسمي عبر Zoom، يظهر رابطه
-                  بعد الالتحاق. لا تُستضاف فيديوهات داخل سُدى
+                  بعد الالتحاق، لا تُستضاف فيديوهات داخل سُدى
                 </p>
                 {session && enrollmentsLoading ? (
                   <p role="status">جارٍ التحقق من تسجيلك في الدورة...</p>
@@ -253,7 +252,6 @@ function Details() {
             width={720}
             height={900}
           />
-          <DemoNote />
         </Reveal>
       </div>
     </div>

@@ -4,7 +4,6 @@ import { Check, Plus, ArrowLeft, Video, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/suda/reveal";
 import {
-  DemoNote,
   EmptyState,
   LoadingCards,
   MemberGate,
@@ -80,7 +79,6 @@ function Learning() {
           }
         />
       )}
-      <DemoNote />
     </div>
   );
 }
@@ -121,7 +119,7 @@ function LearningRow({
       setAchievementSaved(true);
     } catch (cause) {
       console.error("Failed to save achievement:", cause);
-      setError("حدث خطأ أثناء حفظ الإنجاز. حاولي مجددًا.");
+      setError("حدث خطأ أثناء حفظ الإنجاز، حاولي مجددًا");
     } finally {
       setBusy(false);
     }
@@ -136,10 +134,10 @@ function LearningRow({
     try {
       const ok = await updateProgress(course.id, value);
       if (ok) setSavedProgress(value);
-      else setError("تعذّر حفظ التقدّم. تحققي من الاتصال وحاولي مجددًا.");
+      else setError("تعذّر حفظ التقدّم، تحققي من الاتصال وحاولي مجددًا");
     } catch (cause) {
       console.error("Failed to save progress:", cause);
-      setError("حدث خطأ أثناء حفظ التقدّم. حاولي مجددًا.");
+      setError("حدث خطأ أثناء حفظ التقدّم، حاولي مجددًا");
     } finally {
       setBusy(false);
     }

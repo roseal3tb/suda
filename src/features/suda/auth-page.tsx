@@ -15,23 +15,23 @@ function getAuthErrorMessage(error: unknown): string {
 
   switch (code) {
     case "auth/email-already-in-use":
-      return "هذا البريد الإلكتروني مسجّل بالفعل. جرّبي تسجيل الدخول.";
+      return "هذا البريد الإلكتروني مسجّل بالفعل، جرّبي تسجيل الدخول";
     case "auth/invalid-email":
-      return "البريد الإلكتروني غير صحيح.";
+      return "البريد الإلكتروني غير صحيح";
     case "auth/weak-password":
-      return "كلمة المرور ضعيفة. اختاري كلمة مرور أقوى.";
+      return "كلمة المرور ضعيفة، اختاري كلمة مرور أقوى";
     case "auth/invalid-credential":
     case "auth/wrong-password":
     case "auth/user-not-found":
-      return "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+      return "البريد الإلكتروني أو كلمة المرور غير صحيحة";
     case "auth/too-many-requests":
-      return "محاولات كثيرة لتسجيل الدخول. انتظري قليلًا ثم حاولي مرة أخرى.";
+      return "محاولات كثيرة لتسجيل الدخول، انتظري قليلًا ثم حاولي مرة أخرى";
     case "auth/network-request-failed":
-      return "تعذّر الاتصال بالشبكة. تحققي من الإنترنت وحاولي مجددًا.";
+      return "تعذّر الاتصال بالشبكة، تحققي من الإنترنت وحاولي مجددًا";
     case "auth/operation-not-allowed":
       return "طريقة تسجيل الدخول غير مفعّلة في Firebase.";
     default:
-      return "حدث خطأ غير متوقع. حاولي مرة أخرى.";
+      return "حدث خطأ غير متوقع، حاولي مرة أخرى";
   }
 }
 
@@ -44,7 +44,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
   async function handleReset() {
     setError("");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setError("اكتبي بريدك الإلكتروني أولًا، ثم اضغطي «نسيتِ كلمة المرور؟».");
+      setError("اكتبي بريدك الإلكتروني أولًا، ثم اضغطي «نسيتِ كلمة المرور؟»");
       return;
     }
     setResetState("busy");
@@ -85,22 +85,22 @@ export function AuthPage({ register = false }: { register?: boolean }) {
     setError("");
 
     if (register && name.trim().length < 2) {
-      setError("اكتبي اسمًا من حرفين على الأقل.");
+      setError("اكتبي اسمًا من حرفين على الأقل");
       return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setError("أدخلي بريدًا إلكترونيًا بصيغة صحيحة.");
+      setError("أدخلي بريدًا إلكترونيًا بصيغة صحيحة");
       return;
     }
 
     if (password.length < 6) {
-      setError("كلمة المرور يجب أن تتكوّن من ٦ أحرف على الأقل.");
+      setError("كلمة المرور يجب أن تتكوّن من ٦ أحرف على الأقل");
       return;
     }
 
     if (register && password !== confirm) {
-      setError("كلمتا المرور غير متطابقتين.");
+      setError("كلمتا المرور غير متطابقتين");
       return;
     }
 
@@ -223,8 +223,8 @@ export function AuthPage({ register = false }: { register?: boolean }) {
               </button>
               {resetState === "sent" && (
                 <span role="status" className="success-message">
-                  إن كان البريد مسجّلًا، ستصلك رسالة لإعادة تعيين كلمة المرور.
-                  تفقّدي البريد غير المرغوب أيضًا.
+                  إن كان البريد مسجّلًا، ستصلك رسالة لإعادة تعيين كلمة المرور،
+                  تفقّدي البريد غير المرغوب أيضًا
                 </span>
               )}
             </div>
@@ -263,7 +263,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
             <Info size={14} />
             <span>
               حسابك محمي باستخدام Firebase Authentication. لا تشاركي كلمة مرورك
-              مع أي شخص.
+              مع أي شخص
             </span>
           </p>
 

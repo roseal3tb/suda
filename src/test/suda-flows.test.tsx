@@ -392,7 +392,7 @@ describe("Sprint 1 journeys with the real provider and an isolated Firebase SDK 
     cloud.failure = true;
     const log = vi.spyOn(console, "error").mockImplementation(() => {});
     submit("حذف نهائي");
-    await screen.findByText("تعذّر حذف الفرصة. حاولي مجددًا.");
+    await screen.findByText("تعذّر حذف الفرصة، حاولي مجددًا");
     expect(cloud.records.has(stored[0])).toBe(true);
     expect(cloud.records.has(linkPath)).toBe(true);
     cloud.failure = false;
@@ -420,7 +420,7 @@ describe("Sprint 1 journeys with the real provider and an isolated Firebase SDK 
     const log = vi.spyOn(console, "error").mockImplementation(() => {});
     submit(/حفظ الفرصة/);
     await screen.findByText(
-      "تعذّر حفظ الفرصة. تحققي من الاتصال وصلاحيات الحساب.",
+      "تعذّر حفظ الفرصة، تحققي من الاتصال وصلاحيات الحساب",
     );
     expect(screen.getByRole("dialog")).toBeInTheDocument();
     expect(
@@ -524,7 +524,7 @@ describe("Sprint 1 journeys with the real provider and an isolated Firebase SDK 
     const dialog = screen.getByRole("dialog");
     expect(within(dialog).getByText("وصف المعاينة")).toBeInTheDocument();
     expect(
-      within(dialog).getByText("هذا العمل لا يحتوي على صورة."),
+      within(dialog).getByText("هذا العمل لا يحتوي على صورة"),
     ).toBeInTheDocument();
     fireEvent.click(within(dialog).getByRole("button", { name: "إغلاق" }));
     await waitFor(() =>

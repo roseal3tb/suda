@@ -11,7 +11,6 @@ import {
   BriefcaseBusiness,
   Spool,
   Plus,
-  Info,
   Bookmark,
   BookmarkCheck,
   Clock,
@@ -73,17 +72,6 @@ export function PageIntro({
         {description && <p>{description}</p>}
       </div>
       {action}
-    </Reveal>
-  );
-}
-export function DemoNote() {
-  return (
-    <Reveal as="p" className="demo-note">
-      <Info size={14} />
-      <span>
-        الفرص والجهات النموذجية خيالية لأغراض العرض. ملفك المهني وأعمالك
-        بصورها ودوراتك وفرصك المحفوظة تُحفظ في حسابك.
-      </span>
     </Reveal>
   );
 }
@@ -297,7 +285,11 @@ export function TagInput({
         {error ? <span className="field-error">{error}</span> : hint}
       </small>
       {available.length > 0 && (
-        <div className="tag-suggestions" role="group" aria-label="اقتراحات للإضافة">
+        <div
+          className="tag-suggestions"
+          role="group"
+          aria-label="اقتراحات للإضافة"
+        >
           {available.map((s) => (
             <button type="button" key={s} onClick={() => add([s])}>
               <Plus size={12} />
@@ -353,7 +345,7 @@ export function MemberGate({
       <div className="content-wrap">
         <EmptyState
           title="الوصول غير مسموح"
-          description="هذه الصفحة مخصصة لحساب الإدارة."
+          description="هذه الصفحة مخصصة لحساب الإدارة"
         />
       </div>
     );
@@ -363,11 +355,11 @@ export function MemberGate({
         <PageIntro
           eyebrow="مساحتك في سُدى"
           title="يلزم تسجيل الدخول"
-          description="سجّلي الدخول للوصول إلى ملفك المهني وأعمالك ودوراتك المحفوظة في حسابك."
+          description="سجّلي الدخول للوصول إلى ملفك المهني وأعمالك ودوراتك المحفوظة في حسابك"
         />
         <EmptyState
           title="سجّلي الدخول للمتابعة"
-          description="استخدمي حسابك، أو أنشئي حسابًا جديدًا."
+          description="استخدمي حسابك، أو أنشئي حسابًا جديدًا"
           action={
             <Button asChild>
               <Link to="/login">
@@ -420,7 +412,7 @@ export function Modal({
       <DialogContent dir="rtl" className="suda-modal">
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>
-          {description || "راجعي البيانات ثم احفظي التغييرات."}
+          {description || "راجعي البيانات ثم احفظي التغييرات"}
         </DialogDescription>
         {children}
       </DialogContent>

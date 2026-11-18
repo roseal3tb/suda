@@ -54,7 +54,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
           تعذّر تحميل الصفحة
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          حدث خطأ غير متوقع. يمكنك المحاولة مجددًا أو العودة للرئيسية
+          حدث خطأ غير متوقع، يمكنك المحاولة مجددًا أو العودة للرئيسية
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button

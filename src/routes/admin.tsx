@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import {
   AddButton,
   ConfirmDelete,
-  DemoNote,
   EmptyState,
   FormField,
   MemberGate,
@@ -127,7 +126,7 @@ function Admin() {
     });
     setBusy(false);
     if (!ok) {
-      setError("تعذّر حفظ الفرصة. تحققي من الاتصال وصلاحيات الحساب.");
+      setError("تعذّر حفظ الفرصة، تحققي من الاتصال وصلاحيات الحساب");
       return;
     }
     setForm(null);
@@ -137,7 +136,7 @@ function Admin() {
     <div className="content-wrap">
       <div className="admin-banner">
         <Shield size={17} />
-        إدارة الفرص · تُحفظ التغييرات وتظهر لجميع المستخدمين.
+        إدارة الفرص · تُحفظ التغييرات وتظهر لجميع المستخدمين
       </div>
       <PageIntro
         eyebrow="مساحة الإدارة"
@@ -149,7 +148,7 @@ function Admin() {
         <summary>نقل الفرص السابقة إلى الحساب</summary>
         <p>
           ينقل الفرص المحلية في هذا المتصفح، أو الفرص النموذجية إذا لم توجد
-          بيانات محلية. لا يستبدل الفرص المحفوظة مسبقًا.
+          بيانات محلية، لا يستبدل الفرص المحفوظة مسبقًا
         </p>
         <Button
           disabled={importing || opportunitiesLoading}
@@ -158,7 +157,7 @@ function Admin() {
             setImportMessage("");
             const ok = await importOpportunities();
             setImportMessage(
-              ok ? "تم نقل الفرص بنجاح" : "تعذّر إكمال النقل. حاولي مجددًا.",
+              ok ? "تم نقل الفرص بنجاح" : "تعذّر إكمال النقل، حاولي مجددًا",
             );
             setImporting(false);
           }}
@@ -289,13 +288,12 @@ function Admin() {
           description="عدّلي البحث أو أضيفي فرصة جديدة"
         />
       )}
-      <DemoNote />
       <Modal
         open={Boolean(form)}
         onClose={() => {
           if (!busy) setForm(null);
         }}
-        description="تظهر الفرصة المحفوظة لجميع المستخدمين، ويقتصر رابط الدورة على الملتحقين بها."
+        description="تظهر الفرصة المحفوظة لجميع المستخدمين، ويقتصر رابط الدورة على الملتحقين بها"
         title={
           form && opportunities.some((o) => o.id === form.id)
             ? "تعديل الفرصة"
@@ -423,7 +421,7 @@ function Admin() {
               <>
                 <FormField
                   label="رابط اجتماع Zoom — اختياري"
-                  hint="أضيفي رابطًا رسميًا موثّقًا فقط. لا يظهر للمستخدمة إلا بعد الالتحاق"
+                  hint="أضيفي رابطًا رسميًا موثّقًا فقط، لا يظهر للمستخدمة إلا بعد الالتحاق"
                 >
                   <input
                     dir="ltr"
@@ -473,7 +471,7 @@ function Admin() {
           setBusy(true);
           setDeleteError("");
           if (await deleteOpportunity(deleting.id)) setDeleting(null);
-          else setDeleteError("تعذّر حذف الفرصة. حاولي مجددًا.");
+          else setDeleteError("تعذّر حذف الفرصة، حاولي مجددًا");
           setBusy(false);
         }}
       />

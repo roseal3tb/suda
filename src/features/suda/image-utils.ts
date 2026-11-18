@@ -35,7 +35,7 @@ export async function preparePortfolioImage(file: File): Promise<string> {
         if (output.length <= MAX_WORK_IMAGE_CHARS) return output;
       }
     }
-    throw new Error("تعذّر ضغط الصورة بما يكفي. جرّبي صورة أخرى");
+    throw new Error("تعذّر ضغط الصورة بما يكفي، جرّبي صورة أخرى");
   } finally {
     URL.revokeObjectURL(objectUrl);
   }

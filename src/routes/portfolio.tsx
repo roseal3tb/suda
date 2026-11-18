@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import {
   AddButton,
   ConfirmDelete,
-  DemoNote,
   EmptyState,
   FormField,
   LoadingCards,
@@ -71,14 +70,14 @@ function Portfolio() {
         description: form.description.trim(),
       });
       if (!ok) {
-        setError("تعذّر حفظ العمل. تحققي من الاتصال وحاولي مجددًا.");
+        setError("تعذّر حفظ العمل، تحققي من الاتصال وحاولي مجددًا");
         return;
       }
       setForm(null);
       setSaved(true);
     } catch (err) {
       console.error("Portfolio save failed:", err);
-      setError("حدث خطأ أثناء حفظ العمل. حاولي مجددًا.");
+      setError("حدث خطأ أثناء حفظ العمل، حاولي مجددًا");
     } finally {
       setBusy(false);
     }
@@ -174,7 +173,7 @@ function Portfolio() {
       ) : (
         <EmptyState
           title="معرضك جاهز لأعمالك"
-          description="لا توجد أعمال بعد. أضيفي تصميمًا أو مشروعًا دراسيًا مع صورته لتبدئي معرضك"
+          description="لا توجد أعمال بعد، أضيفي تصميمًا أو مشروعًا دراسيًا مع صورته لتبدئي معرضك"
           action={
             <Button variant="outline" onClick={() => start()}>
               <Plus />
@@ -183,13 +182,12 @@ function Portfolio() {
           }
         />
       )}
-      <DemoNote />
       <Modal
         open={Boolean(form)}
         onClose={() => {
           if (!busy) setForm(null);
         }}
-        description="أضيفي العنوان والوصف، وصورة لعملك إن أحببتِ. تُضغط الصورة تلقائيًا وتُحفظ مع العمل."
+        description="أضيفي العنوان والوصف، وصورة لعملك إن أحببتِ، تُضغط الصورة تلقائيًا وتُحفظ مع العمل"
         title={
           form && works.some((w) => w.id === form.id)
             ? "تعديل العمل"
@@ -218,8 +216,7 @@ function Portfolio() {
             </FormField>
             <FormField
               label="صورة عملك — اختيارية"
-
-              hint="اختيارية: يمكنك حفظ العمل الآن وإضافة الصورة لاحقًا."
+              hint="اختيارية: يمكنك حفظ العمل الآن وإضافة الصورة لاحقًا"
             >
               <div
                 className={`rounded-xl border-2 border-dashed p-5 text-center transition-colors ${
@@ -316,7 +313,7 @@ function Portfolio() {
             />
           ) : (
             <div className="upload-placeholder">
-              هذا العمل لا يحتوي على صورة.
+              هذا العمل لا يحتوي على صورة
             </div>
           ))}
       </Modal>
@@ -342,12 +339,12 @@ function Portfolio() {
                 setSaved(false);
               } else {
                 setDeleteError(
-                  "تعذّر حذف العمل. تحققي من الاتصال وحاولي مجددًا.",
+                  "تعذّر حذف العمل، تحققي من الاتصال وحاولي مجددًا",
                 );
               }
             } catch (err) {
               console.error("Portfolio delete failed:", err);
-              setDeleteError("حدث خطأ أثناء حذف العمل. حاولي مجددًا.");
+              setDeleteError("حدث خطأ أثناء حذف العمل، حاولي مجددًا");
             } finally {
               setDeletingBusy(false);
             }

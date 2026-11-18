@@ -11,7 +11,6 @@ import {
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  DemoNote,
   EmptyState,
   LoadingCards,
   OpportunityCard,
@@ -92,23 +91,6 @@ function Opportunities() {
             <SlidersHorizontal size={17} aria-hidden="true" />
             <span>تصفّحي بالطريقة التي تناسبك</span>
           </div>
-          {session && (
-            <Button
-              variant={showSaved ? "default" : "outline"}
-              size="sm"
-              className="saved-toggle"
-              aria-pressed={showSaved}
-              onClick={() => setShowSaved(!showSaved)}
-            >
-              <Bookmark />
-              فرصي المحفوظة
-              {saved.length > 0 && (
-                <span className="count-pill">
-                  {saved.length.toLocaleString("ar-SA")}
-                </span>
-              )}
-            </Button>
-          )}
           <span className="discovery-count">
             {activeFilters.length
               ? `${activeFilters.length.toLocaleString("ar-SA")} فلاتر نشطة`
@@ -137,6 +119,22 @@ function Opportunities() {
               </Button>
             );
           })}
+          {session && (
+            <Button
+              variant={showSaved ? "default" : "outline"}
+              className="saved-toggle"
+              aria-pressed={showSaved}
+              onClick={() => setShowSaved(!showSaved)}
+            >
+              <Bookmark />
+              فرصي المحفوظة
+              {savedItems.length > 0 && (
+                <span className="count-pill">
+                  {savedItems.length.toLocaleString("ar-SA")}
+                </span>
+              )}
+            </Button>
+          )}
         </div>
         <button
           type="button"
@@ -209,9 +207,7 @@ function Opportunities() {
           </label>
         </div>
       </section>
-      {showSaved && session && (
-        <SavedTracker rows={savedItems} />
-      )}
+      {showSaved && session && <SavedTracker rows={savedItems} />}
       <div className="result-line">
         <span aria-live="polite">
           {opportunitiesLoading
@@ -258,7 +254,7 @@ function Opportunities() {
         <div id="opportunity-results">
           <EmptyState
             title="لا توجد نتائج"
-            description="لا توجد فرص تطابق بحثك. جرّبي كلمة أخرى أو امسحي الفلاتر"
+            description="لا توجد فرص تطابق بحثك، جرّبي كلمة أخرى أو امسحي الفلاتر"
             action={
               <Button
                 variant="outline"
@@ -271,7 +267,6 @@ function Opportunities() {
           />
         </div>
       )}
-      <DemoNote />
     </div>
   );
 }
@@ -290,8 +285,8 @@ function SavedTracker({
       <section className="saved-tracker is-empty" aria-label="فرصي المحفوظة">
         <Bookmark size={22} strokeWidth={1.3} aria-hidden="true" />
         <p>
-          لم تحفظي فرصًا بعد. اضغطي على علامة الحفظ في أي فرصة لتعودي إليها
-          وتتابعي حالة تقديمك.
+          لم تحفظي فرصًا بعد، اضغطي على علامة الحفظ في أي فرصة لتعودي إليها
+          وتتابعي حالة تقديمك
         </p>
       </section>
     );
@@ -300,53 +295,53 @@ function SavedTracker({
       <header>
         <h2>فرصي المحفوظة</h2>
         <small>
-          تابعي أين وصلتِ مع كل فرصة. التقديم نفسه يتم لدى الجهة المنظمة.
+          تابعي أين وصلتِ مع كل فرصة، التقديم نفسه يتم لدى الجهة المنظمة
         </small>
       </header>
       <ul>
-        {sortByDeadline(rows.map((r) => ({ ...r, deadline: r.item.deadline }))).map(
-          ({ entry, item }) => {
-            const deadline = deadlineInfo(item.deadline);
-            return (
-              <li key={item.id}>
-                <div className="saved-tracker-title">
-                  <Link to="/opportunities/$id" params={{ id: item.id }}>
-                    {item.title}
-                  </Link>
-                  <span className={`deadline-badge is-${deadline.tone}`}>
-                    {deadline.label}
-                  </span>
-                </div>
-                <div
-                  className="status-segments"
-                  role="radiogroup"
-                  aria-label={`حالة ${item.title}`}
-                >
-                  {savedStatuses.map((status) => (
-                    <button
-                      key={status}
-                      type="button"
-                      role="radio"
-                      aria-checked={entry.status === status}
-                      className={entry.status === status ? "is-active" : ""}
-                      onClick={() => void setSavedStatus(item.id, status)}
-                    >
-                      {status}
-                    </button>
-                  ))}
-                </div>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  aria-label={`حذف ${item.title} من قائمتي`}
-                  onClick={() => void toggleSaved(item.id)}
-                >
-                  <Trash2 />
-                </Button>
-              </li>
-            );
-          },
-        )}
+        {sortByDeadline(
+          rows.map((r) => ({ ...r, deadline: r.item.deadline })),
+        ).map(({ entry, item }) => {
+          const deadline = deadlineInfo(item.deadline);
+          return (
+            <li key={item.id}>
+              <div className="saved-tracker-title">
+                <Link to="/opportunities/$id" params={{ id: item.id }}>
+                  {item.title}
+                </Link>
+                <span className={`deadline-badge is-${deadline.tone}`}>
+                  {deadline.label}
+                </span>
+              </div>
+              <div
+                className="status-segments"
+                role="radiogroup"
+                aria-label={`حالة ${item.title}`}
+              >
+                {savedStatuses.map((status) => (
+                  <button
+                    key={status}
+                    type="button"
+                    role="radio"
+                    aria-checked={entry.status === status}
+                    className={entry.status === status ? "is-active" : ""}
+                    onClick={() => void setSavedStatus(item.id, status)}
+                  >
+                    {status}
+                  </button>
+                ))}
+              </div>
+              <Button
+                size="icon"
+                variant="ghost"
+                aria-label={`حذف ${item.title} من قائمتي`}
+                onClick={() => void toggleSaved(item.id)}
+              >
+                <Trash2 />
+              </Button>
+            </li>
+          );
+        })}
       </ul>
     </section>
   );

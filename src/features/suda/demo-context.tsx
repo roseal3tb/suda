@@ -2,6 +2,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -307,6 +308,16 @@ export function DemoProvider({ children }: { children: ReactNode }) {
 
   const [publishLoading, setPublishLoading] = useState(true);
 
+  // Opportunity IDs with a save/unsave/status write in flight. Stops a quick
+  // second click from acting on the list as it was before the first write.
+  const savedBusy = useRef(new Set<string>());
+
+  // Latest enrollments, so async handlers never build on a stale render.
+  const enrollmentsRef = useRef<Enrollment[]>([]);
+  useEffect(() => {
+    enrollmentsRef.current = enrollments;
+  }, [enrollments]);
+
   // All visitors observe the same cloud records. Never fall back to stale local data.
   useEffect(
     () =>
@@ -324,7 +335,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
           setOpportunities([]);
           setOpportunitiesLoading(false);
           setStorageError(
-            "تعذّر تحميل الفرص. تحققي من الاتصال ثم حدّثي الصفحة.",
+            "تعذّر تحميل الفرص، تحققي من الاتصال ثم حدّثي الصفحة",
           );
         },
       ),
@@ -369,7 +380,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
           setMeetingLinks((current) => ({ ...current, [id]: "" }));
           setMeetingLinksError(true);
           setStorageError(
-            "تعذّر تحميل روابط الدورات. حدّثي الصفحة للمحاولة مجددًا.",
+            "تعذّر تحميل روابط الدورات، حدّثي الصفحة للمحاولة مجددًا",
           );
           pending.delete(id);
           setMeetingLinksLoading(pending.size > 0);
@@ -492,8 +503,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
           if (!active || currentRequest !== requestId) return;
           console.error("Failed to load public profile state:", error);
         } finally {
-          if (active && currentRequest === requestId)
-            setPublishLoading(false);
+          if (active && currentRequest === requestId) setPublishLoading(false);
         }
       })();
 
@@ -515,7 +525,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         .catch(() => {
           if (active && currentRequest === requestId)
             setStorageError(
-              "تعذّر التحقق من صلاحيات الحساب. سجّلي الدخول مجددًا.",
+              "تعذّر التحقق من صلاحيات الحساب، سجّلي الدخول مجددًا",
             );
         })
         .finally(() => {
@@ -544,7 +554,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
           console.error("Failed to load Firestore profile:", error);
 
           setStorageError(
-            "تعذّر تحميل الملف المهني من Firebase. تحققي من الاتصال وحاولي مجددًا.",
+            "تعذّر تحميل الملف المهني من Firebase، تحققي من الاتصال وحاولي مجددًا",
           );
         }
       })();
@@ -644,7 +654,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
           console.error("Failed to load Firestore portfolio:", error);
 
           setStorageError(
-            "تعذّر تحميل معرض الأعمال من Firebase. تحققي من الاتصال وحاولي مجددًا.",
+            "تعذّر تحميل معرض الأعمال من Firebase، تحققي من الاتصال وحاولي مجددًا",
           );
 
           setWorksLoading(false);
@@ -721,7 +731,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
           if (!active || currentRequest !== requestId) return;
           console.error("Failed to load Firestore enrollments:", error);
           setStorageError(
-            "تعذّر تحميل الدورات من Firebase. تحققي من الاتصال وحاولي مجددًا.",
+            "تعذّر تحميل الدورات من Firebase، تحققي من الاتصال وحاولي مجددًا",
           );
           setEnrollmentsLoading(false);
         }
@@ -792,7 +802,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   async function setPublished(next: boolean): Promise<boolean> {
     const user = auth.currentUser;
     if (!user || !profile) {
-      setStorageError("أنشئي ملفك المهني أولًا ثم شاركيه.");
+      setStorageError("أنشئي ملفك المهني أولًا ثم شاركيه");
       return false;
     }
     try {
@@ -804,7 +814,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Failed to update public profile:", error);
       setStorageError(
-        "تعذّر تحديث مشاركة الملف. تحققي من الاتصال وحاولي مجددًا.",
+        "تعذّر تحديث مشاركة الملف، تحققي من الاتصال وحاولي مجددًا",
       );
       return false;
     }
@@ -817,10 +827,12 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   async function toggleSaved(opportunityId: string): Promise<boolean> {
     const user = auth.currentUser;
     if (!user) {
-      setStorageError("سجّلي الدخول لحفظ الفرص في حسابك.");
+      setStorageError("سجّلي الدخول لحفظ الفرص في حسابك");
       return false;
     }
     if (!opportunityId || opportunityId.includes("/")) return false;
+    if (savedBusy.current.has(opportunityId)) return false;
+    savedBusy.current.add(opportunityId);
     const ref = doc(db, "users", user.uid, "saved", opportunityId);
     try {
       if (isSaved(opportunityId)) {
@@ -846,8 +858,10 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       return true;
     } catch (error) {
       console.error("Failed to toggle saved opportunity:", error);
-      setStorageError("تعذّر حفظ الفرصة. تحققي من الاتصال وحاولي مجددًا.");
+      setStorageError("تعذّر حفظ الفرصة، تحققي من الاتصال وحاولي مجددًا");
       return false;
+    } finally {
+      savedBusy.current.delete(opportunityId);
     }
   }
 
@@ -860,13 +874,19 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       !user ||
       !opportunityId ||
       opportunityId.includes("/") ||
-      !savedStatuses.includes(status)
+      !savedStatuses.includes(status) ||
+      savedBusy.current.has(opportunityId)
     )
       return false;
+    savedBusy.current.add(opportunityId);
     // Upsert: marking an unsaved opportunity as applied also saves it.
     const current = saved.find(
       (item) => item.opportunityId === opportunityId,
-    ) ?? { opportunityId, status: "محفوظة" as SavedStatus, savedAt: Date.now() };
+    ) ?? {
+      opportunityId,
+      status: "محفوظة" as SavedStatus,
+      savedAt: Date.now(),
+    };
     const record: SavedOpportunity = { ...current, status };
     try {
       await setDoc(doc(db, "users", user.uid, "saved", opportunityId), record);
@@ -879,8 +899,10 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       return true;
     } catch (error) {
       console.error("Failed to update saved status:", error);
-      setStorageError("تعذّر تحديث الحالة. تحققي من الاتصال وحاولي مجددًا.");
+      setStorageError("تعذّر تحديث الحالة، تحققي من الاتصال وحاولي مجددًا");
       return false;
+    } finally {
+      savedBusy.current.delete(opportunityId);
     }
   }
 
@@ -918,7 +940,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Failed to save opportunity:", error);
       setStorageError(
-        "تعذّر حفظ الفرصة. تحققي من صلاحية الإدارة والاتصال وحاولي مجددًا.",
+        "تعذّر حفظ الفرصة، تحققي من صلاحية الإدارة والاتصال وحاولي مجددًا",
       );
       return false;
     }
@@ -938,7 +960,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Failed to delete opportunity:", error);
       setStorageError(
-        "تعذّر حذف الفرصة. تحققي من صلاحية الإدارة والاتصال وحاولي مجددًا.",
+        "تعذّر حذف الفرصة، تحققي من صلاحية الإدارة والاتصال وحاولي مجددًا",
       );
       return false;
     }
@@ -987,7 +1009,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Failed to import opportunities:", error);
       setStorageError(
-        "تعذّر إكمال نقل الفرص. يمكنك إعادة المحاولة دون تكرار الفرص المحفوظة.",
+        "تعذّر إكمال نقل الفرص، يمكنك إعادة المحاولة دون تكرار الفرص المحفوظة",
       );
       return false;
     }
@@ -997,7 +1019,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     const user = auth.currentUser;
 
     if (!user) {
-      setStorageError("سجّلي الدخول قبل حفظ الملف المهني.");
+      setStorageError("سجّلي الدخول قبل حفظ الملف المهني");
 
       return false;
     }
@@ -1025,7 +1047,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       console.error("Failed to save Firestore profile:", error);
 
       setStorageError(
-        "تعذّر حفظ الملف المهني في Firebase. تحققي من الاتصال وحاولي مجددًا.",
+        "تعذّر حفظ الملف المهني في Firebase، تحققي من الاتصال وحاولي مجددًا",
       );
 
       return false;
@@ -1036,7 +1058,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     const user = auth.currentUser;
 
     if (!user) {
-      setStorageError("سجّلي الدخول قبل حفظ العمل.");
+      setStorageError("سجّلي الدخول قبل حفظ العمل");
 
       return false;
     }
@@ -1076,7 +1098,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       console.error("Failed to save Firestore work:", error);
 
       setStorageError(
-        "تعذّر حفظ العمل في Firebase. تحققي من الاتصال وحاولي مجددًا.",
+        "تعذّر حفظ العمل في Firebase، تحققي من الاتصال وحاولي مجددًا",
       );
 
       return false;
@@ -1102,7 +1124,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       console.error("Failed to delete Firestore work:", error);
 
       setStorageError(
-        "تعذّر حذف العمل من Firebase. تحققي من الاتصال وحاولي مجددًا.",
+        "تعذّر حذف العمل من Firebase، تحققي من الاتصال وحاولي مجددًا",
       );
 
       return false;
@@ -1147,7 +1169,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       console.error("Failed to enroll in Firestore course:", error);
       if (auth.currentUser?.uid === user.uid)
         setStorageError(
-          "تعذّر التسجيل في الدورة. تحققي من الاتصال وحاولي مجددًا.",
+          "تعذّر التسجيل في الدورة، تحققي من الاتصال وحاولي مجددًا",
         );
       return false;
     }
@@ -1185,7 +1207,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Failed to update Firestore progress:", error);
       if (auth.currentUser?.uid === user.uid)
-        setStorageError("تعذّر حفظ التقدّم. تحققي من الاتصال وحاولي مجددًا.");
+        setStorageError("تعذّر حفظ التقدّم، تحققي من الاتصال وحاولي مجددًا");
       return false;
     }
   }
@@ -1210,12 +1232,15 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       });
       if (auth.currentUser?.uid !== user.uid) return false;
       if (updated) {
-        const nextEnrollments = enrollments.map((item) =>
-          item.courseId === id
-            ? { ...item, achievements: [...item.achievements, achievement] }
-            : item,
-        );
-        setEnrollments(nextEnrollments);
+        const addTo = (list: Enrollment[]) =>
+          list.map((item) =>
+            item.courseId === id
+              ? { ...item, achievements: [...item.achievements, achievement] }
+              : item,
+          );
+        const nextEnrollments = addTo(enrollmentsRef.current);
+        enrollmentsRef.current = nextEnrollments;
+        setEnrollments((current) => addTo(current));
         if (published)
           void syncPublicProfile(
             user.uid,
@@ -1231,7 +1256,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Failed to add Firestore achievement:", error);
       if (auth.currentUser?.uid === user.uid)
-        setStorageError("تعذّر حفظ الإنجاز. تحققي من الاتصال وحاولي مجددًا.");
+        setStorageError("تعذّر حفظ الإنجاز، تحققي من الاتصال وحاولي مجددًا");
       return false;
     }
   }

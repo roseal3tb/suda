@@ -7847,3 +7847,33 @@ h6,
     transform: none;
   }
 }
+
+/* Admin banner hugs its sentence instead of spanning the page */
+.admin-banner {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  border-radius: 999px !important;
+  padding-inline: 20px 22px;
+}
+
+/* Milestones: every step uses the same solid dot; only its tone changes */
+.milestone-dot {
+  border: 0;
+  background: color-mix(in srgb, currentColor 30%, transparent);
+}
+.milestones button.is-reached .milestone-dot,
+.milestones button[aria-pressed="true"] .milestone-dot {
+  background: currentColor;
+}
+
+/* «فرصي المحفوظة» sits at the end of the category row, same size as its pills */
+.category-tabs .saved-toggle {
+  margin-inline-start: auto;
+  gap: 8px;
+}
+@media (max-width: 760px) {
+  .category-tabs .saved-toggle {
+    margin-inline-start: 0;
+  }
+}

@@ -1,11 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import {
-  ArrowUpLeft,
-  ChevronDown,
-  ExternalLink,
-  CheckCircle2,
-} from "lucide-react";
+import { ArrowUpLeft, ChevronDown, ExternalLink } from "lucide-react";
 import { Reveal } from "@/components/suda/reveal";
 import { designers } from "@/features/suda/designers";
 import { pageHead } from "@/features/suda/mock-data";
@@ -72,12 +67,8 @@ function Inspiration() {
               الدليل التحريري
             </span>
             <h2 aria-label="المصممات">المصممــات</h2>
-            <p>اختاري اسمًا لعرض التفاصيل. تظهر حالة التوثيق بوضوح لكل مصممة</p>
+            <p>اختاري اسمًا لعرض التفاصيل، تظهر حالة التوثيق بوضوح لكل مصممة</p>
           </div>
-          <span className="verified-note">
-            <CheckCircle2 size={17} />
-            مصادر موثقة حيثما توفرت
-          </span>
         </Reveal>
         <div className="designer-gallery">
           {designers.map((designer, index) => (
@@ -172,11 +163,6 @@ function Inspiration() {
             </>
           </section>
         )}
-        <p className="inspiration-disclaimer">
-          المحتوى تعريفي مستقل لأغراض مشروع جامعي، ولا يمثل شراكة أو اعتمادًا من
-          المصممات أو العلامات المذكورة، والصور من الملفات المقدمة لفريق
-          المشروع؛ ويجب التحقق من حقوق إعادة استخدامها قبل النشر العام
-        </p>
       </section>
     </div>
   );

@@ -36,7 +36,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       await navigate({ to: "/login", replace: true });
     } catch (error) {
       console.error("Firebase sign-out failed:", error);
-      setSignOutError("تعذّر تسجيل الخروج. تحققي من الاتصال وحاولي مجددًا.");
+      setSignOutError("تعذّر تسجيل الخروج، تحققي من الاتصال وحاولي مجددًا");
     } finally {
       setSigningOut(false);
     }
@@ -254,16 +254,12 @@ export function Shell({ children }: { children: React.ReactNode }) {
         </div>
         <div className="suda-footer-utility">
           <p>© ٢٠٢٦ سُدى · جميع الحقوق محفوظة</p>
-          <span className="suda-footer-project">
-            مشروع جامعي قيد التطوير · الحسابات عبر Firebase والفرص المعروضة
-            تجريبية
-          </span>
           <div className="suda-footer-utilities">
             <details className="suda-photo-sources">
               <summary>عن الصور والمقاطع</summary>
               <div className="suda-photo-sources-content">
                 <p>
-                  مواد بصرية مقدّمة للمشروع لتوضيح حرفة تصميم الأزياء. لا تمثّل
+                  مواد بصرية مقدّمة للمشروع لتوضيح حرفة تصميم الأزياء، لا تمثّل
                   أعمال المستخدمات أو الجهات التجريبية، ولا تعني شراكة مع
                   المصممات
                 </p>
