@@ -113,6 +113,8 @@ interface DemoState {
 
   addAchievement: (id: string, text: string) => Promise<boolean>;
 
+  removeAchievement: (id: string, index: number) => Promise<boolean>;
+
   saved: SavedOpportunity[];
 
   savedLoading: boolean;
@@ -1261,6 +1263,64 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function removeAchievement(
+    id: string,
+    index: number,
+  ): Promise<boolean> {
+    const user = auth.currentUser;
+    const target = enrollmentsRef.current.find((item) => item.courseId === id)
+      ?.achievements[index];
+    if (!user || enrollmentsLoading || !id || id.includes("/") || !target)
+      return false;
+    // Remove by position, but only if that position still holds the same text.
+    const without = (list: string[]) =>
+      list[index] === target
+        ? list.filter((_, position) => position !== index)
+        : list;
+    try {
+      const ref = doc(db, "users", user.uid, "enrollments", id);
+      const updated = await runTransaction(db, async (transaction) => {
+        const snapshot = await transaction.get(ref);
+        const existing = snapshot.exists()
+          ? asStoredEnrollment(snapshot.data(), id)
+          : null;
+        if (!existing || existing.achievements[index] !== target) return false;
+        transaction.update(ref, {
+          achievements: without(existing.achievements),
+        });
+        return true;
+      });
+      if (auth.currentUser?.uid !== user.uid) return false;
+      if (updated) {
+        const apply = (list: Enrollment[]) =>
+          list.map((item) =>
+            item.courseId === id
+              ? { ...item, achievements: without(item.achievements) }
+              : item,
+          );
+        const nextEnrollments = apply(enrollmentsRef.current);
+        enrollmentsRef.current = nextEnrollments;
+        setEnrollments((current) => apply(current));
+        if (published)
+          void syncPublicProfile(
+            user.uid,
+            profile,
+            nextEnrollments,
+            true,
+          ).catch((error) =>
+            console.error("Failed to sync public achievements:", error),
+          );
+      }
+      setStorageError("");
+      return updated;
+    } catch (error) {
+      console.error("Failed to remove Firestore achievement:", error);
+      if (auth.currentUser?.uid === user.uid)
+        setStorageError("تعذّر حذف الإنجاز، تحققي من الاتصال وحاولي مجددًا");
+      return false;
+    }
+  }
+
   return (
     <Context.Provider
       value={{
@@ -1311,6 +1371,8 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         updateProgress,
 
         addAchievement,
+
+        removeAchievement,
 
         saved,
 

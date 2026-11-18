@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { Check, Plus, ArrowLeft, Video, Award } from "lucide-react";
+import { Check, Plus, ArrowLeft, Video, Award, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/suda/reveal";
 import {
@@ -91,7 +91,7 @@ function LearningRow({
   course: Opportunity;
   enrollment: Enrollment;
 }) {
-  const { updateProgress, addAchievement } = useDemo();
+  const { updateProgress, addAchievement, removeAchievement } = useDemo();
   const [progress, setProgress] = useState(enrollment.progress);
   const [achievement, setAchievement] = useState("");
   const [savedProgress, setSavedProgress] = useState<number | null>(null);
@@ -251,9 +251,17 @@ function LearningRow({
         )}
         <div className="achievement-list">
           {enrollment.achievements.map((text, i) => (
-            <span key={i}>
+            <span key={`${i}-${text}`}>
               <Check size={14} />
               {text}
+              <button
+                type="button"
+                className="achievement-remove"
+                aria-label={`حذف الإنجاز: ${text}`}
+                onClick={() => void removeAchievement(course.id, i)}
+              >
+                <X size={12} />
+              </button>
             </span>
           ))}
         </div>

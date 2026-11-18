@@ -325,6 +325,29 @@ describe("Sprint 1 journeys with the real provider and an isolated Firebase SDK 
     ).not.toBeInTheDocument();
   });
 
+  it("lets a learner remove one achievement and keeps the rest", async () => {
+    signedIn();
+    cloud.records.set("users/designer-a/enrollments/pattern", {
+      courseId: "pattern",
+      progress: 40,
+      achievements: ["اختبار قديم", "أنجزت الباترون"],
+    });
+    const view = mount(<LearningPage />);
+    await screen.findByText("اختبار قديم");
+    fireEvent.click(
+      screen.getByRole("button", { name: "حذف الإنجاز: اختبار قديم" }),
+    );
+    await waitFor(() =>
+      expect(
+        cloud.records.get("users/designer-a/enrollments/pattern")?.[
+          "achievements"
+        ],
+      ).toEqual(["أنجزت الباترون"]),
+    );
+    expect(screen.queryByText("اختبار قديم")).not.toBeInTheDocument();
+    expect(screen.getByText("أنجزت الباترون")).toBeInTheDocument();
+    view.unmount();
+  });
   it("denies anonymous and ordinary accounts even with a forged browser role", async () => {
     let view = mount(<AdminPage />);
     await screen.findByRole("heading", { name: "يلزم تسجيل الدخول" });

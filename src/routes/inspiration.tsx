@@ -5,6 +5,10 @@ import { Reveal } from "@/components/suda/reveal";
 import { designers } from "@/features/suda/designers";
 import { pageHead } from "@/features/suda/mock-data";
 import { CardStitch } from "@/components/suda/card-stitch";
+/** Small card-sized copy of a designer photo (full size opens in the details). */
+const designerThumb = (src: string) =>
+  src.replace("/editorial/people/", "/editorial/people/thumbs/");
+
 export const Route = createFileRoute("/inspiration")({
   head: () =>
     pageHead(
@@ -84,6 +88,18 @@ function Inspiration() {
               onClick={() => select(designer.id)}
             >
               <CardStitch />
+              {designer.image && (
+                <span className="designer-tile-photo">
+                  <img
+                    src={designerThumb(designer.image)}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    width={520}
+                    height={650}
+                  />
+                </span>
+              )}
               <span className="designer-index">
                 {String(index + 1).padStart(2, "0")}
               </span>

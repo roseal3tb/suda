@@ -8061,3 +8061,114 @@ h6,
     display: none !important;
   }
 }
+
+/* ── Saudi Inspiration: photo cards ── */
+.designer-gallery .designer-tile:has(.designer-tile-photo) {
+  min-height: 0;
+  justify-content: flex-start;
+  gap: 0;
+}
+.designer-tile-photo {
+  display: block;
+  position: relative;
+  margin: -24px -24px 18px;
+  aspect-ratio: 4 / 4.4;
+  overflow: hidden;
+  background: var(--suda-rose);
+}
+.designer-tile-photo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center 18%;
+  filter: saturate(0.82);
+  transition:
+    transform 0.9s var(--suda-ease),
+    filter 0.6s ease;
+}
+.designer-tile:is(:hover, :focus-visible, .is-selected)
+  .designer-tile-photo
+  img {
+  transform: scale(1.05);
+  filter: saturate(1);
+}
+.designer-tile:has(.designer-tile-photo) .designer-index {
+  position: absolute;
+  top: 14px;
+  inset-inline-start: 14px;
+  z-index: 3;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgb(250 246 241 / 0.88);
+  opacity: 1;
+  color: var(--suda-plum);
+}
+.designer-tile:has(.designer-tile-photo) .designer-tile-body {
+  flex: 1;
+  margin-bottom: 16px;
+}
+@media (max-width: 760px) {
+  .designer-tile-photo {
+    margin: -15px -15px 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .designer-tile-photo img {
+    transition: none;
+  }
+}
+
+/* Achievement chips can be removed */
+.achievement-remove {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin-inline-start: 2px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  opacity: 0.55;
+  cursor: pointer;
+}
+.achievement-remove:hover,
+.achievement-remove:focus-visible {
+  opacity: 1;
+  background: rgb(86 78 88 / 0.12);
+}
+
+/* Works without a photo read as woven cloth, not an empty box */
+.work-image-empty,
+.profile-work-empty {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgb(161 149 162 / 0.28) 0 1px,
+      transparent 1px 13px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgb(86 78 88 / 0.1) 0 1px,
+      transparent 1px 13px
+    ),
+    linear-gradient(160deg, #f6eef2, #e8d7e1) !important;
+}
+.work-image-empty svg,
+.profile-work-empty svg {
+  box-sizing: content-box;
+  padding: 14px;
+  border-radius: 50%;
+  background: rgb(250 246 241 / 0.92);
+  box-shadow: 0 8px 22px rgb(86 78 88 / 0.12);
+}
+
+/* Home: tighten the breathing space so no section looks missing */
+.home-thread-story > .thread-journey-breath,
+.thread-journey-breath {
+  height: 64px;
+}
+.home-thread-story > .inspiration-teaser {
+  padding-top: 64px;
+}

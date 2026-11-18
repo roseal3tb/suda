@@ -139,8 +139,8 @@ function Portfolio() {
                   <img src={work.image} alt={work.title} loading="lazy" />
                 ) : (
                   <span className="work-image-empty">
-                    <ImagePlus size={36} />
-                    عرض العمل
+                    <ImagePlus size={30} />
+                    لم تُضف صورة بعد
                   </span>
                 )}
               </button>
